@@ -1,4 +1,6 @@
 import './styles.scss';
+import components from './components';
+import expression from './expression';
 import { createElement } from './utils';
 
 const defaults = {};
@@ -27,11 +29,18 @@ export default class LegendControl {
 	_loadLayer() {
 		this._map.getStyle().layers
 			.filter(({ source, paint }) => paint && source && source !== 'composite')
-			.forEach(({ id }) => {
-				const title = createElement('summary', { content: id });
+			.forEach(({ id, type, paint, layout }) => {
+				const props = { ...paint, ...layout };
 				const pane = createElement('details', {
 					classes: `${this._class}-pane`,
-					content: [title],
+					content: [
+						createElement('summary', { content: id }),
+						...Object.entries(components)
+							.map(([name, component]) => {
+								const parsed = expression.parse(props[`${type}-${name}`]);
+								return component(parsed);
+							}),
+					],
 				});
 				this._container.appendChild(pane);
 			});
