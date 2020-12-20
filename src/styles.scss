@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
+
+:root {
+	--map-legend-maxwidth: 50%;
+	--map-legend-maxheight: 90vh;
+	--map-legend-margin: 0.75rem;
+
+	/* Pane */
+	--map-legend-minwidth: 150px;
+	--map-legend-background: #fff;
+	--map-legend-radius: 4px;
+	--map-legend-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+	--map-legend-border: 1px solid #eee;
+
+	/* Title */
+	--map-legend-title-color: #444;
+	--map-legend-title-size: 0.7rem;
+}
+
+.mapboxgl-ctrl-legend {
+	font: 12px / 1 'Open Sans', 'Arial Unicode MS Regular', sans-serif;
+	min-width: var(--map-legend-minwidth);
+	background: var(--map-legend-background);
+	border-radius: var(--map-legend-radius);
+	box-shadow: var(--map-legend-shadow);
+	width: auto;
+	position: relative;
+	overflow: auto;
+	max-width: var(--map-legend-maxwidth);
+	max-height: var(--map-legend-maxheight);
+
+	& * {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	details + details { border-top: var(--map-legend-border); }
+
+	summary {
+		color: var(--map-legend-title-color);
+		font-size: var(--map-legend-title-size);
+		margin: var(--map-legend-margin);
+		font-weight: bold;
+		line-height: 1;
+		text-transform: uppercase;
+		outline: none;
+	}
+}
