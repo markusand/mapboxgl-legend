@@ -23,10 +23,11 @@ export const toBins = stops => {
 };
 
 export const createElement = (tag, options = {}) => {
-	const { classes, styles, content, appendTo } = options;
+	const { classes, styles, attributes, content, appendTo } = options;
 	const el = document.createElement(tag);
 	if (classes) ensureArray(classes).forEach(c => el.classList.add(c));
 	if (styles) Object.entries(styles).forEach(prop => el.style.setProperty(...prop));
+	if (attributes) Object.entries(attributes).forEach(([attr, value]) => { el[attr] = value; });
 	el.append(...ensureArray(content).filter(child => child !== null && child !== undefined));
 	if (appendTo) appendTo.appendChild(el);
 	return el;

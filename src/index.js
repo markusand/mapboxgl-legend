@@ -3,7 +3,9 @@ import components from './components';
 import expression from './expression';
 import { createElement } from './utils';
 
-const defaults = {};
+const defaults = {
+	collapsed: false,
+};
 
 export default class LegendControl {
 	constructor(options) {
@@ -33,6 +35,7 @@ export default class LegendControl {
 				const props = { ...paint, ...layout };
 				const pane = createElement('details', {
 					classes: `${this._class}-pane`,
+					attributes: { open: !this._options.collapsed },
 					content: [
 						createElement('summary', { content: id }),
 						...Object.entries(components)
