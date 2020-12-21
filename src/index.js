@@ -5,6 +5,7 @@ import { createElement } from './utils';
 
 const defaults = {
 	collapsed: false,
+	toggler: false,
 };
 
 export default class LegendControl {
@@ -29,18 +30,24 @@ export default class LegendControl {
 	}
 
 	_loadLayer() {
+		const { collapsed, toggler } = this._options;
 		this._map.getStyle().layers
 			.filter(({ source, paint }) => paint && source && source !== 'composite')
 			.forEach(({ id, type, paint, layout }) => {
 				const props = { ...paint, ...layout };
 				const selector = `${this._class}-pane--${id}`;
 				const prevPane = document.querySelector(`.${selector}`);
-				const open = prevPane ? prevPane.open : !this._options.collapsed;
+				const open = prevPane ? prevPane.open : !collapsed;
 				const pane = createElement('details', {
 					classes: [`${this._class}-pane`, selector],
 					attributes: { open },
 					content: [
-						createElement('summary', { content: id }),
+						createElement('summary', {
+							content: [
+								id,
+								...(toggler ? [this._toggleButton(id)] : []),
+							],
+						}),
 						...Object.entries(components)
 							.map(([name, component]) => {
 								const parsed = expression.parse(props[`${type}-${name}`]);
@@ -51,5 +58,18 @@ export default class LegendControl {
 				if (prevPane) this._container.replaceChild(pane, prevPane);
 				else this._container.appendChild(pane);
 			});
+	}
+
+	_toggleButton(layer) {
+		const visibility = this._map.getLayoutProperty(layer, 'visibility') || 'visible';
+		return createElement('button', {
+			classes: ['toggler', `toggler--${visibility}`],
+			attributes: {
+				onclick: () => {
+					const visible = visibility === 'none' ? 'visible' : 'none';
+					this._map.setLayoutProperty(layer, 'visibility', visible);
+				},
+			},
+		});
 	}
 }
