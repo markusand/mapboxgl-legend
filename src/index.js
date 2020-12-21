@@ -33,9 +33,12 @@ export default class LegendControl {
 			.filter(({ source, paint }) => paint && source && source !== 'composite')
 			.forEach(({ id, type, paint, layout }) => {
 				const props = { ...paint, ...layout };
+				const selector = `${this._class}-pane--${id}`;
+				const prevPane = document.querySelector(`.${selector}`);
+				const open = prevPane ? prevPane.open : !this._options.collapsed;
 				const pane = createElement('details', {
-					classes: `${this._class}-pane`,
-					attributes: { open: !this._options.collapsed },
+					classes: [`${this._class}-pane`, selector],
+					attributes: { open },
 					content: [
 						createElement('summary', { content: id }),
 						...Object.entries(components)
@@ -45,7 +48,8 @@ export default class LegendControl {
 							}),
 					],
 				});
-				this._container.appendChild(pane);
+				if (prevPane) this._container.replaceChild(pane, prevPane);
+				else this._container.appendChild(pane);
 			});
 	}
 }
