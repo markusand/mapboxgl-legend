@@ -53,6 +53,9 @@
 		line-height: 1;
 		text-transform: uppercase;
 		outline: none;
+		cursor: pointer;
+
+		&::-webkit-details-marker { display: none; }
 	}
 
 	.list {
