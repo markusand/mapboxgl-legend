@@ -33,12 +33,12 @@ export const createElement = (tag, options = {}) => {
 	return el;
 };
 
-export const serializeLabel = value => (
+export const serializeLabel = (value, labels = {}) => (
 	Array.isArray(value)
 		? value[1]
-			? value.join(' - ')
-			: `+${value[0]}`
+			? value.map(v => labels[v] || v).join(' - ')
+			: `+${labels[value[0]] || value[0]}`
 		: value !== null
-			? value
+			? labels[value] || value
 			: 'other'
 );

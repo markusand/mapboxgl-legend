@@ -33,7 +33,8 @@ export default class LegendControl {
 		const { collapsed, toggler } = this._options;
 		this._map.getStyle().layers
 			.filter(({ source, paint }) => paint && source && source !== 'composite')
-			.forEach(({ id, type, paint, layout }) => {
+			.forEach(layer => {
+				const { id, type, paint, layout, metadata } = layer;
 				const props = { ...paint, ...layout };
 				const selector = `${this._class}-pane--${id}`;
 				const prevPane = document.querySelector(`.${selector}`);
@@ -44,14 +45,14 @@ export default class LegendControl {
 					content: [
 						createElement('summary', {
 							content: [
-								id,
+								(metadata && metadata.name) || id,
 								...(toggler ? [this._toggleButton(id)] : []),
 							],
 						}),
 						...Object.entries(components)
 							.map(([name, component]) => {
 								const parsed = expression.parse(props[`${type}-${name}`]);
-								return component(parsed);
+								return component(parsed, layer);
 							}),
 					],
 				});

@@ -1,14 +1,14 @@
 import GradientBar from './block.color-gradient';
 import BulletList from './block.color-list';
 
-export default expression => {
+export default (expression, layer) => {
 	if (!expression) return null;
 	switch (expression.name) {
 		case 'interpolate':
-			return GradientBar(expression);
+			return GradientBar(expression, layer);
 		case 'match':
 		case 'step':
-			return BulletList(expression);
+			return BulletList(expression, layer);
 		default:
 			return undefined;
 	}
