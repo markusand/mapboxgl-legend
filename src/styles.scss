@@ -47,6 +47,8 @@
 		list-style: none;
 	}
 
+	&:empty { display: none; }
+
 	details + details { border-top: var(--map-legend-border); }
 
 	summary {
