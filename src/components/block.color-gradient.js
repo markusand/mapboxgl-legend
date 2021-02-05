@@ -1,8 +1,7 @@
 import { createElement, serializeLabel, map } from '../utils';
 
-export default (expression, layer) => {
+export default (expression, { metadata }) => {
 	if (!expression) return null;
-	const { metadata: { labels } = {} } = layer;
 	const { inputs, stops, min, max } = expression;
 	const gradient = stops.map(([value, color]) => `${color} ${map(value, min, max)}%`);
 	return createElement('div', {
@@ -12,7 +11,7 @@ export default (expression, layer) => {
 				classes: 'labels',
 				content: inputs.map(input => createElement('span', {
 					styles: { left: `${map(input, min, max)}%` },
-					content: serializeLabel(input, labels),
+					content: serializeLabel(input, metadata),
 				})),
 			}),
 			createElement('div', {

@@ -1,13 +1,12 @@
 import { createElement, serializeLabel } from '../utils';
 
-export default (expression, layer) => {
+export default (expression, { metadata }) => {
 	if (!expression) return null;
-	const { metadata: { labels } = {} } = layer;
 	return createElement('ul', {
 		classes: ['list', 'list--color'],
 		content: expression.stops.map(([value, color]) => createElement('li', {
 			styles: { '--color': color },
-			content: serializeLabel(value, labels),
+			content: serializeLabel(value, metadata),
 		})),
 	});
 };
