@@ -14,7 +14,7 @@ export const zip = (array, ...arrays) => (
 export const toPair = stop => (stop.length === 2 ? stop : [null, ...stop]);
 
 export const toBins = stops => {
-	const other = stops.find(([input]) => !input);
+	const other = stops.find(([input]) => input === null);
 	return stops.reduce((acc, [low, out], i) => {
 		if (i === stops.length - 1) acc.push([low, out]);
 		else if (out !== other[1]) acc.push([[low, stops[i + 1][0]], out]);
