@@ -6,6 +6,7 @@ import { createElement } from './utils';
 const defaults = {
 	collapsed: false,
 	toggler: false,
+	layers: undefined,
 };
 
 export default class LegendControl {
@@ -30,8 +31,9 @@ export default class LegendControl {
 	}
 
 	_loadLayer() {
-		const { collapsed, toggler } = this._options;
+		const { collapsed, toggler, layers } = this._options;
 		this._map.getStyle().layers
+			.filter(({ id }) => !layers || layers.find(layer => id.match(layer)))
 			.filter(({ source, paint }) => paint && source && source !== 'composite')
 			.forEach(layer => {
 				const { id, type, paint, layout, metadata } = layer;
