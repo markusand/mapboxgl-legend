@@ -1,4 +1,5 @@
 import color from './color';
 import radius from './radius';
+import image from './image';
 
-export default { color, radius };
+export default { color, radius, image };

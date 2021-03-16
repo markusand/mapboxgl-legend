@@ -56,7 +56,7 @@ export default class LegendControl {
 							const [, property] = attr.split('-');
 							const parsedExpression = Expression.parse(expression);
 							const component = components[property];
-							return component && component(parsedExpression, layer);
+							return component && component(parsedExpression, layer, this._map);
 						}),
 					],
 				});

@@ -105,6 +105,10 @@
 			margin-right: calc(0.5 * var(--map-legend-margin));
 			border-radius: var(--map-legend-thumb-radius);
 		}
+
+		&--icons .icon {
+			margin-right: calc(0.5 * var(--map-legend-margin));
+		}
 	}
 
 	.gradient {
