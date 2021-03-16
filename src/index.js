@@ -44,12 +44,14 @@ export default class LegendControl {
 					classes: [`${this._class}-pane`, selector],
 					attributes: { open },
 					content: [
+						// Panel header
 						createElement('summary', {
 							content: [
-								(metadata && metadata.name) || id,
-								...(toggler ? [this._toggleButton(id)] : []),
+								(metadata && metadata.name) || id, // Layer name or identifier
+								...(toggler ? [this._toggleButton(id)] : []), // Toggler button
 							],
 						}),
+						// Panel content
 						...Object.entries({ ...layout, ...paint }).map(([attr, expression]) => {
 							const [, property] = attr.split('-');
 							const parsedExpression = Expression.parse(expression);
