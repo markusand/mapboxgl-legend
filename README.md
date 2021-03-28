@@ -89,4 +89,4 @@ map.addLayer({
 ```
 
 ## Styles
-Legend defaults to a simple design inspired by standard mapbox-gl controls, but can be tunned by changing CSS variables. Check default values in `/src/styles.scss`
+Legend defaults to a simple design inspired by standard mapbox-gl controls, but can be tunned by changing CSS variables. Check default values in `/src/_variables.scss`
