@@ -67,10 +67,11 @@ export default class LegendControl {
 
 	_toggleButton(layer) {
 		const visibility = this._map.getLayoutProperty(layer, 'visibility') || 'visible';
-		return createElement('button', {
+		return createElement('div', {
 			classes: ['toggler', `toggler--${visibility}`],
 			attributes: {
-				onclick: () => {
+				onclick: event => {
+					event.preventDefault();
 					const visible = visibility === 'none' ? 'visible' : 'none';
 					this._map.setLayoutProperty(layer, 'visibility', visible);
 				},
