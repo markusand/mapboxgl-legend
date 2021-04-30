@@ -8,6 +8,7 @@ export default (expression, layer) => {
 			return GradientBar(expression, layer);
 		case 'match':
 		case 'step':
+		case 'literal':
 			return BulletList(expression, layer);
 		default:
 			return undefined;
