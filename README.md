@@ -3,17 +3,22 @@
 [![NPM](https://img.shields.io/bundlephobia/minzip/mapboxgl-legend)](https://npmjs.org/package/mapboxgl-legend)
 [![NPM](https://img.shields.io/npm/l/mapboxgl-legend)](https://npmjs.org/package/mapboxgl-legend)
 
-Add a legend to a mapbox-gl map by parsing layer paint expressions.
+Add a legend to a mapbox-gl map by parsing layer layout & paint expressions.
+
+![image](https://user-images.githubusercontent.com/12972543/116700430-0d338b80-a9c7-11eb-913f-70c884589dc0.png)
+
 
 Properties currently supported:
 - `fill-color`
 - `circle-color`
 - `circle-radius`
+- `icon-image`
 
 Expressions currently supported:
 - `match`
 - `interpolate`
 - `step`
+- literals
 
 ## Get started
 Install npm package

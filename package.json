@@ -1,11 +1,11 @@
 {
   "name": "mapboxgl-legend",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "description": "Mapbox-GL plugin that automatically draws a legend from layer styles",
   "main": "src/index.js",
   "scripts": {
-		"dev": "bili --format umd-min --module-name LegendControl",
-		"build": "bili --minify"
+    "dev": "bili --format umd-min --module-name LegendControl",
+    "build": "bili --minify"
   },
   "keywords": [
     "mapbox",
@@ -15,16 +15,16 @@
     "style"
   ],
   "author": "Marc Vilella <mvilella@obsa.ad> (https://github.com/markusand)",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/markusand/mapboxgl-legend.git"
-	},
-	"bugs": {
-		"url": "https://github.com/markusand/mapboxgl-legend/issues"
-	},
-	"homepage": {
-		"url": "https://github.com/markusand/mapboxgl-legend"
-	},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/markusand/mapboxgl-legend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/markusand/mapboxgl-legend/issues"
+  },
+  "homepage": {
+    "url": "https://github.com/markusand/mapboxgl-legend"
+  },
   "license": "ISC",
   "devDependencies": {
     "bili": "^5.0.5",
