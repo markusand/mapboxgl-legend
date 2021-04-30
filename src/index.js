@@ -1,6 +1,6 @@
 import './styles.scss';
 import components from './components';
-import expression from './expression';
+import Expression from './expression';
 import { createElement } from './utils';
 
 const defaults = {
@@ -34,10 +34,9 @@ export default class LegendControl {
 		const { collapsed, toggler, layers } = this._options;
 		this._map.getStyle().layers
 			.filter(({ id }) => !layers || layers.find(layer => id.match(layer)))
-			.filter(({ source, paint }) => paint && source && source !== 'composite')
+			.filter(({ source }) => source && source !== 'composite')
 			.forEach(layer => {
-				const { id, type, paint, layout, metadata } = layer;
-				const props = { ...paint, ...layout };
+				const { id, layout, paint, metadata } = layer;
 				const selector = `${this._class}-pane--${id}`;
 				const prevPane = document.querySelector(`.${selector}`);
 				const open = prevPane ? prevPane.open : !collapsed;
@@ -45,17 +44,20 @@ export default class LegendControl {
 					classes: [`${this._class}-pane`, selector],
 					attributes: { open },
 					content: [
+						// Panel header
 						createElement('summary', {
 							content: [
-								(metadata && metadata.name) || id,
-								...(toggler ? [this._toggleButton(id)] : []),
+								(metadata && metadata.name) || id, // Layer name or identifier
+								...(toggler ? [this._toggleButton(id)] : []), // Toggler button
 							],
 						}),
-						...Object.entries(components)
-							.map(([name, component]) => {
-								const parsed = expression.parse(props[`${type}-${name}`]);
-								return component(parsed, layer);
-							}),
+						// Panel content
+						...Object.entries({ ...layout, ...paint }).map(([attr, expression]) => {
+							const [, property] = attr.split('-');
+							const parsedExpression = Expression.parse(expression);
+							const component = components[property];
+							return component && component(parsedExpression, layer, this._map);
+						}),
 					],
 				});
 				if (prevPane) this._container.replaceChild(pane, prevPane);
