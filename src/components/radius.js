@@ -1,8 +1,7 @@
 import { createElement, serializeLabel } from '../utils';
 
-export default (expression, layer) => {
+export default (expression, { metadata }) => {
 	if (!expression) return null;
-	const { metadata: { labels } = {} } = layer;
 	return createElement('ul', {
 		classes: 'bubbles',
 		content: expression.stops
@@ -10,7 +9,7 @@ export default (expression, layer) => {
 			.map(([value, radius]) => createElement('li', {
 				styles: { '--radius': `${radius}px` },
 				content: createElement('span', {
-					content: serializeLabel(value, labels),
+					content: serializeLabel(value, metadata),
 				}),
 			})),
 	});
