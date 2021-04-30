@@ -146,8 +146,8 @@
 			&::before {
 				display: inline-block;
 				content: '';
-				height: var(--radius);
-				width: var(--radius);
+				height: calc(2 * var(--radius));
+				width: calc(2 * var(--radius));
 				border: 1px solid var(--map-legend-bubble-stroke);
 				background: var(--map-legend-bubble-background);
 				border-radius: 50%;
