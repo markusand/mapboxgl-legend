@@ -78,6 +78,8 @@
 
 		&--icons .icon {
 			margin-right: calc(0.5 * var(--map-legend-margin));
+			height: var(--map-legend-symbol-size);
+			width: var(--map-legend-symbol-size);
 		}
 	}
 
