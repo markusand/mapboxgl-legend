@@ -41,5 +41,5 @@ export const serializeLabel = (value, metadata) => {
 			: `+${labels[value[0]] || `${value[0]}${unit}`}`
 		: value !== null
 			? labels[value] || `${value}${unit}`
-			: 'other';
+			: labels.other || 'other';
 };
