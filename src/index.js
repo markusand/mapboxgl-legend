@@ -35,6 +35,7 @@ export default class LegendControl {
 		this._map.getStyle().layers
 			.filter(({ id }) => !layers || layers.find(layer => id.match(layer)))
 			.filter(({ source }) => source && source !== 'composite')
+			.reverse()
 			.forEach(layer => {
 				const { id, layout, paint, metadata } = layer;
 				const selector = `${this._class}-pane--${id}`;
