@@ -13,6 +13,7 @@ export default class LegendControl {
 	constructor(options) {
 		this._class = 'mapboxgl-ctrl-legend';
 		this._options = { ...defaults, ...options };
+		this._loadLayer = this._loadLayer.bind(this);
 	}
 
 	onAdd(map) {
@@ -20,13 +21,13 @@ export default class LegendControl {
 		this._container = createElement('div', {
 			classes: ['mapboxgl-ctrl', this._class],
 		});
-		this._map.on('styledata', event => this._loadLayer(event));
+		this._map.on('styledata', this._loadLayer);
 		return this._container;
 	}
 
 	onRemove() {
 		this._container.parentNode.removeChild(this._container);
-		this._map.off('styledata', event => this._loadLayer(event));
+		this._map.off('styledata', this._loadLayer);
 		this._map = undefined;
 	}
 
