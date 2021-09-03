@@ -29,6 +29,7 @@ npm install mapboxgl-legend
 Add legend control to map
 ```javascript
 import LegendControl from 'mapboxgl-legend';
+import 'mapboxgl-legend/dist/index.min.css';
 
 const legend = new LegendControl();
 map.addControl(legend, 'bottom-left');
