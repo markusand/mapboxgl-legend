@@ -2,7 +2,7 @@
   "extends": "airbnb-base",
   "env": {
     "browser": true,
-    "es6": true,
+    "es6": true
   },
   "rules": {
     "no-tabs": "off",
