@@ -6,9 +6,13 @@ export default (expression, { metadata }, map) => {
 		classes: ['list', 'list--icons'],
 		content: expression.stops.map(([value, image]) => {
 			const { height, width, data } = map.style.imageManager.images[image].data;
-			const canvas = createElement('canvas', { attributes: { width, height } });
+			const size = Math.max(width, height);
+			const canvas = createElement('canvas', { attributes: { width: size, height: size } });
 			const ctx = canvas.getContext('2d');
-			ctx.putImageData(new ImageData(Uint8ClampedArray.from(data), width, height), 0, 0);
+			const offsetX = (size - width) / 2;
+			const offsetY = (size - height) / 2;
+			const imageData = new ImageData(Uint8ClampedArray.from(data), width, height);
+			ctx.putImageData(imageData, offsetX, offsetY);
 			return createElement('li', {
 				content: [
 					createElement('img', {
