@@ -1,11 +1,16 @@
 {
   "name": "mapboxgl-legend",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "description": "Mapbox-GL plugin that automatically draws a legend from layer styles",
-  "main": "src/index.js",
+  "main": "dist/index.min.js",
+  "module": "dist/index.esm.min.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "bili --format umd-min --module-name LegendControl",
-    "build": "bili --minify"
+    "build": "bili --format esm-min --format cjs-min --format umd-min --module-name LegendControl",
+    "prepare": "npm run build"
   },
   "keywords": [
     "mapbox",
