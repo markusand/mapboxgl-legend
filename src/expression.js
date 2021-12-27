@@ -11,6 +11,7 @@ const isExpression = exp => Array.isArray(exp) && exp.length && typeof exp[0] ==
 
 const parse = input => {
 	const [name, ...args] = isExpression(input) ? input : ['literal', input];
+	if (!stopper[name]) return null;
 	const stops = stopper[name](args);
 	const [inputs, outputs] = zip(...stops);
 	const min = Math.min(...inputs);

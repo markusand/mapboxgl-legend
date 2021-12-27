@@ -56,9 +56,9 @@ export default class LegendControl {
 						// Panel content
 						...Object.entries({ ...layout, ...paint }).map(([attr, expression]) => {
 							const [, property] = attr.split('-');
-							const parsedExpression = Expression.parse(expression);
+							const parsed = Expression.parse(expression);
 							const component = components[property];
-							return component && component(parsedExpression, layer, this._map);
+							return parsed && component && component(parsed, layer, this._map);
 						}),
 					],
 				});
