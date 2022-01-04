@@ -1,8 +1,14 @@
 {
-  "extends": "airbnb-base",
+  "extends": [
+		"airbnb-base",
+		"eslint:recommended"
+	],
   "env": {
     "browser": true,
     "es6": true
+  },
+	"parserOptions": {
+    "ecmaVersion": 2020
   },
   "rules": {
     "no-tabs": "off",

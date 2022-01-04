@@ -8,8 +8,7 @@
     "dist"
   ],
   "scripts": {
-    "dev": "bili --format umd-min --module-name LegendControl",
-    "build": "bili --format esm-min --format cjs-min --format umd-min --module-name LegendControl",
+    "build": "rollup -c",
     "prepare": "npm run build"
   },
   "keywords": [
@@ -30,11 +29,16 @@
   "homepage": "https://github.com/markusand/mapboxgl-legend",
   "license": "ISC",
   "devDependencies": {
-    "bili": "^5.0.5",
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-node-resolve": "^13.1.2",
+    "autoprefixer": "^10.4.1",
     "eslint": "^8.5.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.23.3",
     "node-sass": "^7.0.1",
+    "rollup": "^2.63.0",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-terser": "^7.0.2",
     "sass": "^1.34.0",
     "stylelint": "^14.2.0",
     "stylelint-config-standard": "^24.0.0",
