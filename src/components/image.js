@@ -5,7 +5,8 @@ export default (expression, { metadata }, map) => {
 	return createElement('ul', {
 		classes: ['list', 'list--icons'],
 		content: expression.stops.map(([value, image]) => {
-			const { height, width, data } = map.style.imageManager.images[image].data;
+			const { height, width, data } = map.style.imageManager.images[image]?.data || {};
+			if (!height || !width || !data) return null;
 			const size = Math.max(width, height);
 			const canvas = createElement('canvas', { attributes: { width: size, height: size } });
 			const ctx = canvas.getContext('2d');
