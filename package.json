@@ -4,6 +4,7 @@
   "description": "Mapbox-GL plugin that automatically draws a legend from layer styles",
   "main": "dist/index.min.js",
   "module": "dist/index.esm.min.js",
+  "browser": "dist/index.umd.min.js",
   "files": [
     "dist"
   ],

@@ -19,6 +19,11 @@ export default {
       file: packageJson.module,
       sourcemap: true,
     },
+    {
+      format: 'umd',
+      file: packageJson.browser,
+      name: 'LegendControl',
+    },
   ],
   plugins: [
     resolve(),
