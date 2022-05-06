@@ -1,0 +1,56 @@
+@import 'variables';
+
+.mapboxgl-ctrl-legend {
+  font: var(--map-legend-font);
+  min-width: var(--map-legend-minwidth);
+  background: var(--map-legend-background);
+  border-radius: var(--map-legend-radius);
+  box-shadow: var(--map-legend-shadow);
+  width: auto;
+  position: relative;
+  overflow: auto;
+  max-width: var(--map-legend-maxwidth);
+  max-height: var(--map-legend-maxheight);
+
+  & * {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &:empty { display: none; }
+
+  details + details { border-top: var(--map-legend-border); }
+
+  summary {
+    color: var(--map-legend-title-color);
+    font-size: var(--map-legend-title-size);
+    margin: var(--map-legend-margin);
+    font-weight: bold;
+    line-height: 1;
+    text-transform: uppercase;
+    outline: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+
+    &::-webkit-details-marker { display: none; }
+
+    .toggler {
+      color: inherit;
+      margin-left: auto;
+      width: var(--map-legend-title-size);
+      height: var(--map-legend-title-size);
+      background-color: currentColor;
+      mask-image: var(--toggler-hidden-icon);
+      mask-size: 100%;
+      opacity: var(--toggler-hidden-opacity);
+      cursor: pointer;
+
+      &--visible {
+        mask-image: var(--toggler-visible-icon);
+        opacity: 1;
+      }
+    }
+  }
+}

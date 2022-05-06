@@ -1,4 +1,4 @@
-import './styles.scss';
+import './styles/main.scss';
 import components from './components';
 import Expression from './expression';
 import { createElement } from './utils';

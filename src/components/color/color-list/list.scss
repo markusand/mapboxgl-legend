@@ -1,0 +1,28 @@
+.mapboxgl-ctrl-legend .list {
+  margin: var(--map-legend-margin);
+
+  li {
+    margin: calc(0.5 * var(--map-legend-margin)) 0;
+    display: flex;
+    align-items: center;
+    font-size: var(--map-legend-label-size);
+    color: var(--map-legend-label-color);
+    text-transform: uppercase;
+  }
+
+  &--color li::before {
+    content: '';
+    display: block;
+    height: var(--map-legend-thumb-height);
+    width: var(--map-legend-thumb-height);
+    background: var(--color);
+    margin-right: calc(0.5 * var(--map-legend-margin));
+    border-radius: var(--map-legend-thumb-radius);
+  }
+
+  &--icons .icon {
+    margin-right: calc(0.5 * var(--map-legend-margin));
+    height: var(--map-legend-symbol-size);
+    width: var(--map-legend-symbol-size);
+  }
+}

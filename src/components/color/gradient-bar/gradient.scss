@@ -1,0 +1,24 @@
+.mapboxgl-ctrl-legend .gradient {
+  margin: var(--map-legend-margin);
+
+  .labels {
+    position: relative;
+    height: calc(1.5 * var(--map-legend-label-size));
+    font-size: var(--map-legend-label-size);
+
+    span {
+      position: absolute;
+      color: var(--map-legend-label-color);
+      transform: translateX(-50%);
+
+      &:first-child { transform: none; }
+      &:last-child { transform: translateX(-100%); }
+    }
+  }
+
+  .bar {
+    height: var(--map-legend-thumb-height);
+    background: #ccc;
+    border-radius: var(--map-legend-thumb-radius);
+  }
+}

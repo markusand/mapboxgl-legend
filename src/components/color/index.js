@@ -1,5 +1,5 @@
-import GradientBar from './block.color-gradient';
-import BulletList from './block.color-list';
+import GradientBar from './gradient-bar';
+import BulletList from './color-list';
 
 export default (expression, layer) => {
   if (!expression) return null;

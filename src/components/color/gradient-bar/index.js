@@ -1,4 +1,5 @@
-import { createElement, serializeLabel, map } from '../utils';
+import { createElement, serializeLabel, map } from '../../../utils';
+import './gradient.scss';
 
 export default (expression, { metadata }) => {
   if (!expression) return null;
