@@ -1,20 +1,16 @@
 {
   "extends": [
-		"airbnb-base",
-		"eslint:recommended"
-	],
+    "airbnb-base",
+    "eslint:recommended"
+  ],
   "env": {
     "browser": true,
     "es6": true
   },
-	"parserOptions": {
+  "parserOptions": {
     "ecmaVersion": 2020
   },
   "rules": {
-    "no-tabs": "off",
-    "indent": ["error", "tab", {
-      "SwitchCase": 1
-    }],
     "max-len": ["error", {
       "code": 100,
       "ignoreTrailingComments": true,
