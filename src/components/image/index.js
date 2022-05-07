@@ -1,4 +1,4 @@
-import { createElement, serializeLabel } from '../../utils';
+import { createElement, serializeLabel } from '/@/utils';
 
 export default (expression, { metadata }, map) => {
   if (!expression) return null;

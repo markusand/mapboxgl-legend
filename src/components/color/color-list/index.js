@@ -1,4 +1,4 @@
-import { createElement, serializeLabel } from '../../../utils';
+import { createElement, serializeLabel } from '/@/utils';
 import './list.scss';
 
 export default (expression, { metadata }) => {

@@ -30,11 +30,13 @@
   "homepage": "https://github.com/markusand/mapboxgl-legend",
   "license": "ISC",
   "devDependencies": {
+    "@rollup/plugin-alias": "^3.1.9",
     "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "autoprefixer": "^10.4.7",
     "eslint": "^8.14.0",
     "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-import-resolver-alias": "^1.1.2",
     "eslint-plugin-import": "^2.26.0",
     "rollup": "^2.72.0",
     "rollup-plugin-postcss": "^4.0.2",

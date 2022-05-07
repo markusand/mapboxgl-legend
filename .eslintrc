@@ -27,6 +27,15 @@
     }],
     "arrow-parens": ["error", "as-needed"],
     "no-nested-ternary": "off",
-    "no-underscore-dangle": "off"
+    "no-underscore-dangle": "off",
+    "import/no-absolute-path": "off"
+  },
+  "settings": {
+    "import/resolver": {
+      "alias": {
+        "map": [["/@", "./src"]],
+        "extensions": [".js", ".json", "scss"]
+      }
+    }
   }
 }

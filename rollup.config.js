@@ -1,3 +1,5 @@
+import path from 'path';
+import alias from '@rollup/plugin-alias';
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import postcss from 'rollup-plugin-postcss';
@@ -26,6 +28,11 @@ export default {
     },
   ],
   plugins: [
+    alias({
+      entries: [
+        { find: '/@', replacement: path.resolve(__dirname, './src') },
+      ],
+    }),
     resolve(),
     commonjs(),
     terser(),
