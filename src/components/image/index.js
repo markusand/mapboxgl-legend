@@ -1,10 +1,10 @@
 import { createElement, serializeLabel } from '/@/utils';
 
 export default (expression, { metadata }, map) => {
-  if (!expression) return null;
+  const { stops } = expression;
   return createElement('ul', {
     classes: ['list', 'list--icons'],
-    content: expression.stops.map(([value, image]) => {
+    content: stops.map(([value, image]) => {
       const { height, width, data } = map.style.imageManager.images[image]?.data || {};
       if (!height || !width || !data) return null;
       const size = Math.max(width, height);

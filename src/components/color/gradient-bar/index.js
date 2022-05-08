@@ -2,7 +2,6 @@ import { createElement, serializeLabel, map } from '/@/utils';
 import './gradient.scss';
 
 export default (expression, { metadata }) => {
-  if (!expression) return null;
   const { inputs, stops, min, max } = expression;
   const gradient = stops.map(([value, color]) => `${color} ${map(value, min, max)}%`);
   return createElement('div', {
