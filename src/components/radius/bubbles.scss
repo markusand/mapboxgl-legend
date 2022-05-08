@@ -35,7 +35,7 @@
 
     &::before {
       display: inline-block;
-      content: '';
+      content: "";
       height: calc(2 * var(--radius));
       width: calc(2 * var(--radius));
       border: 1px solid var(--map-legend-bubble-stroke);

@@ -11,7 +11,7 @@
   }
 
   &--color li::before {
-    content: '';
+    content: "";
     display: block;
     height: var(--map-legend-thumb-height);
     width: var(--map-legend-thumb-height);

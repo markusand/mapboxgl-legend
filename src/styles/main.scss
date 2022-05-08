@@ -1,4 +1,4 @@
-@import 'variables';
+@import "variables";
 
 .mapboxgl-ctrl-legend {
   font: var(--map-legend-font);
@@ -41,7 +41,7 @@
       margin-left: auto;
       width: var(--map-legend-title-size);
       height: var(--map-legend-title-size);
-      background-color: currentColor;
+      background-color: currentcolor;
       mask-image: var(--toggler-hidden-icon);
       mask-size: 100%;
       opacity: var(--toggler-hidden-opacity);
