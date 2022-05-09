@@ -13,7 +13,7 @@ export default class LegendControl {
   constructor(options) {
     this._class = 'mapboxgl-ctrl-legend';
     this._options = { ...defaults, ...options };
-    this._loadLayer = this._loadLayer.bind(this);
+    this._loadLayers = this._loadLayers.bind(this);
   }
 
   onAdd(map) {
@@ -21,17 +21,17 @@ export default class LegendControl {
     this._container = createElement('div', {
       classes: ['mapboxgl-ctrl', this._class],
     });
-    this._map.on('styledata', this._loadLayer);
+    this._map.on('styledata', this._loadLayers);
     return this._container;
   }
 
   onRemove() {
     this._container.parentNode.removeChild(this._container);
-    this._map.off('styledata', this._loadLayer);
+    this._map.off('styledata', this._loadLayers);
     this._map = undefined;
   }
 
-  _loadLayer() {
+  _loadLayers() {
     const { collapsed, toggler, layers } = this._options;
     this._map.getStyle().layers
       .filter(({ id }) => !layers || layers.find(layer => id.match(layer)))
