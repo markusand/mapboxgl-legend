@@ -41,15 +41,16 @@ export default class LegendControl {
         const { id, layout, paint, metadata } = layer;
         const selector = `${this._class}-pane--${id}`;
         const prevPane = document.querySelector(`.${selector}`);
-        const open = prevPane ? prevPane.open : !collapsed;
         const pane = createElement('details', {
           classes: [`${this._class}-pane`, selector],
-          attributes: { open },
+          attributes: {
+            open: prevPane?.open ?? !collapsed,
+          },
           content: [
             // Panel header
             createElement('summary', {
               content: [
-                (metadata && metadata.name) || id, // Layer name or identifier
+                metadata?.name || id, // Layer name or identifier
                 ...(toggler ? [this._toggleButton(id)] : []), // Toggler button
               ],
             }),
