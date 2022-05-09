@@ -7,7 +7,7 @@ const stopper = {
   step: expression => toBins([...chunk(expression.slice(2), 2), [null, expression[1]]]),
 };
 
-const isExpression = exp => Array.isArray(exp) && exp.length && typeof exp[0] === 'string';
+const isExpression = expression => Array.isArray(expression) && expression.length && typeof expression[0] === 'string';
 
 const parse = input => {
   const [name, ...args] = isExpression(input) ? input : ['literal', input];
