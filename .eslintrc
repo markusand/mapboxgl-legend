@@ -28,7 +28,8 @@
     "arrow-parens": ["error", "as-needed"],
     "no-nested-ternary": "off",
     "no-underscore-dangle": "off",
-    "import/no-absolute-path": "off"
+    "import/no-absolute-path": "off",
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
   },
   "settings": {
     "import/resolver": {
