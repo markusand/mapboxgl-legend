@@ -14,8 +14,8 @@ const parse = input => {
   if (!stopper[name]) return null;
   const stops = stopper[name](args);
   const [inputs, outputs] = zip(...stops);
-  const min = Math.min(...inputs);
-  const max = Math.max(...inputs);
+  const min = Math.min(...inputs.flat(2));
+  const max = Math.max(...inputs.flat(2));
   return { name, stops, inputs, outputs, min, max };
 };
 
