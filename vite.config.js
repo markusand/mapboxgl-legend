@@ -8,6 +8,10 @@ export default defineConfig({
       { find: '/@', replacement: path.resolve(__dirname, './src') },
     ],
   },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+  },
   build: {
     lib: {
       entry: path.resolve(__dirname, 'src/index.js'),

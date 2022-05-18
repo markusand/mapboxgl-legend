@@ -2,4 +2,5 @@
 .env
 
 dist
+coverage
 node_modules
