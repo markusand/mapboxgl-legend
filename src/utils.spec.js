@@ -50,8 +50,8 @@ describe('DOM utilities', () => {
       attributes: { id: 'test' },
       content: 'Hello',
     });
-    expect(element.classList.contains('class1')).toBe(true);
-    expect(element.classList.contains('class2')).toBe(true);
+    expect(element.classList.contains('class1')).toBeTruthy();
+    expect(element.classList.contains('class2')).toBeTruthy();
     expect(element.style.color).toBe('red');
     expect(element.id).toBe('test');
     expect(element.textContent).toBe('Hello');
