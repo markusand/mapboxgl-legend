@@ -1,5 +1,4 @@
 import { createElement, serializeLabel, map } from '/@/utils';
-import './gradient.scss';
 
 export default (expression, { metadata }) => {
   const { inputs, stops, min, max } = expression;

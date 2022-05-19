@@ -1,5 +1,5 @@
-import GradientBar from './gradient-bar';
-import BulletList from './color-list';
+import GradientBar from './gradient';
+import BulletList from './list';
 
 export default (expression, layer) => {
   switch (expression.name) {

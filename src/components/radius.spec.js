@@ -1,6 +1,6 @@
 /* eslint-disable import/no-unresolved */
 import { describe, it, expect } from 'vitest';
-import Bubbles from './index';
+import Bubbles from './radius';
 
 describe('Radius panel', () => {
   it('should create a panel with bubbles', () => {

@@ -1,6 +1,6 @@
 /* eslint-disable import/no-unresolved */
 import { describe, it, expect, vi } from 'vitest';
-import Image from './index';
+import Image from './image';
 
 // Stub ImageData
 vi.stubGlobal('ImageData', class ImageData {});

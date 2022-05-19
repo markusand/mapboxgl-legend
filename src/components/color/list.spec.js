@@ -1,6 +1,6 @@
 /* eslint-disable import/no-unresolved */
 import { describe, it, expect } from 'vitest';
-import ColorList from './index';
+import ColorList from './list';
 
 describe('Color list panel', () => {
   it('should create a panel colors list', () => {

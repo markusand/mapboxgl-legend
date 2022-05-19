@@ -22,3 +22,13 @@
     border-radius: var(--map-legend-thumb-radius);
   }
 }
+
+.mapboxgl-ctrl-legend .list--color li::before {
+  content: "";
+  display: block;
+  height: var(--map-legend-thumb-height);
+  width: var(--map-legend-thumb-height);
+  background: var(--color);
+  margin-right: calc(0.5 * var(--map-legend-margin));
+  border-radius: var(--map-legend-thumb-radius);
+}

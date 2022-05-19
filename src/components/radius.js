@@ -1,5 +1,4 @@
 import { createElement, serializeLabel } from '/@/utils';
-import './bubbles.scss';
 
 export default (expression, { metadata }) => {
   const { stops } = expression;

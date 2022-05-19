@@ -1,4 +1,7 @@
-@import "variables";
+@import
+  "variables",
+  "lists",
+  "components";
 
 .mapboxgl-ctrl-legend {
   font: var(--map-legend-font);
