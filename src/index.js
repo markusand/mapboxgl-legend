@@ -1,7 +1,7 @@
 import './styles/main.scss';
 import components from './components';
 import Expression from './expression';
-import { createElement } from './utils';
+import { createElement, toObject } from './utils';
 
 const defaults = {
   collapsed: false,
@@ -33,9 +33,10 @@ export default class LegendControl {
 
   _loadLayers() {
     const { collapsed, toggler, layers } = this._options;
+    const visibleLayers = toObject(layers);
     this._map.getStyle().layers
-      .filter(({ id }) => !layers || layers.find(layer => id.match(layer)))
       .filter(({ source }) => source && source !== 'composite')
+      .filter(({ id }) => !layers || Object.keys(visibleLayers).some(key => id.match(key)))
       .reverse() // Show in order that are drawn on map (first layers at the bottom, last on top)
       .forEach(layer => {
         const { id, layout, paint, metadata } = layer;
@@ -55,11 +56,16 @@ export default class LegendControl {
               ],
             }),
             // Panel content
-            ...Object.entries({ ...layout, ...paint }).map(([attr, expression]) => {
-              const [, property] = attr.split('-');
-              const parsed = Expression.parse(expression);
-              return parsed && components[property]?.(parsed, layer, this._map);
-            }),
+            ...Object.entries({ ...layout, ...paint })
+              .filter(([attribute]) => {
+                const match = Object.keys(visibleLayers).find(key => id.match(key));
+                return !layers || visibleLayers[match] === true || visibleLayers[match]?.includes(attribute);
+              })
+              .map(([attribute, expression]) => {
+                const [, property] = attribute.split('-');
+                const parsed = Expression.parse(expression);
+                return parsed && components[property]?.(parsed, layer, this._map);
+              }),
           ],
         });
         if (prevPane) this._container.replaceChild(pane, prevPane);

@@ -78,7 +78,22 @@ A few options can be passed on legend initialization.
 | --- | --- | --- | --- |
 | collapsed | Boolean | `false` | Set legend panels collapsed on load |
 | toggler | Boolean | `false` | Add button to show and hide layers |
-| layers | Array[regex] | `undefined` | List of layers to be added. If undefined all layers will be added |
+| layers | Array[regex], Object | `undefined` | List of layers to be added. If undefined all layers will be added |
+
+The layers option is an array of the layers' ids, or regex expressions that match the layers' ids. It can also be an object with keys being the layers' ids (or regex) and values being an array of visible attributes, or `true` if all visible.
+
+```javascript
+const legend = new LegendControl({
+  // Show all properties in selected layers
+  layers: ['population', 'areas'],
+  layers: {
+    // Show all properties in this layer
+    areas: true,
+    // Show only selected properties in this layer
+    population: ['circle-radius'], 
+  },
+})
+```
 
 There are also a few options that be defined as a per-layer basis using the style `metadata` object.
 

@@ -1,4 +1,8 @@
 export const ensureArray = thing => (Array.isArray(thing) ? thing : [thing]);
+export const toObject = thing => (Array.isArray(thing)
+  ? thing.reduce((acc, i) => ({ ...acc, [i]: true }), {})
+  : (thing || {})
+);
 
 export const map = (val, x1, y1, x2 = 0, y2 = 100) => ((val - x1) * (y2 - x2)) / (y1 - x1) + x2;
 
