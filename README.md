@@ -111,7 +111,11 @@ map.addLayer({
   paint: { /* ... */ },
   metadata: {
     name: 'Population Density',
-    unit: `k/km²`
+    unit: 'k/km²',
+    labels: {
+      10: 'Custom label for value 10',
+      other: '< 1k/km²',
+    }
   }
 });
 ```
