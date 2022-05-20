@@ -63,7 +63,7 @@ export default class LegendControl {
                 return visibleLayers[match] === true || visibleLayers[match]?.includes(attribute);
               })
               .map(([attribute, expression]) => {
-                const [, property] = attribute.split('-');
+                const property = attribute.split('-').slice(-1);
                 const parsed = Expression.parse(expression);
                 return parsed && components[property]?.(parsed, layer, this._map);
               }),

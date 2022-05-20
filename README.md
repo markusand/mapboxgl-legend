@@ -10,10 +10,9 @@ Add a legend to a mapbox-gl map by parsing layer layout & paint expressions.
 
 Properties currently supported:
 
-- `fill-color`
-- `circle-color`
-- `circle-radius`
-- `icon-image`
+- `*-color`
+- `*-radius`
+- `*-image`
 
 Expressions currently supported:
 
