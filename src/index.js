@@ -52,14 +52,15 @@ export default class LegendControl {
             createElement('summary', {
               content: [
                 metadata?.name || id, // Layer name or identifier
-                ...(toggler ? [this._toggleButton(id)] : []), // Toggler button
+                (toggler ? this._toggleButton(id) : undefined), // Toggler button
               ],
             }),
             // Panel content
             ...Object.entries({ ...layout, ...paint })
               .filter(([attribute]) => {
+                if (!layers) return true;
                 const match = Object.keys(visibleLayers).find(key => id.match(key));
-                return !layers || visibleLayers[match] === true || visibleLayers[match]?.includes(attribute);
+                return visibleLayers[match] === true || visibleLayers[match]?.includes(attribute);
               })
               .map(([attribute, expression]) => {
                 const [, property] = attribute.split('-');
