@@ -32,6 +32,14 @@ export default class LegendControl {
     this._map = undefined;
   }
 
+  addLayers(layers) {
+    this._options.layers = { ...this._options.layers, ...toObject(layers) };
+  }
+
+  removeLayers(layers) {
+    layers.forEach(layer => delete this._options.layers[layer]);
+  }
+
   _loadLayers() {
     const { collapsed, toggler, layers } = this._options;
     this._map.getStyle().layers
