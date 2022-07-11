@@ -11,8 +11,9 @@ const defaults = {
 
 export default class LegendControl {
   constructor(options) {
+    const { layers, ...rest } = options;
     this._class = 'mapboxgl-ctrl-legend';
-    this._options = { ...defaults, ...options };
+    this._options = { ...defaults, ...rest, layers: toObject(layers) };
     this._loadLayers = this._loadLayers.bind(this);
   }
 
@@ -33,10 +34,9 @@ export default class LegendControl {
 
   _loadLayers() {
     const { collapsed, toggler, layers } = this._options;
-    const visibleLayers = toObject(layers);
     this._map.getStyle().layers
       .filter(({ source }) => source && source !== 'composite')
-      .filter(({ id }) => !layers || Object.keys(visibleLayers).some(key => id.match(key)))
+      .filter(({ id }) => !layers || Object.keys(layers).some(key => id.match(key)))
       .reverse() // Show in order that are drawn on map (first layers at the bottom, last on top)
       .forEach(layer => {
         const { id, layout, paint, metadata } = layer;
@@ -59,8 +59,8 @@ export default class LegendControl {
             ...Object.entries({ ...layout, ...paint })
               .filter(([attribute]) => {
                 if (!layers) return true;
-                const match = Object.keys(visibleLayers).find(key => id.match(key));
-                return visibleLayers[match] === true || visibleLayers[match]?.includes(attribute);
+                const match = Object.keys(layers).find(key => id.match(key));
+                return layers[match] === true || layers[match]?.includes(attribute);
               })
               .map(([attribute, expression]) => {
                 const property = attribute.split('-').slice(-1);
