@@ -8,11 +8,11 @@ describe('Expression utilities', () => {
     expect(ensureArray(['string'])).toEqual(['string']);
   });
 
-  it('should convert an array to an object with key values as true, or return (empty) object', () => {
+  it('should convert an array to an object with key values as true, or return unefined', () => {
     expect(toObject(['one', 'two'])).toEqual({ one: true, two: true });
     expect(toObject([])).toEqual({});
     expect(toObject({ one: true })).toEqual({ one: true });
-    expect(toObject()).toEqual({});
+    expect(toObject()).toEqual(undefined);
   });
 
   it('should rescale a value to new bounds', () => {
