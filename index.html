@@ -32,7 +32,7 @@
         style: 'mapbox://styles/mapbox/light-v10',
         zoom: 12,
         center: [-122.447303, 37.753574],
-        accessToken: '<MAPBOX_TOKEN_HERE>',
+        accessToken: import.meta.env.VITE_MAPBOX_TOKEN,
       });
 
       const legend = new LegendControl({
