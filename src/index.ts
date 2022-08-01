@@ -80,7 +80,7 @@ export default class LegendControl implements IControl {
                 return Array.isArray(viewLayer) ? viewLayer.includes(attribute) : viewLayer;
               })
               .map(([attribute, value]) => {
-                const property = attribute.split('-').at(-1);
+                const [property] = attribute.split('-').slice(-1);
                 const parsed = expression.parse(value as Expression | string | number);
                 const component = components[property as Component];
                 return parsed && component?.(parsed, layer, this._map) || undefined;
