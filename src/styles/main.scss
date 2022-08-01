@@ -43,6 +43,7 @@
       color: inherit;
       margin-left: auto;
       width: var(--map-legend-title-size);
+      flex: 0 0 var(--map-legend-title-size);
       height: var(--map-legend-title-size);
       background-color: currentcolor;
       mask-image: var(--toggler-hidden-icon);

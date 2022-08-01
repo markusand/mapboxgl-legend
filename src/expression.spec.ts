@@ -1,13 +1,11 @@
-/* eslint-disable import/no-unresolved */
 import { describe, it, expect } from 'vitest';
-import Expression from './expression';
+import type { Expression } from 'mapbox-gl';
+import expression from './expression';
 
-const expressions = {
-  INTERPOLATE: ['interpolate', ['linear'], ['get', 'attribute'], 0, '#f00', 1, '#0f0', 2, '#00f'],
-  MATCH: ['match', ['get', 'attribute'], 0, '#f00', 1, '#0f0', 2, '#00f', '#aaa'],
-  STEP: ['step', ['get', 'attribute'], '#aaa', 0, '#f00', 1, '#0f0', 2, '#00f'],
-  UNCOMPATIBLE: ['uncompatible', 'whatever'],
-};
+const INTERPOLATE: Expression = ['interpolate', ['linear'], ['get', 'attribute'], 0, '#f00', 1, '#0f0', 2, '#00f'];
+const MATCH: Expression = ['match', ['get', 'attribute'], 0, '#f00', 1, '#0f0', 2, '#00f', '#aaa'];
+const STEP: Expression = ['step', ['get', 'attribute'], '#aaa', 0, '#f00', 1, '#0f0', 2, '#00f'];
+const INCOMPATIBLE = ['other', 'whatever'];
 
 describe('Expressions', () => {
   /*
@@ -16,16 +14,16 @@ describe('Expressions', () => {
   naming the operator. Elements that follow (if any) are the arguments.
   */
   it('should validate expressions against formal definition', () => {
-    expect(Expression.isExpression('string')).toBeFalsy();
-    expect(Expression.isExpression(expressions.INTERPOLATE)).toBeTruthy();
+    expect(expression.isExpression('string')).toBeFalsy();
+    expect(expression.isExpression(INTERPOLATE)).toBeTruthy();
   });
 
   it('should return null if uncompatible expression', () => {
-    expect(Expression.parse(expressions.UNCOMPATIBLE)).toBeNull();
+    expect(expression.parse(INCOMPATIBLE as Expression)).toBeNull();
   });
 
   it('should return a parsed expression', () => {
-    const parsed = Expression.parse('#f00');
+    const parsed = expression.parse('#f00');
     expect(parsed).toHaveProperty('name');
     expect(parsed).toHaveProperty('stops');
     expect(parsed).toHaveProperty('inputs');
@@ -35,7 +33,7 @@ describe('Expressions', () => {
   });
 
   it('should parse a literal expression', () => {
-    expect(Expression.parse('#f00')).toEqual({
+    expect(expression.parse('#f00')).toEqual({
       name: 'literal',
       stops: [['#f00', '#f00']],
       inputs: ['#f00'],
@@ -46,7 +44,7 @@ describe('Expressions', () => {
   });
 
   it('should parse an interpolation expression', () => {
-    expect(Expression.parse(expressions.INTERPOLATE)).toEqual({
+    expect(expression.parse(INTERPOLATE)).toEqual({
       name: 'interpolate',
       stops: [[0, '#f00'], [1, '#0f0'], [2, '#00f']],
       inputs: [0, 1, 2],
@@ -57,7 +55,7 @@ describe('Expressions', () => {
   });
 
   it('should parse a match expression', () => {
-    expect(Expression.parse(expressions.MATCH)).toEqual({
+    expect(expression.parse(MATCH)).toEqual({
       name: 'match',
       stops: [[0, '#f00'], [1, '#0f0'], [2, '#00f'], [null, '#aaa']],
       inputs: [0, 1, 2, null],
@@ -68,7 +66,7 @@ describe('Expressions', () => {
   });
 
   it('should parse a step expression', () => {
-    expect(Expression.parse(expressions.STEP)).toEqual({
+    expect(expression.parse(STEP)).toEqual({
       name: 'step',
       stops: [[[0, 1], '#f00'], [[1, 2], '#0f0'], [[2, null], '#00f'], [null, '#aaa']],
       inputs: [[0, 1], [1, 2], [2, null], null],
