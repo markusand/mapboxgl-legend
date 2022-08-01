@@ -67,9 +67,10 @@ export default class LegendControl implements IControl {
         const { id, layout, paint, metadata } = layer as Layer;
         const selector = `mapboxgl-ctrl-legend-pane--${id}`;
         const prevPane = document.querySelector(`.${selector}`);
+        const open = prevPane ? prevPane.getAttribute('open') !== null : !collapsed;
         const pane = createElement('details', {
           classes: ['mapboxgl-ctrl-legend-pane', selector],
-          attributes: { open: prevPane?.getAttribute('open') ?? !collapsed },
+          attributes: { open },
           content: [
             createElement('summary', { content: [metadata?.name || id, this._toggleButton(id)] }),
             ...Object.entries({ ...layout, ...paint })
@@ -97,7 +98,8 @@ export default class LegendControl implements IControl {
     const button = createElement('div', {
       classes: ['toggler', `toggler--${visibility}`],
     });
-    button.addEventListener('click', () => {
+    button.addEventListener('click', event => {
+      event.preventDefault();
       const visible = visibility === 'none' ? 'visible' : 'none';
       this._map?.setLayoutProperty(layerId, 'visibility', visible);
     });
