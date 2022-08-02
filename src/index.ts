@@ -35,31 +35,33 @@ export default class LegendControl implements IControl {
       classes: ['mapboxgl-ctrl', 'mapboxgl-ctrl-legend'],
     });
     this._options = { ...defaults, ...rest, layers: toObject(layers) };
-    this._loadLayers = this._loadLayers.bind(this);
+    this._loadPanels = this._loadPanels.bind(this);
   }
 
   onAdd(map: Map) {
     this._map = map;
-    this._map.on('styledata', this._loadLayers);
+    this._map.on('styledata', this._loadPanels);
     return this._container;
   }
 
   onRemove() {
     this._container.parentNode?.removeChild(this._container);
-    this._map?.off('styledata', this._loadLayers);
+    this._map?.off('styledata', this._loadPanels);
   }
 
   addLayers(layers: LayersView) {
     this._options.layers = { ...this._options.layers, ...toObject(layers) };
+    if (this._map.isStyleLoaded()) this._loadPanels();
   }
 
   removeLayers(layers: string[]) {
     layers.forEach(layer => delete this._options.layers?.[layer]);
+    if (this._map.isStyleLoaded()) this._loadPanels();
   }
 
-  _loadLayers() {
+  _loadPanels() {
     const { collapsed, layers } = this._options;
-    this._map?.getStyle().layers
+    this._map.getStyle().layers
       .filter(layer => (layer as Layer).source && (layer as Layer).source !== 'composite')
       .filter(({ id }) => !layers || Object.keys(layers).some(key => id.match(key)))
       .reverse() // Show in order that are drawn on map (first layers at the bottom, last on top)
