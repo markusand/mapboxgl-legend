@@ -20,13 +20,13 @@ const defaults: LegendControlOptions = {
 };
 
 export default class LegendControl implements IControl {
-  _options: {
+  private _options: {
     layers?: Record<string, boolean | string[]>;
   } & Omit<LegendControlOptions, 'layers'>;
   
-  _container: HTMLElement;
+  private _container: HTMLElement;
   
-  _map!: Map;
+  private _map!: Map;
 
   constructor(options: LegendControlOptions = {}) {
     const { layers, ...rest } = options;
@@ -58,7 +58,7 @@ export default class LegendControl implements IControl {
     if (this._map.isStyleLoaded()) this._loadPanels();
   }
 
-  _isAttributeVisible(layerId: string, attribute: string) {
+  private _isAttributeVisible(layerId: string, attribute: string) {
     const { layers } = this._options;
     if (!layers) return true;
     const key = Object.keys(layers).find(regex => layerId.match(regex));
@@ -66,7 +66,7 @@ export default class LegendControl implements IControl {
     return Array.isArray(layer) ? layer.includes(attribute) : layer;
   }
 
-  _getBlock(layer: Layer, attribute: string, value: any) {
+  private _getBlock(layer: Layer, attribute: string, value: any) {
     const [property] = attribute.split('-').slice(-1);
     const component = components[property as keyof typeof components];
     if (!component) return;
@@ -74,7 +74,7 @@ export default class LegendControl implements IControl {
     return parsed && component(parsed, layer, this._map);
   }
 
-  _toggleButton(layerId: string) {
+  private _toggleButton(layerId: string) {
     if (!this._options.toggler) return undefined;
     const visibility = this._map?.getLayoutProperty(layerId, 'visibility') || 'visible';
     const button = createElement('div', { classes: ['toggler', `toggler--${visibility}`] });
@@ -86,7 +86,7 @@ export default class LegendControl implements IControl {
     return button;
   }
 
-  _loadPanels() {
+  private _loadPanels() {
     const { collapsed, layers } = this._options;
     this._map.getStyle().layers
       .filter(layer => (layer as Layer).source && (layer as Layer).source !== 'composite')
