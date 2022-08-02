@@ -53,9 +53,12 @@ export default class LegendControl implements IControl {
     if (this._map.isStyleLoaded()) this._loadPanels();
   }
 
-  removeLayers(layers: string[]) {
-    layers.forEach(layer => delete this._options.layers?.[layer]);
-    if (this._map.isStyleLoaded()) this._loadPanels();
+  removeLayers(layerIds: string[]) {
+    layerIds.forEach(id => {
+      delete this._options.layers?.[id];
+      const pane = document.querySelector(`.mapboxgl-ctrl-legend-pane--${id}`);
+      if (pane) this._container.removeChild(pane);
+    });
   }
 
   private _isAttributeVisible(layerId: string, attribute: string) {

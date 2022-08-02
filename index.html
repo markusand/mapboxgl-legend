@@ -49,7 +49,11 @@
       });
 
       map.addControl(legend, 'bottom-left');
-      legend.addLayers(['muni-routes']);
+      
+      setTimeout(() => {
+        legend.addLayers(['muni-routes']);
+        setTimeout(() => legend.removeLayers(['muni-routes']), 5000);
+      }, 5000);
 
       map.on('load', () => {
 
