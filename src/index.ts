@@ -34,23 +34,23 @@ export default class LegendControl implements IControl {
       classes: ['mapboxgl-ctrl', 'mapboxgl-ctrl-legend'],
     });
     this._options = { ...defaults, ...rest, layers: toObject(layers) };
-    this._loadPanels = this._loadPanels.bind(this);
+    this._loadPanes = this._loadPanes.bind(this);
   }
 
   onAdd(map: Map) {
     this._map = map;
-    this._map.on('styledata', this._loadPanels);
+    this._map.on('styledata', this._loadPanes);
     return this._container;
   }
 
   onRemove() {
     this._container.parentNode?.removeChild(this._container);
-    this._map?.off('styledata', this._loadPanels);
+    this._map?.off('styledata', this._loadPanes);
   }
 
   addLayers(layers: LayersView) {
     this._options.layers = { ...this._options.layers, ...toObject(layers) };
-    if (this._map.isStyleLoaded()) this._loadPanels();
+    if (this._map.isStyleLoaded()) this._loadPanes();
   }
 
   removeLayers(layerIds: string[]) {
@@ -89,7 +89,7 @@ export default class LegendControl implements IControl {
     return button;
   }
 
-  private _loadPanels() {
+  private _loadPanes() {
     const { collapsed, layers } = this._options;
     this._map.getStyle().layers
       .filter(layer => (layer as Layer).source && (layer as Layer).source !== 'composite')
