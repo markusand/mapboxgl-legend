@@ -74,6 +74,18 @@ export default class LegendControl implements IControl {
     return parsed && component(parsed, layer, this._map);
   }
 
+  _toggleButton(layerId: string) {
+    if (!this._options.toggler) return undefined;
+    const visibility = this._map?.getLayoutProperty(layerId, 'visibility') || 'visible';
+    const button = createElement('div', { classes: ['toggler', `toggler--${visibility}`] });
+    button.addEventListener('click', event => {
+      event.preventDefault();
+      const visible = visibility === 'none' ? 'visible' : 'none';
+      this._map?.setLayoutProperty(layerId, 'visibility', visible);
+    });
+    return button;
+  }
+
   _loadPanels() {
     const { collapsed, layers } = this._options;
     this._map.getStyle().layers
@@ -107,19 +119,5 @@ export default class LegendControl implements IControl {
         if (prevPane) this._container.replaceChild(pane, prevPane);
         else this._container.appendChild(pane);
       });
-  }
-
-  _toggleButton(layerId: string) {
-    if (!this._options.toggler) return undefined;
-    const visibility = this._map?.getLayoutProperty(layerId, 'visibility') || 'visible';
-    const button = createElement('div', {
-      classes: ['toggler', `toggler--${visibility}`],
-    });
-    button.addEventListener('click', event => {
-      event.preventDefault();
-      const visible = visibility === 'none' ? 'visible' : 'none';
-      this._map?.setLayoutProperty(layerId, 'visibility', visible);
-    });
-    return button;
   }
 }
