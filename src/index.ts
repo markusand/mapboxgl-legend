@@ -1,11 +1,10 @@
 import './styles/main.scss';
 import { IControl } from 'mapbox-gl';
-import type { Map, Layer, Expression } from 'mapbox-gl';
+import type { Map, Layer } from 'mapbox-gl';
 import components from './components';
 import expression from './expression';
 import { createElement, toObject } from './utils';
 
-type Component = keyof typeof components;
 type LayersView = string[] | Record<string, boolean | string[]>;
 
 type LegendControlOptions = {
@@ -59,6 +58,22 @@ export default class LegendControl implements IControl {
     if (this._map.isStyleLoaded()) this._loadPanels();
   }
 
+  _isAttributeVisible(layerId: string, attribute: string) {
+    const { layers } = this._options;
+    if (!layers) return true;
+    const key = Object.keys(layers).find(regex => layerId.match(regex));
+    const layer = !!key && layers[key];
+    return Array.isArray(layer) ? layer.includes(attribute) : layer;
+  }
+
+  _getBlock(layer: Layer, attribute: string, value: any) {
+    const [property] = attribute.split('-').slice(-1);
+    const component = components[property as keyof typeof components];
+    if (!component) return;
+    const parsed = expression.parse(value);
+    return parsed && component(parsed, layer, this._map);
+  }
+
   _loadPanels() {
     const { collapsed, layers } = this._options;
     this._map.getStyle().layers
@@ -67,26 +82,26 @@ export default class LegendControl implements IControl {
       .reverse() // Show in order that are drawn on map (first layers at the bottom, last on top)
       .forEach(layer => {
         const { id, layout, paint, metadata } = layer as Layer;
+
+        // Construct all required blocks, break if none
+        const paneBlocks = Object.entries({ ...layout, ...paint })
+          .reduce((acc, [attribute, value]) => {
+            if (!this._isAttributeVisible(id, attribute)) return acc;
+            const block = this._getBlock(layer, attribute, value);
+            if (block) acc.push(block);
+            return acc;
+          }, [] as HTMLElement[]);
+        if (!paneBlocks.length) return;
+
+        // (re)Construct pane and replace (if already exist)
         const selector = `mapboxgl-ctrl-legend-pane--${id}`;
         const prevPane = document.querySelector(`.${selector}`);
-        const open = prevPane ? prevPane.getAttribute('open') !== null : !collapsed;
         const pane = createElement('details', {
           classes: ['mapboxgl-ctrl-legend-pane', selector],
-          attributes: { open },
+          attributes: { open: prevPane ? prevPane.getAttribute('open') !== null : !collapsed },
           content: [
             createElement('summary', { content: [metadata?.name || id, this._toggleButton(id)] }),
-            ...Object.entries({ ...layout, ...paint })
-              .filter(([attribute]) => {
-                if (!layers) return true;
-                const viewLayer = layers[Object.keys(layers).find(regex => id.match(regex)) || ''];
-                return Array.isArray(viewLayer) ? viewLayer.includes(attribute) : viewLayer;
-              })
-              .map(([attribute, value]) => {
-                const [property] = attribute.split('-').slice(-1);
-                const parsed = expression.parse(value as Expression | string | number);
-                const component = components[property as Component];
-                return parsed && component?.(parsed, layer, this._map) || undefined;
-              }),
+            ...paneBlocks,
           ],
         });
         if (prevPane) this._container.replaceChild(pane, prevPane);

@@ -23,7 +23,7 @@ export type ParsedExpression<In, Out> = {
   max: number;
 };
 
-const parse = (input: Expression | number | string): ParsedExpression<any, any> | null => {
+const parse = (input: any): ParsedExpression<any, any> | null => {
   const [name, ...args] = isExpression(input)
     ? input as Expression
     : ['literal' as ExpressionName, input];
