@@ -23,21 +23,33 @@
 
   <body>
     <div id="map"></div>
-    <script type="module">
+    <script type="module" lang="ts">
+      import { Map } from 'mapbox-gl';
       import LegendControl from './src';
 
-      mapboxgl.accessToken = '<< YOUR MAPBOX TOKEN HERE >>';
-      const map = new mapboxgl.Map({
+      const map = new Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/light-v10',
         zoom: 12,
-        center: [-122.447303, 37.753574]
+        center: [-122.447303, 37.753574],
+        accessToken: import.meta.env.VITE_MAPBOX_TOKEN,
       });
 
-      map.addControl(new LegendControl({
+      const legend = new LegendControl({
         collapsed: false,
         toggler: true,
-      }), 'bottom-left');
+        // layers: ['facilities', 'life-expectancy'],
+        layers: {
+          'life-expectancy': true,
+          'facilities': true,
+          'ethnicity': true,
+          'fire-events': true,
+          // 'fire-events': ['circle-radius'],
+        },
+      });
+
+      map.addControl(legend, 'bottom-left');
+      legend.addLayers(['muni-routes']);
 
       map.on('load', () => {
 
@@ -50,7 +62,7 @@
 
         map.addSource('fireevents', {
           type: 'geojson',
-          data: 'https://data.sfgov.org/resource/wr8u-xric.geojson'
+          data: 'https://data.sfgov.org/resource/wr8u-xric.geojson',
         });
 
         map.addSource('facilities', {
@@ -71,9 +83,9 @@
               'Black', '#443722',
               'Hispanic', '#aa9761',
               'Asian', '#e8e59d',
-              '#ccc'
+              '#ccc',
             ],
-          }
+          },
         });
 
         map.addLayer({
@@ -102,7 +114,7 @@
           metadata: {
             name: 'Fire events',
             unit: 'k',
-          }
+          },
         });
 
         const lifeExpectancy = [
@@ -126,11 +138,11 @@
           metadata: {
             name: 'Life expectancy',
             unit: 'y',
-          }
+          },
         });
 
         map.addLayer({
-          id: 'symbols',
+          id: 'facilities',
           source: 'facilities',
           type: 'symbol',
           layout: {
@@ -146,7 +158,7 @@
               'Municipal Transportation Agency', 'bus',
               'Port', 'ferry',
               'marker-11',
-            ]
+            ],
           },
           metadata: {
             name: 'Facilities',
@@ -156,8 +168,30 @@
               'Police Department': 'Police Station',
               'Airport (Sfo)': 'Airport',
               'Municipal Transportation Agency': 'Transportation',
-            }
-          }
+            },
+          },
+        });
+
+        map.addSource('muni-routes', {
+          type: 'geojson',
+          data: 'https://data.sfgov.org/api/geospatial/9exe-acju?method=export&format=GeoJSON',
+        });
+
+        map.addLayer({
+          id: 'muni-routes',
+          type: 'line',
+          source: 'muni-routes',
+          paint: {
+            'line-color': [
+              'match', ['get', 'service_ca'],
+              'Rapid Bus', '#f94144',
+              'Frequent', '#ffd166',
+              'Connector', '#43aa8b',
+              'Specialized', '#26547c',
+              '#aaa',
+            ],
+            'line-width': 2,
+          },
         });
 
       });

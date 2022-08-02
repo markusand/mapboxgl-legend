@@ -3,8 +3,9 @@
   font-size: var(--map-legend-label-size);
   color: var(--map-legend-label-color);
   margin:
-    var(--map-legend-margin)
-    calc(1.5 * var(--map-legend-margin));
+    calc(2 * var(--map-legend-margin))
+    calc(1.5 * var(--map-legend-margin))
+    var(--map-legend-margin);
 
   li {
     left: 50%;

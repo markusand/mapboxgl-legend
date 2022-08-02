@@ -37,14 +37,12 @@ describe('Expression utilities', () => {
   });
 
   it('should create bins of range values', () => {
-    const stops = [[0, 'a'], [1, 'b'], [2, 'c'], [3, 'd'], [4, 'e'], [null, 'f']];
+    const stops = [[0, 'a'], [1, 'b'], [2, 'c'], [null, 'd']] as [number | null, string][];
     expect(toBins(stops)).toEqual([
       [[0, 1], 'a'],
       [[1, 2], 'b'],
-      [[2, 3], 'c'],
-      [[3, 4], 'd'],
-      [[4, null], 'e'],
-      [null, 'f'],
+      [[2, null], 'c'],
+      [null, 'd'],
     ]);
   });
 });
@@ -72,10 +70,10 @@ describe('DOM utilities', () => {
       ],
     });
     expect(element.childElementCount).toBe(2);
-    expect(element.firstElementChild.tagName).toBe('SPAN');
-    expect(element.firstElementChild.textContent).toBe('Hello');
-    expect(element.lastElementChild.tagName).toBe('SPAN');
-    expect(element.lastElementChild.textContent).toBe('World');
+    expect(element.firstElementChild?.tagName).toBe('SPAN');
+    expect(element.firstElementChild?.textContent).toBe('Hello');
+    expect(element.lastElementChild?.tagName).toBe('SPAN');
+    expect(element.lastElementChild?.textContent).toBe('World');
   });
 
   it('should append created elementselements', () => {

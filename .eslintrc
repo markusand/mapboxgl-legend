@@ -1,15 +1,20 @@
 {
+  "root": true,
   "extends": [
-    "airbnb-base",
-    "eslint:recommended"
+    "eslint:recommended",
+    "airbnb-typescript/base",
+    "plugin:import/recommended",
+    "plugin:import/typescript"
   ],
   "env": {
     "browser": true,
     "es6": true
   },
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaVersion": 2020
+    "project": "./tsconfig.json"
   },
+  "plugins": ["@typescript-eslint"],
   "rules": {
     "max-len": ["error", {
       "code": 100,
@@ -29,14 +34,10 @@
     "no-nested-ternary": "off",
     "no-underscore-dangle": "off",
     "import/no-absolute-path": "off",
-    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
-  },
-  "settings": {
-    "import/resolver": {
-      "alias": {
-        "map": [["/@", "./src"]],
-        "extensions": [".js", ".json", "scss"]
-      }
-    }
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+    "import/extensions": ["error", "ignorePackages", {
+      "js": "never",
+      "ts": "never"
+    }]
   }
 }
