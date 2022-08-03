@@ -5,9 +5,9 @@ import components from './components';
 import expression from './expression';
 import { createElement, toObject } from './utils';
 
-type LayersView = string[] | Record<string, boolean | string[]>;
+export type LayersView = string[] | Record<string, boolean | string[]>;
 
-type LegendControlOptions = {
+export type LegendControlOptions = {
   collapsed?: boolean;
   toggler?: boolean;
   layers?: LayersView;
