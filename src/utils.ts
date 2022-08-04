@@ -38,7 +38,7 @@ export const createElement = (
     classes?: string | string[];
     styles?: Record<string, string>;
     attributes?: Record<string, string | number | boolean | null>;
-    content?: string | HTMLElement | (string | HTMLElement | undefined)[];
+    content?: string | HTMLElement | false | (string | HTMLElement | undefined | false)[];
     appendTo?: HTMLElement;
   } = {},
 ) => {
@@ -58,7 +58,7 @@ export const createElement = (
 type Metadata = {
   name?: string;
   unit?: string;
-  labels?: Record<string, string>;
+  labels?: Record<string, string | false>;
 };
 
 export const serializeLabel = <T>(value: T | T[], metadata?: Metadata) => {
@@ -68,6 +68,6 @@ export const serializeLabel = <T>(value: T | T[], metadata?: Metadata) => {
       ? value.map(v => labels[`${v}`] || `${v}${unit}`).join(' - ')
       : `+${labels[`${value[0]}`] || `${value[0]}${unit}`}`
     : value !== null
-      ? labels[`${value}`] || `${value}${unit}`
-      : labels.other || 'other';
+      ? labels[`${value}`] ?? `${value}${unit}`
+      : labels.other ?? 'other';
 };

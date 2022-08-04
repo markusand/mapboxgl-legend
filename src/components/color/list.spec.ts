@@ -78,4 +78,19 @@ describe('Color list panel', () => {
     expect(last?.getAttribute('style')).toBe('--color: #00f;');
     expect(last?.textContent).toBe('alt');
   });
+
+  it('should hide an item with label set to false', () => {
+    const expression: ParsedExpression<number, Color> = {
+      name: 'match',
+      stops: [[1, '#f00'], [2, '#0f0'], [3, '#00f']],
+      inputs: [1, 2, 3],
+      outputs: ['#f00', '#0f0', '#00f'],
+      min: 1,
+      max: 3,
+    };
+    const metadata = { labels: { 2: false } };
+    const el = list(expression, { id: '_', type: '_', metadata });
+
+    expect(el.childElementCount).toBe(2);
+  });
 });

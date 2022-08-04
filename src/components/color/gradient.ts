@@ -13,10 +13,13 @@ export default (expression: Expression, layer: Layer) => {
     content: [
       createElement('p', {
         classes: 'labels',
-        content: inputs.map(input => createElement('span', {
-          styles: { left: `${map(input, min, max)}%` },
-          content: serializeLabel(input, layer.metadata),
-        })),
+        content: inputs.map(input => {
+          const content = serializeLabel(input, layer.metadata);
+          return content && createElement('span', {
+            styles: { left: `${map(input, min, max)}%` },
+            content,
+          });
+        }),
       }),
       createElement('div', {
         classes: 'bar',

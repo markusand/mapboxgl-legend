@@ -9,6 +9,8 @@ export default (expression: Expression, layer: Layer, map: Map) => {
   return createElement('ul', {
     classes: ['list', 'list--icons'],
     content: stops.map(([value, image]) => {
+      const label = serializeLabel(value, layer.metadata);
+      if (!label) return undefined;
       // @ts-ignore Map does have an attribute style, but @types/mapbox-gl does not support it
       const { height, width, data } = map.style.getImage(image)?.data || {};
       if (!height || !width || !data) return undefined;
@@ -25,7 +27,7 @@ export default (expression: Expression, layer: Layer, map: Map) => {
             classes: ['icon'],
             attributes: { src: canvas.toDataURL() },
           }),
-          serializeLabel(value, layer.metadata),
+          label,
         ],
       });
     }),

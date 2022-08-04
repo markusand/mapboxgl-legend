@@ -27,4 +27,18 @@ describe('Color gradient panel', () => {
     expect(bar?.classList.contains('bar')).toBeTruthy();
     // Cannot check background.image ¿?
   });
+
+  it('should hide an item with label set to false', () => {
+    const expression: ParsedExpression<number, Color> = {
+      name: 'interpolate',
+      stops: [[1, '#f00'], [2, '#0f0'], [3, '#00f']],
+      inputs: [1, 2, 3],
+      outputs: ['#f00', '#0f0', '#00f'],
+      min: 1,
+      max: 3,
+    };
+    const metadata = { labels: { 2: false } };
+    const el = gradient(expression, { id: '_', type: '_', metadata });
+    expect(el.firstElementChild?.childElementCount).toBe(2);
+  });
 });

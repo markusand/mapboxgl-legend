@@ -102,6 +102,8 @@ There are also a few options that be defined as a per-layer basis using the styl
 | unit | String | Add a unit to all labels |
 | labels | Object | Map a value to a text that replaces it as a label |
 
+Metadata provides an extra layer of control by hiding items that have a label set to `false`, except on step expressions.
+
 ```javascript
 map.addLayer({
   id: 'density',
@@ -114,6 +116,7 @@ map.addLayer({
     labels: {
       10: 'Custom label for value 10',
       other: '< 1k/km²',
+      an_item_to_hide: false,
     }
   }
 });
