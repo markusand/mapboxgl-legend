@@ -97,6 +97,8 @@ describe('Labels', () => {
     expect(serializeLabel([1, 2])).toBe('1 - 2');
     expect(serializeLabel([1, 2], { labels: { 1: 'one', 2: 'two' } })).toBe('one - two');
     expect(serializeLabel([1, null])).toBe('+1');
+    expect(serializeLabel([0, 1], { labels: { '0,1': 'label' } })).toBe('label');
+    expect(serializeLabel([2, null], { labels: { '2,': 'label' } })).toBe('label');
   });
 
   it('should serialize the OTHER label', () => {

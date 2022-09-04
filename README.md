@@ -122,6 +122,17 @@ map.addLayer({
 });
 ```
 
+For pairs labels, such as in `step` expressions, it is possible to labelize by using the serialized array of steps as a key
+
+```javascript
+matadata: {
+  labels: {
+    '0,10': 'Group A',
+    '10,20': 'Group B',
+  },
+}
+```
+
 ## Handle layers
 
 Layers can be added or removed from legend at any moment by using `legend.addLayers()` with same format as `layers` option and `legend.removeLayers([layerIds])`.
