@@ -64,7 +64,7 @@ type Metadata = {
 export const serializeLabel = <T>(value: T | T[], metadata?: Metadata) => {
   const { labels = {}, unit = '' } = metadata || {};
   return Array.isArray(value)
-    ? labels[`${value}`] || (
+    ? labels[`${value}`] ?? (
       value[1] !== null
         ? value.map(v => labels[`${v}`] || `${v}${unit}`).join(' - ')
         : `+${labels[`${value[0]}`] || `${value[0]}${unit}`}`
