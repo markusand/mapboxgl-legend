@@ -129,3 +129,13 @@ Layers can be added or removed from legend at any moment by using `legend.addLay
 ## Styles
 
 Legend defaults to a simple design inspired by standard mapbox-gl controls, but can be tunned by changing CSS variables. Check default values in `/src/styles/_variables.scss`
+
+## Development
+
+Create a `.env` file and set your Mapbox token as `VITE_MAPBOX_TOKEN`.
+
+Run the development server with the command
+
+```bash
+npm run dev
+```
