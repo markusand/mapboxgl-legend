@@ -33,7 +33,7 @@ Add legend control to map
 
 ```javascript
 import LegendControl from 'mapboxgl-legend';
-import 'mapboxgl-legend/dist/index.min.css';
+import 'mapboxgl-legend/dist/style.css';
 
 const legend = new LegendControl();
 map.addControl(legend, 'bottom-left');
