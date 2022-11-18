@@ -44,6 +44,7 @@
           'facilities': true,
           'ethnicity': true,
           'fire-events': true,
+          'patterns': true,
           // 'fire-events': ['circle-radius'],
         },
       });
@@ -197,6 +198,24 @@
             'line-width': 2,
           },
         });
+
+        map.loadImage(
+          './assets/pattern.stripe.png',
+          (error, image) => {
+            if (error) throw error;
+
+            map.addImage('honeycomb', image);
+
+            map.addLayer({
+              id: 'patterns',
+              type: 'fill',
+              source: 'neighborhoods',
+              paint: {
+                'fill-pattern': 'honeycomb'
+              },
+            })
+          }
+        );
 
       });
     </script>

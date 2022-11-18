@@ -13,6 +13,7 @@ Properties currently supported:
 - `*-color`
 - `*-radius`
 - `*-image`
+- `*-pattern`
 
 Expressions currently supported:
 
