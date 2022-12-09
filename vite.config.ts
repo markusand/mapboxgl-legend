@@ -1,6 +1,7 @@
 import path from 'path';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
+import autoprefixer from 'autoprefixer';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -12,6 +13,11 @@ export default defineConfig({
   plugins: [
     dts({ insertTypesEntry: true }),
   ],
+  css: {
+    postcss: {
+      plugins: [autoprefixer()],
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',
