@@ -13,7 +13,7 @@ const stopper: Record<string, Stopper> = {
   literal: <T>(args: T[]) => [[...args, ...args]] as [T, T][],
 };
 
-const isExpression = (e: any) => Array.isArray(e) && !!e.length && typeof e[0] === 'string';
+const isExpression = (e: any): e is Expression => Array.isArray(e) && !!e.length && typeof e[0] === 'string';
 
 export type ParsedExpression<In, Out> = {
   name: ExpressionName;
@@ -26,7 +26,7 @@ export type ParsedExpression<In, Out> = {
 
 const parse = (input: any): ParsedExpression<any, any> | null => {
   const [name, ...args] = isExpression(input)
-    ? input as Expression
+    ? input
     : ['literal' as ExpressionName, input];
   const stops = stopper[name]?.(args);
   if (!stops) return null;
