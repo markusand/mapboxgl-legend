@@ -110,7 +110,7 @@ export default class LegendControl implements IControl {
 
         // (re)Construct pane and replace (if already exist)
         const selector = `mapboxgl-ctrl-legend-pane--${id}`;
-        const prevPane = document.querySelector(`.${selector}`);
+        const prevPane = this._container.querySelector(`.${selector}`);
         const pane = createElement('details', {
           classes: ['mapboxgl-ctrl-legend-pane', selector],
           attributes: { open: prevPane ? prevPane.getAttribute('open') !== null : !collapsed },
