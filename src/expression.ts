@@ -10,7 +10,7 @@ const stopper: Record<string, Stopper> = {
   interpolate: args => extract(args, 2),
   match: args => extract(args, 1).map(toPair),
   step: args => toBins([[null, args[1]], ...extract(args, 2)]),
-  literal: <T>(args: T[]) => [[...args, ...args]] as [T, T][],
+  literal: args => [[args, args]] as any,
 };
 
 const isExpression = (e: any): e is Expression => Array.isArray(e) && !!e.length && typeof e[0] === 'string';
