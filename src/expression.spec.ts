@@ -68,9 +68,9 @@ describe('Expressions', () => {
   it('should parse a step expression', () => {
     expect(expression.parse(STEP)).toEqual({
       name: 'step',
-      stops: [[[0, 1], '#f00'], [[1, 2], '#0f0'], [[2, null], '#00f'], [null, '#aaa']],
-      inputs: [[0, 1], [1, 2], [2, null], null],
-      outputs: ['#f00', '#0f0', '#00f', '#aaa'],
+      stops: [[[null, 0], '#aaa'], [[0, 1], '#f00'], [[1, 2], '#0f0'], [[2, null], '#00f']],
+      inputs: [[null, 0], [0, 1], [1, 2], [2, null]],
+      outputs: ['#aaa', '#f00', '#0f0', '#00f'],
       min: 0,
       max: 2,
     });

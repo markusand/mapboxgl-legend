@@ -1,14 +1,15 @@
 import type { Expression, ExpressionName } from 'mapbox-gl';
 import { chunk, zip, toPair, toBins } from './utils';
 
-type Stopper = <T>(args: T[]) => [T | null, T][];
+type Input<T> = T | null | [Input<T>, Input<T>];
+type Stopper = <T>(args: T[]) => [Input<T>, T][];
 
 const extract = <T>(args: T[], pos: number) => chunk(args.slice(pos), 2) as [T, T][];
 
 const stopper: Record<string, Stopper> = {
   interpolate: args => extract(args, 2),
   match: args => extract(args, 1).map(toPair),
-  step: <T>(args: T[]) => toBins([...extract(args, 2), [null, args[1]]]) as [T | null, T][],
+  step: args => toBins([[null, args[1]], ...extract(args, 2)]),
   literal: <T>(args: T[]) => [[...args, ...args]] as [T, T][],
 };
 

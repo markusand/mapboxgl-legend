@@ -37,12 +37,11 @@ describe('Expression utilities', () => {
   });
 
   it('should create bins of range values', () => {
-    const stops = [[0, 'a'], [1, 'b'], [2, 'c'], [null, 'd']] as [number | null, string][];
+    const stops = [[0, 'a'], [1, 'b'], [2, 'c']] as [number | null, string][];
     expect(toBins(stops)).toEqual([
       [[0, 1], 'a'],
       [[1, 2], 'b'],
       [[2, null], 'c'],
-      [null, 'd'],
     ]);
   });
 });
@@ -96,8 +95,10 @@ describe('Labels', () => {
   it('should serialize a range label', () => {
     expect(serializeLabel([1, 2])).toBe('1 - 2');
     expect(serializeLabel([1, 2], { labels: { 1: 'one', 2: 'two' } })).toBe('one - two');
-    expect(serializeLabel([1, null])).toBe('+1');
+    expect(serializeLabel([null, 1])).toBe('< 1');
+    expect(serializeLabel([1, null])).toBe('> 1');
     expect(serializeLabel([0, 1], { labels: { '0,1': 'label' } })).toBe('label');
+    expect(serializeLabel([null, 1], { labels: { ',1': 'label' } })).toBe('label');
     expect(serializeLabel([2, null], { labels: { '2,': 'label' } })).toBe('label');
     expect(serializeLabel([1, 2], { labels: { '1,2': false } })).toBe(false);
   });

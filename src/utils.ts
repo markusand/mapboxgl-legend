@@ -23,13 +23,12 @@ export const toPair = <T>(stop: [T] | [T, T]): [T | null, T] => (
   (stop.length === 2 ? stop : [null, ...stop])
 );
 
-export const toBins = <T, K>(stops: [T, K][]): [T | [T, T], K][] => {
-  const other = stops.find(([input]) => input === null);
+export const toBins = <T, K>(stops: [T, K][]): [[T | null, T | null], K][] => {
   return stops.reduce((acc, [low, out], i) => {
-    if (i === stops.length - 1) acc.push([low, out]);
-    else if (out !== other?.[1]) acc.push([[low, stops[i + 1][0]], out]);
+    if (i === stops.length - 1) acc.push([[low, null], out]);
+    else acc.push([[low, stops[i + 1][0]], out]);
     return acc;
-  }, [] as [T | [T, T], K][]);
+  }, [] as [[T | null, T | null], K][]);
 };
 
 export const createElement = (
@@ -65,9 +64,11 @@ export const serializeLabel = <T>(value: T | T[], metadata?: Metadata) => {
   const { labels = {}, unit = '' } = metadata || {};
   return Array.isArray(value)
     ? labels[`${value}`] ?? (
-      value[1] !== null
-        ? value.map(v => labels[`${v}`] || `${v}${unit}`).join(' - ')
-        : `+${labels[`${value[0]}`] || `${value[0]}${unit}`}`
+      value[0] === null
+        ? `< ${labels[`${value[1]}`] || `${value[1]}${unit}`}`
+        : value[1] === null
+          ? `> ${labels[`${value[0]}`] || `${value[0]}${unit}`}`
+          : value.map(v => labels[`${v}`] || `${v}${unit}`).join(' - ')
     )
     : value !== null
       ? labels[`${value}`] ?? `${value}${unit}`
