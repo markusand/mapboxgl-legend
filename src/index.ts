@@ -11,6 +11,7 @@ export type LegendControlOptions = {
   collapsed?: boolean;
   toggler?: boolean;
   layers?: LayersView;
+  onToggle?: (layer: string, visibility: boolean) => void;
 };
 
 const defaults: LegendControlOptions = {
@@ -85,6 +86,7 @@ export default class LegendControl implements IControl {
       event.preventDefault();
       const visible = visibility === 'none' ? 'visible' : 'none';
       this._map?.setLayoutProperty(layerId, 'visibility', visible);
+      this._options.onToggle?.(layerId, visible === 'visible');
     });
     return button;
   }
