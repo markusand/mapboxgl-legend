@@ -46,7 +46,7 @@ export const createElement = (
   if (classes) ensureArray(classes).forEach(cls => el.classList.add(cls));
   if (styles) Object.entries(styles).forEach(prop => el.style.setProperty(...prop));
   if (attributes) Object.entries(attributes).forEach(([name, value]) => {
-    if (value) el.setAttribute(name, `${value}`);
+    if (value || value === 0) el.setAttribute(name, `${value}`);
     else el.removeAttribute(name);
   });
   if (content) el.append(...(ensureArray(content).filter(Boolean) as string[] | HTMLElement[]));

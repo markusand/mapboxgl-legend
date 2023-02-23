@@ -51,7 +51,7 @@ describe('DOM utilities', () => {
     const element = createElement('div', {
       classes: ['class1', 'class2'],
       styles: { color: 'red' },
-      attributes: { id: 'test' },
+      attributes: { id: 'test', width: 100, height: 0, tabindex: null },
       content: 'Hello',
     });
     expect(element.classList.contains('class1')).toBeTruthy();
@@ -59,6 +59,9 @@ describe('DOM utilities', () => {
     expect(element.style.color).toBe('red');
     expect(element.id).toBe('test');
     expect(element.textContent).toBe('Hello');
+    expect(element.getAttribute('width')).toBe('100');
+    expect(element.getAttribute('height')).toBe('0');
+    expect(element.getAttribute('tabindex')).toBe(null);
   });
 
   it('should create an element with children elements', () => {
