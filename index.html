@@ -47,6 +47,9 @@
           'patterns': true,
           // 'fire-events': ['circle-radius'],
         },
+        onToggle: (id, visible) => {
+          alert(`${id} is ${visible ? 'visible' : 'hidden'}`);
+        },
       });
 
       map.addControl(legend, 'bottom-left');
