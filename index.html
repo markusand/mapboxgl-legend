@@ -45,6 +45,7 @@
           'ethnicity': true,
           'fire-events': true,
           'patterns': true,
+          'muni-routes': true,
           // 'fire-events': ['circle-radius'],
         },
         onToggle: (id, visible) => {
@@ -55,8 +56,8 @@
       map.addControl(legend, 'bottom-left');
       
       setTimeout(() => {
-        legend.addLayers(['muni-routes']);
-        setTimeout(() => legend.removeLayers(['muni-routes']), 5000);
+        legend.removeLayers(['muni-routes']);
+        setTimeout(() => legend.addLayers(['muni-routes']), 5000);
       }, 5000);
 
       map.on('load', () => {
@@ -202,24 +203,18 @@
           },
         });
 
-        map.loadImage(
-          './assets/pattern.stripe.png',
-          (error, image) => {
-            if (error) throw error;
-
-            map.addImage('honeycomb', image);
-
-            map.addLayer({
-              id: 'patterns',
-              type: 'fill',
-              source: 'neighborhoods',
-              paint: {
-                'fill-pattern': 'honeycomb'
-              },
-            }, 'ethnicity')
-          }
-        );
-
+        map.loadImage('./assets/pattern.stripe.png', (error, image) => {
+          if (error) throw error;
+          map.addImage('stripes', image);
+          map.addLayer({
+            id: 'patterns',
+            type: 'fill',
+            source: 'neighborhoods',
+            paint: {
+              'fill-pattern': 'stripes'
+            },
+          }, 'ethnicity');
+        });
       });
     </script>
   </body>
