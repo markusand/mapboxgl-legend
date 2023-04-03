@@ -81,7 +81,7 @@ A few options can be passed on legend initialization.
 | layers | Array[string], Object | `undefined` | List of layers to be added. If undefined all layers will be added |
 | onToggle | Function | `undefined` | Set a callback function to a layer visibility change. Function receives as parameters the `layerId` that changed and its visibility (boolean) |
 
-The layers option is an array of the layers' ids, or strings casted as regex that match the layers' ids. It can also be an object with keys being the layers' ids and values being an array of visible attributes, or `true` if all visible.
+The layers option is an array of the layers' ids, or strings casted as regex that match the layers' ids. It can also be an object with keys being the layers' ids and values being an array of visible attributes, or `true` if all visible. For a fine grained control over layers, this object can also contain the same options `collapsed`, `toggler`, `attributes` and `onToggle`.
 
 ```javascript
 const legend = new LegendControl({
@@ -92,6 +92,12 @@ const legend = new LegendControl({
     areas: true,
     // Show only selected properties in this layer
     population: ['circle-radius'], 
+    // Fine grained options per layer
+    pois: {
+      collapsed: true,
+      toggler: false,
+      attributes: ['circle-radius'],
+    }
   },
 })
 ```

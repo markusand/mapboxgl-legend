@@ -1,11 +1,5 @@
 export const ensureArray = <T>(thing: T | T[]): T[] => (Array.isArray(thing) ? thing : [thing]);
 
-export const toObject = (thing?: string[] | Record<string, boolean | string[]>) => (
-  Array.isArray(thing)
-    ? thing.reduce((acc, i) => ({ ...acc, [i]: true }), {})
-    : thing
-);
-
 export const map = (val: number, x1: number, y1: number, x2 = 0, y2 = 100) => (
   ((val - x1) * (y2 - x2)) / (y1 - x1) + x2
 );

@@ -41,16 +41,19 @@
         // layers: ['facilities', 'life-expectancy'],
         layers: {
           'life-expectancy': true,
-          'facilities': true,
+          'facilities': {
+            toggler: false,
+            collapsed: true,
+          },
           'ethnicity': true,
-          'fire-events': true,
           'patterns': true,
           'muni-routes': true,
-          // 'fire-events': ['circle-radius'],
+          'fire-events': {
+            collapsed: true,
+            onToggle: () => alert('This is special'),
+          },
         },
-        onToggle: (id, visible) => {
-          alert(`${id} is ${visible ? 'visible' : 'hidden'}`);
-        },
+        onToggle: (layer) => alert(`${layer} toggled`),
       });
 
       map.addControl(legend, 'bottom-left');

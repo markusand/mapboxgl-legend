@@ -1,18 +1,11 @@
 /* eslint-disable import/no-unresolved */
 import { describe, it, expect } from 'vitest';
-import { ensureArray, toObject, map, chunk, zip, toPair, toBins, createElement, serializeLabel } from './utils';
+import { ensureArray, map, chunk, zip, toPair, toBins, createElement, serializeLabel } from './utils';
 
 describe('Expression utilities', () => {
   it('should encapsulate variables in array if needed', () => {
     expect(ensureArray('string')).toEqual(['string']);
     expect(ensureArray(['string'])).toEqual(['string']);
-  });
-
-  it('should convert an array to an object with key values as true, or return unefined', () => {
-    expect(toObject(['one', 'two'])).toEqual({ one: true, two: true });
-    expect(toObject([])).toEqual({});
-    expect(toObject({ one: true })).toEqual({ one: true });
-    expect(toObject()).toEqual(undefined);
   });
 
   it('should rescale a value to new bounds', () => {
