@@ -1,11 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import list from './list';
-import type { ParsedExpression } from '/@/expression';
-import type { Color } from '.';
+import type { ParsedExpression } from '../../types';
 
 describe('Color list panel', () => {
   it('should create a panel colors list for numbers', () => {
-    const expression: ParsedExpression<number, Color> = {
+    const expression: ParsedExpression<number, string> = {
       name: 'match',
       stops: [[1, '#f00'], [2, '#0f0'], [3, '#00f']],
       inputs: [1, 2, 3],
@@ -30,7 +29,7 @@ describe('Color list panel', () => {
   });
 
   it('should create a panel of colors list for numbers range', () => {
-    const expression: ParsedExpression<number[], Color> = {
+    const expression: ParsedExpression<number[], string> = {
       name: 'step',
       stops: [[[1, 5], '#f00'], [[5, 10], '#0f0'], [[10, 15], '#00f']],
       inputs: [[1, 5], [5, 10], [10, 15]],
@@ -55,7 +54,7 @@ describe('Color list panel', () => {
   });
 
   it('should create a panel of colors list for numbers range', () => {
-    const expression: ParsedExpression<string, Color> = {
+    const expression: ParsedExpression<string, string> = {
       name: 'match',
       stops: [['low', '#f00'], ['medium', '#0f0'], ['high', '#00f']],
       inputs: ['low', 'medium', 'high'],
@@ -80,7 +79,7 @@ describe('Color list panel', () => {
   });
 
   it('should hide an item with label set to false', () => {
-    const expression: ParsedExpression<number, Color> = {
+    const expression: ParsedExpression<number, string> = {
       name: 'match',
       stops: [[1, '#f00'], [2, '#0f0'], [3, '#00f']],
       inputs: [1, 2, 3],

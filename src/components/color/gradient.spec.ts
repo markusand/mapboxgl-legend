@@ -1,11 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import gradient from './gradient';
-import type { ParsedExpression } from '/@/expression';
-import type { Color } from '.';
+import type { ParsedExpression } from '../../types';
 
 describe('Color gradient panel', () => {
   it('should create a panel with colors gradient bar', () => {
-    const expression: ParsedExpression<number, Color> = {
+    const expression: ParsedExpression<number, string> = {
       name: 'interpolate',
       stops: [[1, '#f00'], [2, '#0f0'], [3, '#00f']],
       inputs: [1, 2, 3],
@@ -29,7 +28,7 @@ describe('Color gradient panel', () => {
   });
 
   it('should hide an item with label set to false', () => {
-    const expression: ParsedExpression<number, Color> = {
+    const expression: ParsedExpression<number, string> = {
       name: 'interpolate',
       stops: [[1, '#f00'], [2, '#0f0'], [3, '#00f']],
       inputs: [1, 2, 3],

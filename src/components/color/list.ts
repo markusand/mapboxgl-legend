@@ -1,9 +1,7 @@
 import { createElement, serializeLabel } from '../../utils';
-import type { Layer } from 'mapbox-gl';
-import type { ParsedExpression } from '/@/expression';
-import type { Color } from '.';
+import type { Layer, Map, ParsedExpression } from '../../types';
 
-type Expression =  ParsedExpression<string | number | number[], Color>;
+type Expression =  ParsedExpression<string | number | number[], string>;
 
 export default (expression: Expression, layer: Layer) => {
   const { stops } = expression;

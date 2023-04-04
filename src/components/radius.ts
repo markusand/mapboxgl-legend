@@ -1,6 +1,5 @@
 import { createElement, serializeLabel } from '../utils';
-import type { Layer } from 'mapbox-gl';
-import type { ParsedExpression } from '/@/expression';
+import type { Map, Layer, ParsedExpression } from '../types';
 
 type Expression = ParsedExpression<string | number, number>;
 

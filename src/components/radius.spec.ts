@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import bubbles from './radius';
-import type { ParsedExpression } from '/@/expression';
+import type { ParsedExpression } from '../types';
 
 describe('Radius panel', () => {
   it('should create a panel with bubbles', () => {
