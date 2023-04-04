@@ -20,11 +20,12 @@ const parse = (input: any): ParsedExpression<any, any> | null => {
     ? input
     : ['literal' as ExpressionName, input];
   const stops = stopper[name]?.(args);
+  const getter = ['match', 'step'].includes(name) ? args[0] : args[1];
   if (!stops) return null;
   const [inputs, outputs] = zip(...stops);
   const min = Math.min(...inputs.flat(2) as number[]);
   const max = Math.max(...inputs.flat(2) as number[]);
-  return { name, stops, inputs, outputs, min, max };
+  return { name, getter, stops, inputs, outputs, min, max };
 };
 
 export default { isExpression, parse };

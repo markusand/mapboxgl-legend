@@ -1,6 +1,6 @@
 export const ensureArray = <T>(thing: T | T[]): T[] => (Array.isArray(thing) ? thing : [thing]);
 
-export const map = (val: number, x1: number, y1: number, x2 = 0, y2 = 100) => (
+export const rescale = (val: number, x1: number, y1: number, x2 = 0, y2 = 100) => (
   ((val - x1) * (y2 - x2)) / (y1 - x1) + x2
 );
 

@@ -27,6 +27,7 @@ describe('Image panel', () => {
   it('should create a panel with icons list', () => {
     const expression: ParsedExpression<string, string> = {
       name: 'match',
+      getter: ['get', 'attribute'],
       stops: [['a', 'image-a'], ['b', 'image-b']],
       inputs: ['a', 'b'],
       outputs: ['image-a', 'image-b'],
@@ -55,6 +56,7 @@ describe('Image panel', () => {
   it('should create a panel with bubbles with a missing image', () => {
     const expression: ParsedExpression<string, string> = {
       name: 'match',
+      getter: ['get', 'attribute'],
       stops: [['a', 'image-a'], ['b', 'image-not-exists']],
       inputs: ['a', 'b'],
       outputs: ['image-a', 'image-b'],
@@ -63,7 +65,7 @@ describe('Image panel', () => {
     };
     const metadata = { labels: { a: 'Image A' } };
     // @ts-ignore Can't mock full Map implementation
-    const el = image(expression, { id: '_', type: '_', metadata }, map);
+    const el = image(expression, { id: '_', type: '_', metadata }, map, {});
 
     expect(el.childElementCount).toBe(1);
   });
@@ -71,6 +73,7 @@ describe('Image panel', () => {
   it('should hide an item with label set to false', () => {
     const expression: ParsedExpression<string, string> = {
       name: 'match',
+      getter: ['get', 'attribute'],
       stops: [['a', 'image-a'], ['b', 'image-b']],
       inputs: ['a', 'b'],
       outputs: ['image-a', 'image-b'],
@@ -79,7 +82,7 @@ describe('Image panel', () => {
     };
     const metadata = { labels: { a: 'Image A', b: false } };
     // @ts-ignore Can't mock full Map implementation
-    const el = image(expression, { id: '_', type: '_', metadata }, map);
+    const el = image(expression, { id: '_', type: '_', metadata }, map, {});
 
     expect(el.childElementCount).toBe(1);
   });

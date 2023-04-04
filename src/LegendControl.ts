@@ -11,6 +11,7 @@ export type { LayerOptions, LegendControlOptions };
 const defaults: LayerOptions = {
   collapsed: false,
   toggler: false,
+  highlight: false,
 };
 
 export default class LegendControl implements IControl {
@@ -48,10 +49,11 @@ export default class LegendControl implements IControl {
       const {
         collapsed = this._options.collapsed,
         toggler = this._options.toggler,
+        highlight = this._options.highlight,
         onToggle = this._options.onToggle,
         attributes,
       } = options;
-      this._options.layers[name] = { collapsed, toggler, onToggle, attributes };
+      this._options.layers[name] = { collapsed, toggler, highlight, onToggle, attributes };
     };
     
     if (Array.isArray(layers)) layers.forEach(name => saveLayerOptions(name, {}));
@@ -72,12 +74,13 @@ export default class LegendControl implements IControl {
     });
   }
 
-  private _getBlock(layer: Layer, attribute: string, value: any) {
+  private _getBlock(layerKey: string, layer: Layer, attribute: string, value: any) {
     const [property] = attribute.split('-').slice(-1);
     const component = components[property as keyof typeof components];
     if (!component) return;
     const parsed = expression.parse(value);
-    return parsed && component(parsed, layer, this._map);
+    const options = this._options.layers[layerKey] || this._options;
+    return parsed && component(parsed, layer, this._map, options);
   }
 
   private _toggleButton(layerId: string, layerKey: string) {
@@ -113,7 +116,7 @@ export default class LegendControl implements IControl {
           .reduce((acc, [attribute, value]) => {
             const visible = attributes?.includes(attribute) ?? true;
             if (!visible) return acc;
-            const block = this._getBlock(layer, attribute, value);
+            const block = this._getBlock(layerKey, layer, attribute, value);
             if (block) acc.push(block);
             return acc;
           }, [] as HTMLElement[]);

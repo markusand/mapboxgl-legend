@@ -6,6 +6,7 @@ describe('Radius panel', () => {
   it('should create a panel with bubbles', () => {
     const expression: ParsedExpression<number, number> = {
       name: 'step',
+      getter: ['get', 'attribute'],
       stops: [[1, 10], [2, 20], [3, 30]],
       inputs: [1, 2, 3],
       outputs: [10, 20, 30],
@@ -13,7 +14,7 @@ describe('Radius panel', () => {
       max: 3,
     };
     const metadata = { labels: { 1: 'one', 3: 'three' } };
-    const el = bubbles(expression, { id: '_', type: '_', metadata });
+    const el = bubbles(expression, { id: '_', type: '_', metadata }, {} as any, {});
 
     expect(el.tagName).toBe('UL');
     expect(el.classList.contains('bubbles')).toBeTruthy();
@@ -30,6 +31,7 @@ describe('Radius panel', () => {
   it('should hide an item with label set to false', () => {
     const expression: ParsedExpression<number, number> = {
       name: 'step',
+      getter: ['get', 'attribute'],
       stops: [[1, 10], [2, 20], [3, 30]],
       inputs: [1, 2, 3],
       outputs: [10, 20, 30],
@@ -37,7 +39,7 @@ describe('Radius panel', () => {
       max: 3,
     };
     const metadata = { labels: { 1: 'one', 3: false } };
-    const el = bubbles(expression, { id: '_', type: '_', metadata });
+    const el = bubbles(expression, { id: '_', type: '_', metadata }, {} as any, {});
 
     expect(el.childElementCount).toBe(2);
   });

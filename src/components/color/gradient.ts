@@ -1,11 +1,11 @@
-import { createElement, serializeLabel, map } from '../../utils';
-import type { Map, Layer, ParsedExpression } from '../../types';
+import { createElement, serializeLabel, rescale } from '../../utils';
+import type { Map, Layer, ParsedExpression, LayerOptions } from '../../types';
 
 type Expression = ParsedExpression<number, string>;
 
-export default (expression: Expression, layer: Layer) => {
+export default (expression: Expression, layer: Layer, map: Map, options: LayerOptions) => {
   const { inputs, stops, min, max } = expression;
-  const gradient = stops.map(([value, color]) => `${color} ${map(value, min, max)}%`);
+  const gradient = stops.map(([value, color]) => `${color} ${rescale(value, min, max)}%`);
   return createElement('div', {
     classes: 'gradient',
     content: [
@@ -14,7 +14,7 @@ export default (expression: Expression, layer: Layer) => {
         content: inputs.map(input => {
           const content = serializeLabel(input, layer.metadata);
           return content && createElement('span', {
-            styles: { left: `${map(input, min, max)}%` },
+            styles: { left: `${rescale(input, min, max)}%` },
             content,
           });
         }),

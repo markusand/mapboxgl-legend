@@ -6,6 +6,7 @@ describe('Color list panel', () => {
   it('should create a panel colors list for numbers', () => {
     const expression: ParsedExpression<number, string> = {
       name: 'match',
+      getter: ['get', 'attribute'],
       stops: [[1, '#f00'], [2, '#0f0'], [3, '#00f']],
       inputs: [1, 2, 3],
       outputs: ['#f00', '#0f0', '#00f'],
@@ -13,7 +14,7 @@ describe('Color list panel', () => {
       max: 3,
     };
     const metadata = { labels: { 1: 'one', 3: 'three' } };
-    const el = list(expression, { id: '_', type: '_', metadata });
+    const el = list(expression, { id: '_', type: '_', metadata }, {} as any, {});
 
     expect(el.tagName).toBe('UL');
     expect(el.classList.contains('list')).toBeTruthy();
@@ -31,6 +32,7 @@ describe('Color list panel', () => {
   it('should create a panel of colors list for numbers range', () => {
     const expression: ParsedExpression<number[], string> = {
       name: 'step',
+      getter: ['get', 'attribute'],
       stops: [[[1, 5], '#f00'], [[5, 10], '#0f0'], [[10, 15], '#00f']],
       inputs: [[1, 5], [5, 10], [10, 15]],
       outputs: ['#f00', '#0f0', '#00f'],
@@ -38,7 +40,7 @@ describe('Color list panel', () => {
       max: 15,
     };
     const metadata = { unit: 'k' };
-    const el = list(expression, { id: '_', type: '_', metadata });
+    const el = list(expression, { id: '_', type: '_', metadata }, {} as any, {});
 
     expect(el.tagName).toBe('UL');
     expect(el.classList.contains('list')).toBeTruthy();
@@ -56,6 +58,7 @@ describe('Color list panel', () => {
   it('should create a panel of colors list for numbers range', () => {
     const expression: ParsedExpression<string, string> = {
       name: 'match',
+      getter: ['get', 'attribute'],
       stops: [['low', '#f00'], ['medium', '#0f0'], ['high', '#00f']],
       inputs: ['low', 'medium', 'high'],
       outputs: ['#f00', '#0f0', '#00f'],
@@ -63,7 +66,7 @@ describe('Color list panel', () => {
       max: NaN,
     };
     const metadata = { labels: { low: 'baix', medium: 'mig', high: 'alt' } };
-    const el = list(expression, { id: '_', type: '_', metadata });
+    const el = list(expression, { id: '_', type: '_', metadata }, {} as any, {});
 
     expect(el.tagName).toBe('UL');
     expect(el.classList.contains('list')).toBeTruthy();
@@ -81,6 +84,7 @@ describe('Color list panel', () => {
   it('should hide an item with label set to false', () => {
     const expression: ParsedExpression<number, string> = {
       name: 'match',
+      getter: ['get', 'attribute'],
       stops: [[1, '#f00'], [2, '#0f0'], [3, '#00f']],
       inputs: [1, 2, 3],
       outputs: ['#f00', '#0f0', '#00f'],
@@ -88,7 +92,7 @@ describe('Color list panel', () => {
       max: 3,
     };
     const metadata = { labels: { 2: false } };
-    const el = list(expression, { id: '_', type: '_', metadata });
+    const el = list(expression, { id: '_', type: '_', metadata }, {} as any, {});
 
     expect(el.childElementCount).toBe(2);
   });

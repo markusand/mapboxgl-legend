@@ -1,9 +1,9 @@
 import { createElement, serializeLabel } from '../utils';
-import type { Map, Layer, ParsedExpression } from '../types';
+import type { Map, Layer, ParsedExpression, LayerOptions } from '../types';
 
 type Expression = ParsedExpression<string | number, string>;
 
-export default (expression: Expression, layer: Layer, map: Map) => {
+export default (expression: Expression, layer: Layer, map: Map, options: LayerOptions) => {
   const { stops } = expression;
   return createElement('ul', {
     classes: ['list', 'list--icons'],

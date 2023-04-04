@@ -6,6 +6,7 @@ export type LayerOptions = {
   collapsed?: boolean;
   toggler?: boolean;
   attributes?: string[];
+  highlight?: boolean;
   onToggle?: (layer: string, visibility: boolean) => void;
 };
 
@@ -15,6 +16,7 @@ export type LegendControlOptions = {
 
 export type ParsedExpression<In, Out> = {
   name: ExpressionName;
+  getter: Expression,
   stops: [In, Out][];
   inputs: In[];
   outputs: Out[];
