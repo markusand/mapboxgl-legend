@@ -10,6 +10,19 @@ const { events, highlight } = highlighter(
 );
 
 describe('Highlighter', () => {
+  it("should restore layer's default filter", () => {
+    const setFilter = vi.spyOn(map, 'setFilter');
+    const { highlight: filteredHighlight } = highlighter(
+      { getter: ['get', 'attribute'] } as any,
+      { id: 'backuped', filter: ['==', ['get', 'hello'], 'world'] } as any,
+      map as any,
+    );
+    filteredHighlight(2);
+    filteredHighlight(undefined);
+    expect(setFilter).toHaveBeenCalledTimes(2);
+    expect(setFilter.mock.calls[1]).toStrictEqual(['backuped', ['==', ['get', 'hello'], 'world']]);
+  });
+
   it('should apply highlight filter with number', () => {
     const setFilter = vi.spyOn(map, 'setFilter');
     highlight(2);
