@@ -31,11 +31,12 @@ export const createElement = (
     classes?: string | string[];
     styles?: Record<string, string>;
     attributes?: Record<string, string | number | boolean | null>;
+    events?: Partial<Record<keyof HTMLElementEventMap, (event: Event) => void>>,
     content?: string | HTMLElement | false | (string | HTMLElement | undefined | false)[];
     appendTo?: HTMLElement;
   } = {},
 ) => {
-  const { classes, styles, attributes, content, appendTo } = options;
+  const { classes, styles, attributes, events, content, appendTo } = options;
   const el = document.createElement(tag);
   if (classes) ensureArray(classes).forEach(cls => el.classList.add(cls));
   if (styles) Object.entries(styles).forEach(prop => el.style.setProperty(...prop));
@@ -43,6 +44,7 @@ export const createElement = (
     if (value || value === 0) el.setAttribute(name, `${value}`);
     else el.removeAttribute(name);
   });
+  if (events) Object.entries(events).forEach(([e, listener]) => el.addEventListener(e, listener));
   if (content) el.append(...(ensureArray(content).filter(Boolean) as string[] | HTMLElement[]));
   if (appendTo) appendTo.appendChild(el);
   return el;
