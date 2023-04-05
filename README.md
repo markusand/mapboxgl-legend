@@ -78,6 +78,7 @@ A few options can be passed on legend initialization.
 | --- | --- | --- | --- |
 | collapsed | Boolean | `false` | Set legend panels collapsed on load |
 | toggler | Boolean | `false` | Add button to show and hide layers |
+| highlight | Boolean | `false` | Add interactivity to legend items |
 | layers | Array[string], Object | `undefined` | List of layers to be added. If undefined all layers will be added |
 | onToggle | Function | `undefined` | Set a callback function to a layer visibility change. Function receives as parameters the `layerId` that changed and its visibility (boolean) |
 
@@ -96,6 +97,7 @@ const legend = new LegendControl({
     pois: {
       collapsed: true,
       toggler: false,
+      highlight: true,
       attributes: ['circle-radius'],
     }
   },
