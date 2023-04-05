@@ -13,7 +13,7 @@ describe('Color gradient panel', () => {
       min: 1,
       max: 3,
     };
-    const el = gradient(expression, { id: '_', type: '_' }, {} as any);
+    const el = gradient(expression, { id: '_', type: '_' }, {} as any, {});
 
     expect(el.tagName).toBe('DIV');
     expect(el.classList.contains('gradient')).toBeTruthy();
@@ -39,7 +39,7 @@ describe('Color gradient panel', () => {
       max: 3,
     };
     const metadata = { labels: { 2: false } };
-    const el = gradient(expression, { id: '_', type: '_', metadata }, {} as any);
+    const el = gradient(expression, { id: '_', type: '_', metadata }, {} as any, {});
     expect(el.firstElementChild?.childElementCount).toBe(2);
   });
 });

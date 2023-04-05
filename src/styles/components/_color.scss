@@ -17,9 +17,25 @@
   }
 
   .bar {
+    position: relative;
     height: var(--map-legend-thumb-height);
     background: #ccc;
     border-radius: var(--map-legend-thumb-radius);
+  }
+
+  &--highlight {
+    .bar:hover::before {
+      content: attr(data-label);
+      display: block;
+      height: calc(var(--map-legend-thumb-height) + 0.25rem);
+      width: 2px;
+      background: currentcolor;
+      position: absolute;
+      top: -0.125rem;
+      left: 0;
+      font-size: var(--map-legend-label-size);
+      transform: translate(calc(-50% + var(--x, 0)));
+    }
   }
 }
 
