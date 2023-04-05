@@ -12,6 +12,7 @@ HTMLCanvasElement.prototype.getContext = () => ({ putImageData: () => {} });
 
 // Mock mapbox map
 const map = {
+  setFilter: () => {},
   style: {
     getImage: (name: string) => {
       const images = {
@@ -64,8 +65,7 @@ describe('Image panel', () => {
       max: NaN,
     };
     const metadata = { labels: { a: 'Image A' } };
-    // @ts-ignore Can't mock full Map implementation
-    const el = image(expression, { id: '_', type: '_', metadata }, map, {});
+    const el = image(expression, { id: '_', type: '_', metadata }, map as any, {});
 
     expect(el.childElementCount).toBe(1);
   });
@@ -81,9 +81,28 @@ describe('Image panel', () => {
       max: NaN,
     };
     const metadata = { labels: { a: 'Image A', b: false } };
-    // @ts-ignore Can't mock full Map implementation
-    const el = image(expression, { id: '_', type: '_', metadata }, map, {});
+    const el = image(expression, { id: '_', type: '_', metadata }, map as any, {});
 
     expect(el.childElementCount).toBe(1);
+  });
+
+  it('should set legend highlighting', () => {
+    const expression: ParsedExpression<string, string> = {
+      name: 'match',
+      getter: ['get', 'attribute'],
+      stops: [['a', 'image-a'], ['b', 'image-b']],
+      inputs: ['a', 'b'],
+      outputs: ['image-a', 'image-b'],
+      min: NaN,
+      max: NaN,
+    };
+    const metadata = { labels: { a: 'Image A', b: false } };
+    const el = image(expression, { id: '_', type: '_', metadata }, map as any, { highlight: true });
+    expect(el.className).contain('--highlight');
+  
+    const setFilter = vi.spyOn(map, 'setFilter');
+    el.firstElementChild?.dispatchEvent(new Event('mouseenter'));
+    el.firstElementChild?.dispatchEvent(new Event('mouseleave'));
+    expect(setFilter).toHaveBeenCalledTimes(2);
   });
 });

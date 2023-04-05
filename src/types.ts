@@ -16,7 +16,7 @@ export type LegendControlOptions = {
 
 export type ParsedExpression<In, Out> = {
   name: ExpressionName;
-  getter: Expression,
+  getter: Expression | undefined,
   stops: [In, Out][];
   inputs: In[];
   outputs: Out[];

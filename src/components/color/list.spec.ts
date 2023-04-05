@@ -1,6 +1,8 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import list from './list';
 import type { ParsedExpression } from '../../types';
+
+const map = { setFilter: () => {} };
 
 describe('Color list panel', () => {
   it('should create a panel colors list for numbers', () => {
@@ -95,5 +97,24 @@ describe('Color list panel', () => {
     const el = list(expression, { id: '_', type: '_', metadata }, {} as any, {});
 
     expect(el.childElementCount).toBe(2);
+  });
+
+  it('should set legend highlighting', () => {
+    const expression: ParsedExpression<number, string> = {
+      name: 'match',
+      getter: ['get', 'attribute'],
+      stops: [[1, '#f00'], [2, '#0f0'], [3, '#00f']],
+      inputs: [1, 2, 3],
+      outputs: ['#f00', '#0f0', '#00f'],
+      min: 1,
+      max: 3,
+    };
+    const metadata = { labels: { 2: false } };
+    const el = list(expression, { id: '_', type: '_', metadata }, map as any, { highlight: true });
+  
+    const setFilter = vi.spyOn(map, 'setFilter');
+    el.firstElementChild?.dispatchEvent(new Event('mouseenter'));
+    el.firstElementChild?.dispatchEvent(new Event('mouseleave'));
+    expect(setFilter).toHaveBeenCalledTimes(2);
   });
 });
