@@ -1,6 +1,6 @@
 /* eslint-disable import/no-unresolved */
 import { describe, it, expect } from 'vitest';
-import { ensureArray, map, chunk, zip, toPair, toBins, createElement, serializeLabel } from './utils';
+import { ensureArray, rescale, chunk, zip, toPair, toBins, createElement, serializeLabel } from './utils';
 
 describe('Expression utilities', () => {
   it('should encapsulate variables in array if needed', () => {
@@ -9,7 +9,7 @@ describe('Expression utilities', () => {
   });
 
   it('should rescale a value to new bounds', () => {
-    expect(map(1, 0, 4, 0, 100)).toBe(25);
+    expect(rescale(1, 0, 4, 0, 100)).toBe(25);
   });
 
   it('should create chunks of arrays from array', () => {

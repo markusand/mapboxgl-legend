@@ -1,13 +1,14 @@
 import { createElement, serializeLabel } from '../utils';
-import type { Map, Layer } from 'mapbox-gl';
-import type { ParsedExpression } from '/@/expression';
+import highlighter from '../highlighter';
+import type { Map, Layer, ParsedExpression, LayerOptions } from '../types';
 
 type Expression = ParsedExpression<string | number, string>;
 
-export default (expression: Expression, layer: Layer, map: Map) => {
+export default (expression: Expression, layer: Layer, map: Map, options: LayerOptions) => {
   const { stops } = expression;
+  const { events } = highlighter(expression, layer, map);
   return createElement('ul', {
-    classes: ['list', 'list--icons'],
+    classes: ['list', 'list--icons', `list--${options.highlight ? 'highlight' : ''}`],
     content: stops.map(([value, image]) => {
       const label = serializeLabel(value, layer.metadata);
       if (!label) return undefined;
@@ -22,6 +23,7 @@ export default (expression: Expression, layer: Layer, map: Map) => {
       const imageData = new ImageData(Uint8ClampedArray.from(data), width, height);
       ctx?.putImageData(imageData, (size - width) / 2, (size - height) / 2);
       return createElement('li', {
+        events: options.highlight ? events(value) : {},
         content: [
           createElement('img', {
             classes: ['icon'],

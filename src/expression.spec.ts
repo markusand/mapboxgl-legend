@@ -46,6 +46,7 @@ describe('Expressions', () => {
   it('should parse an interpolation expression', () => {
     expect(expression.parse(INTERPOLATE)).toEqual({
       name: 'interpolate',
+      getter: ['get', 'attribute'],
       stops: [[0, '#f00'], [1, '#0f0'], [2, '#00f']],
       inputs: [0, 1, 2],
       outputs: ['#f00', '#0f0', '#00f'],
@@ -57,6 +58,7 @@ describe('Expressions', () => {
   it('should parse a match expression', () => {
     expect(expression.parse(MATCH)).toEqual({
       name: 'match',
+      getter: ['get', 'attribute'],
       stops: [[0, '#f00'], [1, '#0f0'], [2, '#00f'], [null, '#aaa']],
       inputs: [0, 1, 2, null],
       outputs: ['#f00', '#0f0', '#00f', '#aaa'],
@@ -68,6 +70,7 @@ describe('Expressions', () => {
   it('should parse a step expression', () => {
     expect(expression.parse(STEP)).toEqual({
       name: 'step',
+      getter: ['get', 'attribute'],
       stops: [[[null, 0], '#aaa'], [[0, 1], '#f00'], [[1, 2], '#0f0'], [[2, null], '#00f']],
       inputs: [[null, 0], [0, 1], [1, 2], [2, null]],
       outputs: ['#aaa', '#f00', '#0f0', '#00f'],

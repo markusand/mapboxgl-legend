@@ -38,6 +38,7 @@
       const legend = new LegendControl({
         collapsed: false,
         toggler: true,
+        highlight: true,
         // layers: ['facilities', 'life-expectancy'],
         layers: {
           'life-expectancy': true,
@@ -45,7 +46,7 @@
             toggler: false,
             collapsed: true,
           },
-          'ethnicity': true,
+          'ethnicity': { highlight: false },
           'patterns': true,
           'muni-routes': true,
           'fire-events': {
@@ -204,6 +205,7 @@
             ],
             'line-width': 2,
           },
+          filter: ['!=', ['get', 'service_ca'], 'Rapid Bus'],
         });
 
         map.loadImage('./assets/pattern.stripe.png', (error, image) => {

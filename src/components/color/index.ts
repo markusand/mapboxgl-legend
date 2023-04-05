@@ -1,18 +1,17 @@
 import gradient from './gradient';
 import list from './list';
-import type { Layer } from 'mapbox-gl';
-import type { ParsedExpression } from '/@/expression';
+import type { Map, Layer, ParsedExpression, LayerOptions } from '../../types';
 
-export type Color = `#${string}`;
+type Expression = ParsedExpression<any, any>;
 
-export default (expression: ParsedExpression<any, any>, layer: Layer) => {
+export default (expression: Expression, layer: Layer, map: Map, options: LayerOptions) => {
   switch (expression.name) {
     case 'interpolate':
-      return gradient(expression, layer);
+      return gradient(expression, layer, map, options);
     case 'match':
     case 'step':
     case 'literal':
-      return list(expression, layer);
+      return list(expression, layer, map, options);
     default:
       return undefined;
   }
