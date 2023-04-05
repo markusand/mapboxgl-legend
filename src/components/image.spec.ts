@@ -36,7 +36,7 @@ describe('Image panel', () => {
     };
     const metadata = { labels: { a: 'Image A' } };
     // @ts-ignore Can't mock full Map implementation
-    const el = image(expression, { id: '_', type: '_', metadata }, map);
+    const el = image(expression, { id: '_', type: '_', metadata }, map, {});
 
     expect(el.tagName).toBe('UL');
     expect(el.classList.contains('list')).toBeTruthy();
