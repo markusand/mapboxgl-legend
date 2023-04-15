@@ -16,7 +16,7 @@ const defaults: LayerOptions = {
 
 export default class LegendControl implements IControl {
   private _options: {
-    layers: Record<string, LayerOptions>;
+    layers: Record<string, LayerOptions> | undefined;
   } & Omit<LegendControlOptions, 'layers'>;
   
   private _container: HTMLElement;
@@ -25,7 +25,7 @@ export default class LegendControl implements IControl {
 
   constructor(options: LegendControlOptions = {}) {
     const { layers, ...rest } = options;
-    this._options = { ...defaults, layers: {}, ...rest };
+    this._options = { ...defaults, layers: undefined, ...rest };
     if (layers) this.addLayers(layers);
     this._container = createElement('div', {
       classes: ['mapboxgl-ctrl', 'mapboxgl-ctrl-legend'],
@@ -53,9 +53,10 @@ export default class LegendControl implements IControl {
         onToggle = this._options.onToggle,
         attributes,
       } = options;
-      this._options.layers[name] = { collapsed, toggler, highlight, onToggle, attributes };
+      this._options.layers![name] = { collapsed, toggler, highlight, onToggle, attributes };
     };
     
+    this._options.layers ??= {};
     if (Array.isArray(layers)) layers.forEach(name => saveLayerOptions(name, {}));
     else Object.entries(layers).forEach(([name, options]) => {
       if (typeof options === 'boolean') saveLayerOptions(name, {});
@@ -74,17 +75,17 @@ export default class LegendControl implements IControl {
     });
   }
 
-  private _getBlock(layerKey: string, layer: Layer, attribute: string, value: any) {
+  private _getBlock(key: string, layer: Layer, attribute: string, value: any) {
     const [property] = attribute.split('-').slice(-1);
     const component = components[property as keyof typeof components];
     if (!component) return;
     const parsed = expression.parse(value);
-    const options = this._options.layers[layerKey] || this._options;
+    const options = this._options.layers?.[key] || this._options;
     return parsed && component(parsed, layer, this._map, options);
   }
 
-  private _toggleButton(layerId: string, layerKey: string) {
-    const { onToggle = this._options.onToggle } = this._options.layers[layerKey] || {};
+  private _toggleButton(layerId: string, key: string) {
+    const { onToggle = this._options.onToggle } = this._options.layers?.[key] || {};
     const visibility = this._map?.getLayoutProperty(layerId, 'visibility') || 'visible';
     const button = createElement('div', { classes: ['toggler', `toggler--${visibility}`] });
     button.addEventListener('click', event => {
@@ -97,26 +98,22 @@ export default class LegendControl implements IControl {
   }
 
   private _loadPanes() {
-    const layersIds = Object.keys(this._options.layers);
+    const layersIds = Object.keys(this._options.layers || {});
     this._map.getStyle().layers
       .filter(layer => (layer as Layer).source && (layer as Layer).source !== 'composite')
-      .filter(layer => !layersIds.length || layersIds.some(name => layer.id.match(name)))
+      .filter(layer => !this._options.layers || layersIds.some(name => layer.id.match(name)))
       .reverse() // Show in order that are drawn on map (first layers at the bottom, last on top)
       .forEach(layer => {
         const { id, layout, paint, metadata } = layer as Layer;
-        const layerKey = layersIds.find(name => id.match(name)) || id;
-        const {
-          collapsed = this._options.collapsed,
-          toggler = this._options.toggler,
-          attributes,
-        } = this._options.layers[layerKey] || {};
+        const key = layersIds.find(name => id.match(name)) || id;
+        const { collapsed, toggler, attributes } = this._options.layers?.[key] || this._options;
 
         // Construct all required blocks, break if none
         const paneBlocks = Object.entries({ ...layout, ...paint })
           .reduce((acc, [attribute, value]) => {
             const visible = attributes?.includes(attribute) ?? true;
             if (!visible) return acc;
-            const block = this._getBlock(layerKey, layer, attribute, value);
+            const block = this._getBlock(key, layer, attribute, value);
             if (block) acc.push(block);
             return acc;
           }, [] as HTMLElement[]);
@@ -132,7 +129,7 @@ export default class LegendControl implements IControl {
             createElement('summary', {
               content: [
                 metadata?.name || id,
-                toggler && this._toggleButton(id, layerKey),
+                toggler && this._toggleButton(id, key),
               ],
             }),
             ...paneBlocks,

@@ -45,6 +45,12 @@ describe('Legend Control', () => {
     expect(panes[1].querySelector('summary')?.textContent).toBe('test_1');
   });
 
+  it('should not mount layers when empty array provided', () => {
+    const { container } = createLegend({ layers: [] });
+    const panes = container.querySelectorAll('.mapboxgl-ctrl-legend-pane');
+    expect(panes.length).toBe(0);
+  });
+
   it('should mount layers panes with global toggler override', () => {
     const { container } = createLegend({ toggler: true });
     const pane = container.querySelector('.mapboxgl-ctrl-legend-pane');
