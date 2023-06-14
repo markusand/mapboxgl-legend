@@ -160,3 +160,11 @@ Run the development server with the command
 ```bash
 npm run dev
 ```
+
+## Contribute
+
+Whether you're fixing a bug, implementing a new feature, or improving the documentation, your contribution is greatly appreciated.
+
+Start by forking the repository on GitHub, create a new branch and finally submit a Pull Request with your changes. Provide a detailed description of your changes, including any relevant context or references to issues.
+
+By contributing to this project, you agree that your contributions will be licensed under the ISC License.
