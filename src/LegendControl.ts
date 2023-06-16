@@ -1,6 +1,6 @@
 import './styles/main.scss';
 import { IControl } from 'mapbox-gl';
-import type { Map, Layer } from 'mapbox-gl';
+import type { Map as MapboxMap, Layer } from 'mapbox-gl';
 import components from './components';
 import expression from './expression';
 import { createElement } from './utils';
@@ -16,12 +16,12 @@ const defaults: LayerOptions = {
 
 export default class LegendControl implements IControl {
   private _options: {
-    layers: Record<string, LayerOptions> | undefined;
+    layers: Map<string | RegExp, LayerOptions> | undefined;
   } & Omit<LegendControlOptions, 'layers'>;
   
   private _container: HTMLElement;
 
-  private _map!: Map;
+  private _map!: MapboxMap;
 
   constructor(options: LegendControlOptions = {}) {
     const { layers, ...rest } = options;
@@ -33,7 +33,7 @@ export default class LegendControl implements IControl {
     this._loadPanes = this._loadPanes.bind(this);
   }
 
-  onAdd(map: Map) {
+  onAdd(map: MapboxMap) {
     this._map = map;
     this._map.on('styledata', this._loadPanes);
     return this._container;
@@ -45,7 +45,7 @@ export default class LegendControl implements IControl {
   }
 
   addLayers(layers: NonNullable<LegendControlOptions['layers']>) {
-    const saveLayerOptions = (name: string, options: LayerOptions) => {
+    const saveLayerOptions = (name: string | RegExp, options: LayerOptions) => {
       const {
         collapsed = this._options.collapsed,
         toggler = this._options.toggler,
@@ -53,10 +53,10 @@ export default class LegendControl implements IControl {
         onToggle = this._options.onToggle,
         attributes,
       } = options;
-      this._options.layers![name] = { collapsed, toggler, highlight, onToggle, attributes };
+      this._options.layers?.set(name, { collapsed, toggler, highlight, onToggle, attributes });
     };
     
-    this._options.layers ??= {};
+    this._options.layers ??= new Map();
     if (Array.isArray(layers)) layers.forEach(name => saveLayerOptions(name, {}));
     else Object.entries(layers).forEach(([name, options]) => {
       if (typeof options === 'boolean') saveLayerOptions(name, {});
@@ -67,25 +67,25 @@ export default class LegendControl implements IControl {
     if (this._map?.isStyleLoaded()) this._loadPanes();
   }
 
-  removeLayers(layerIds: string[]) {
+  removeLayers(layerIds: (string | RegExp)[]) {
     layerIds.forEach(id => {
-      delete this._options.layers?.[id];
+      this._options.layers?.delete(id);
       const pane = this._container.querySelector(`.mapboxgl-ctrl-legend-pane--${id}`);
       if (pane) this._container.removeChild(pane);
     });
   }
 
-  private _getBlock(key: string, layer: Layer, attribute: string, value: any) {
+  private _getBlock(key: string | RegExp, layer: Layer, attribute: string, value: any) {
     const [property] = attribute.split('-').slice(-1);
     const component = components[property as keyof typeof components];
     if (!component) return;
     const parsed = expression.parse(value);
-    const options = this._options.layers?.[key] || this._options;
+    const options = this._options.layers?.get(key) || this._options;
     return parsed && component(parsed, layer, this._map, options);
   }
 
-  private _toggleButton(layerId: string, key: string) {
-    const { onToggle = this._options.onToggle } = this._options.layers?.[key] || {};
+  private _toggleButton(layerId: string, key: string | RegExp) {
+    const { onToggle = this._options.onToggle } = this._options.layers?.get(key) || {};
     const visibility = this._map?.getLayoutProperty(layerId, 'visibility') || 'visible';
     const button = createElement('div', { classes: ['toggler', `toggler--${visibility}`] });
     button.addEventListener('click', event => {
@@ -98,15 +98,17 @@ export default class LegendControl implements IControl {
   }
 
   private _loadPanes() {
-    const layersIds = Object.keys(this._options.layers || {});
+    const layersIds = [...this._options.layers?.keys() || []];
     this._map.getStyle().layers
       .filter(layer => (layer as Layer).source && (layer as Layer).source !== 'composite')
-      .filter(layer => !this._options.layers || layersIds.some(name => layer.id.match(name)))
+      .filter(layer => !this._options.layers || layersIds.some(name => {
+        return typeof name === 'string' ? layer.id === name : layer.id.match(name);
+      }))
       .reverse() // Show in order that are drawn on map (first layers at the bottom, last on top)
       .forEach(layer => {
         const { id, layout, paint, metadata } = layer as Layer;
         const key = layersIds.find(name => id.match(name)) || id;
-        const { collapsed, toggler, attributes } = this._options.layers?.[key] || this._options;
+        const { collapsed, toggler, attributes } = this._options.layers?.get(key) || this._options;
 
         // Construct all required blocks, break if none
         const paneBlocks = Object.entries({ ...layout, ...paint })

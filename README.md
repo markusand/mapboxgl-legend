@@ -79,7 +79,7 @@ A few options can be passed on legend initialization.
 | collapsed | Boolean | `false` | Set legend panels collapsed on load |
 | toggler | Boolean | `false` | Add button to show and hide layers |
 | highlight | Boolean | `false` | Add interactivity to legend items |
-| layers | Array[string], Object | `undefined` | List of layers to be added. If undefined all layers will be added |
+| layers | Array[string | RegExp], Object | `undefined` | List of layers to be added. If undefined all layers will be added |
 | onToggle | Function | `undefined` | Set a callback function to a layer visibility change. Function receives as parameters the `layerId` that changed and its visibility (boolean) |
 
 The layers option is an array of the layers' ids, or strings casted as regex that match the layers' ids. It can also be an object with keys being the layers' ids and values being an array of visible attributes, or `true` if all visible. For a fine grained control over layers, this object can also contain the same options `collapsed`, `toggler`, `attributes` and `onToggle`.
@@ -87,7 +87,7 @@ The layers option is an array of the layers' ids, or strings casted as regex tha
 ```javascript
 const legend = new LegendControl({
   // Show all properties in selected layers
-  layers: ['population', 'areas'],
+  layers: ['population', 'areas', /sw-\d/],
   layers: {
     // Show all properties in this layer
     areas: true,

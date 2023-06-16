@@ -72,7 +72,7 @@ describe('Legend Control', () => {
   });
 
   it('should filter mounted panes with regex string', () => {
-    const { container } = createLegend({ layers: ['_1'] });
+    const { container } = createLegend({ layers: [/_1/] });
     const panes = container.querySelectorAll('.mapboxgl-ctrl-legend-pane');
     expect(panes.length).toBe(1);
   });
