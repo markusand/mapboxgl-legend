@@ -2,7 +2,7 @@ import './styles/main.scss';
 import { IControl } from 'mapbox-gl';
 import type { Map as MapboxMap, Layer } from 'mapbox-gl';
 import components from './components';
-import expression from './expression';
+import Expression from './expression';
 import { createElement } from './utils';
 import type { LayerOptions, LegendControlOptions } from './types';
 
@@ -75,13 +75,15 @@ export default class LegendControl implements IControl {
     });
   }
 
-  private _getBlock(key: string | RegExp, layer: Layer, attribute: string, value: any) {
+  private _getBlocks(key: string | RegExp, layer: Layer, attribute: string, value: any) {
     const [property] = attribute.split('-').slice(-1);
     const component = components[property as keyof typeof components];
     if (!component) return;
-    const parsed = expression.parse(value);
+    const expressions = Expression.parse(value);
     const options = this._options.layers?.get(key) || this._options;
-    return parsed && component(parsed, layer, this._map, options);
+    return expressions
+      .map(expression => component(expression, layer, this._map, options))
+      .filter(Boolean) as HTMLElement[];
   }
 
   private _toggleButton(layerId: string, key: string | RegExp) {
@@ -115,8 +117,8 @@ export default class LegendControl implements IControl {
           .reduce((acc, [attribute, value]) => {
             const visible = attributes?.includes(attribute) ?? true;
             if (!visible) return acc;
-            const block = this._getBlock(key, layer, attribute, value);
-            if (block) acc.push(block);
+            const blocks = this._getBlocks(key, layer, attribute, value);
+            blocks?.forEach(block => acc.push(block));
             return acc;
           }, [] as HTMLElement[]);
         if (!paneBlocks.length) return;
