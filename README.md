@@ -17,6 +17,7 @@ Properties currently supported:
 
 Expressions currently supported:
 
+- `case`
 - `match`
 - `interpolate`
 - `step`
