@@ -19,11 +19,11 @@ describe('Expressions', () => {
   });
 
   it('should return null if uncompatible expression', () => {
-    expect(expression.parse(INCOMPATIBLE as Expression)).toBeNull();
+    expect(expression.parse(INCOMPATIBLE as Expression)).toHaveLength(0);
   });
 
   it('should return a parsed expression', () => {
-    const parsed = expression.parse('#f00');
+    const [parsed] = expression.parse('#f00');
     expect(parsed).toHaveProperty('name');
     expect(parsed).toHaveProperty('stops');
     expect(parsed).toHaveProperty('inputs');
@@ -33,18 +33,18 @@ describe('Expressions', () => {
   });
 
   it('should parse a literal expression', () => {
-    expect(expression.parse('#f00')).toEqual({
+    expect(expression.parse('#f00')).toEqual([{
       name: 'literal',
       stops: [['#f00', '#f00']],
       inputs: ['#f00'],
       outputs: ['#f00'],
       min: NaN,
       max: NaN,
-    });
+    }]);
   });
 
   it('should parse an interpolation expression', () => {
-    expect(expression.parse(INTERPOLATE)).toEqual({
+    expect(expression.parse(INTERPOLATE)).toEqual([{
       name: 'interpolate',
       getter: ['get', 'attribute'],
       stops: [[0, '#f00'], [1, '#0f0'], [2, '#00f']],
@@ -52,11 +52,11 @@ describe('Expressions', () => {
       outputs: ['#f00', '#0f0', '#00f'],
       min: 0,
       max: 2,
-    });
+    }]);
   });
 
   it('should parse a match expression', () => {
-    expect(expression.parse(MATCH)).toEqual({
+    expect(expression.parse(MATCH)).toEqual([{
       name: 'match',
       getter: ['get', 'attribute'],
       stops: [[0, '#f00'], [1, '#0f0'], [2, '#00f'], [null, '#aaa']],
@@ -64,11 +64,11 @@ describe('Expressions', () => {
       outputs: ['#f00', '#0f0', '#00f', '#aaa'],
       min: 0,
       max: 2,
-    });
+    }]);
   });
 
   it('should parse a step expression', () => {
-    expect(expression.parse(STEP)).toEqual({
+    expect(expression.parse(STEP)).toEqual([{
       name: 'step',
       getter: ['get', 'attribute'],
       stops: [[[null, 0], '#aaa'], [[0, 1], '#f00'], [[1, 2], '#0f0'], [[2, null], '#00f']],
@@ -76,6 +76,14 @@ describe('Expressions', () => {
       outputs: ['#aaa', '#f00', '#0f0', '#00f'],
       min: 0,
       max: 2,
-    });
+    }]);
+  });
+
+  it('should parse case expressions', () => {
+    const CASE = ['case', ['condition'], INTERPOLATE, STEP]; 
+    const parsed = expression.parse(CASE);
+    expect(parsed).toHaveLength(2);
+    expect(parsed[0].name).toBe('interpolate');
+    expect(parsed[1].name).toBe('step');
   });
 });

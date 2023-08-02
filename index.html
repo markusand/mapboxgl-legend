@@ -140,17 +140,24 @@
           source: 'neighborhoods',
           paint: {
             'fill-color': [
-              'interpolate', ['linear'],
-              ['case', ...lifeExpectancy, 0],
-              70, '#a16928',
-              80, '#edeac2',
-              90, '#2887a1',
+              'case',
+              ['!=', ['get', 'neighborhood'], 'Tenderloin'],
+              ['interpolate', ['linear'],
+                ['case', ...lifeExpectancy, 0],
+                70, '#a16928',
+                80, '#edeac2',
+                90, '#2887a1',
+              ],
+              '#cc3322',
             ],
             'fill-opacity': 0.4,
           },
           metadata: {
             name: 'Life expectancy',
             unit: 'y',
+            labels: {
+              '#cc3322': 'Excluded',
+            },
           },
         });
 
