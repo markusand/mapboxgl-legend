@@ -78,4 +78,12 @@ describe('Expressions', () => {
       max: 2,
     }]);
   });
+
+  it('should parse case expressions', () => {
+    const CASE = ['case', ['condition'], INTERPOLATE, STEP]; 
+    const parsed = expression.parse(CASE);
+    expect(parsed).toHaveLength(2);
+    expect(parsed[0].name).toBe('interpolate');
+    expect(parsed[1].name).toBe('step');
+  });
 });
