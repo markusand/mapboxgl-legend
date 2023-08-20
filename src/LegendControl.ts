@@ -30,18 +30,18 @@ export default class LegendControl implements IControl {
     this._container = createElement('div', {
       classes: ['mapboxgl-ctrl', 'mapboxgl-ctrl-legend'],
     });
-    this._loadPanes = this._loadPanes.bind(this);
+    this.refresh = this.refresh.bind(this);
   }
 
   onAdd(map: MapboxMap) {
     this._map = map;
-    this._map.on('styledata', this._loadPanes);
+    this._map.on('styledata', this.refresh);
     return this._container;
   }
 
   onRemove() {
     this._container.parentNode?.removeChild(this._container);
-    this._map?.off('styledata', this._loadPanes);
+    this._map?.off('styledata', this.refresh);
   }
 
   addLayers(layers: NonNullable<LegendControlOptions['layers']>) {
@@ -64,7 +64,7 @@ export default class LegendControl implements IControl {
       else saveLayerOptions(name, options); 
     });
     
-    if (this._map?.isStyleLoaded()) this._loadPanes();
+    if (this._map?.isStyleLoaded()) this.refresh();
   }
 
   removeLayers(layerIds: (string | RegExp)[]) {
@@ -99,7 +99,7 @@ export default class LegendControl implements IControl {
     return button;
   }
 
-  private _loadPanes() {
+  refresh() {
     const layersIds = [...this._options.layers?.keys() || []];
     this._map.getStyle().layers
       .filter(layer => (layer as Layer).source && (layer as Layer).source !== 'composite')
