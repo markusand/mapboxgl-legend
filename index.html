@@ -51,10 +51,10 @@
           'muni-routes': true,
           'fire-events': {
             collapsed: true,
-            onToggle: () => alert('This is special'),
+            onToggle: () => console.log('This is special'),
           },
         },
-        onToggle: (layer) => alert(`${layer} toggled`),
+        onToggle: (layer) => console.log(`${layer} toggled`),
       });
 
       map.addControl(legend, 'bottom-left');
