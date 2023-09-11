@@ -11,7 +11,8 @@ export type LayerOptions = {
 };
 
 export type LegendControlOptions = {
-  layers?: (string | RegExp)[] | Record<string, boolean | string[] | LayerOptions>
+  minimized?: boolean;
+  layers?: (string | RegExp)[] | Record<string, boolean | string[] | LayerOptions>;
 } & LayerOptions;
 
 export type ParsedExpression<In, Out> = {

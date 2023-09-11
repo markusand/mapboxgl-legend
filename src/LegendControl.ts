@@ -20,6 +20,10 @@ export default class LegendControl implements IControl {
   } & Omit<LegendControlOptions, 'layers'>;
   
   private _container: HTMLElement;
+  
+  private _panes: HTMLElement;
+
+  private _minimizer: HTMLElement | undefined;
 
   private _map!: MapboxMap;
 
@@ -27,9 +31,28 @@ export default class LegendControl implements IControl {
     const { layers, ...rest } = options;
     this._options = { ...defaults, layers: undefined, ...rest };
     if (layers) this.addLayers(layers);
+    
+    this._panes = createElement('div', {
+      classes: 'panes',
+      styles: { display: options.minimized ?? false ? 'none' : 'block' },
+    });
+
+    this._minimizer = options.minimized !== undefined
+      ? createElement('button', {
+        classes: 'minimizer',
+        events: {
+          click: () => {
+            const { display } = this._panes.style;
+            this._panes.style.display = display === 'none' ? 'block' : 'none';
+          },
+        },
+      }) : undefined;
+    
     this._container = createElement('div', {
       classes: ['mapboxgl-ctrl', 'mapboxgl-ctrl-legend'],
+      content: [this._minimizer, this._panes],
     });
+    
     this.refresh = this.refresh.bind(this);
   }
 
@@ -70,8 +93,8 @@ export default class LegendControl implements IControl {
   removeLayers(layerIds: (string | RegExp)[]) {
     layerIds.forEach(id => {
       this._options.layers?.delete(id);
-      const pane = this._container.querySelector(`.mapboxgl-ctrl-legend-pane--${id}`);
-      if (pane) this._container.removeChild(pane);
+      const pane = this._panes.querySelector(`.mapboxgl-ctrl-legend-pane--${id}`);
+      if (pane) this._panes.removeChild(pane);
     });
   }
 
@@ -125,7 +148,7 @@ export default class LegendControl implements IControl {
 
         // (re)Construct pane and replace (if already exist)
         const selector = `mapboxgl-ctrl-legend-pane--${id}`;
-        const prevPane = this._container.querySelector(`.${selector}`);
+        const prevPane = this._panes.querySelector(`.${selector}`);
         const pane = createElement('details', {
           classes: ['mapboxgl-ctrl-legend-pane', selector],
           attributes: { open: prevPane ? prevPane.getAttribute('open') !== null : !collapsed },
@@ -139,8 +162,8 @@ export default class LegendControl implements IControl {
             ...paneBlocks,
           ],
         });
-        if (prevPane) this._container.replaceChild(pane, prevPane);
-        else this._container.appendChild(pane);
+        if (prevPane) this._panes.replaceChild(pane, prevPane);
+        else this._panes.appendChild(pane);
       });
   }
 }

@@ -116,4 +116,20 @@ describe('Legend Control', () => {
     control.removeLayers(['test_2']);
     expect(container.querySelectorAll('.mapboxgl-ctrl-legend-pane')).toHaveLength(1);
   });
+
+  it('should load minimized', () => {
+    const { container } = createLegend({ minimized: true });
+    expect(container.querySelector('.minimizer')).toBeTruthy();
+    const panes = container.querySelector('.panes') as HTMLElement;
+    expect(panes).toBeTruthy();
+    expect(panes.style.display).toBe('none');
+  });
+
+  it('should load expanded', () => {
+    const { container } = createLegend({ minimized: false });
+    expect(container.querySelector('.minimizer')).toBeTruthy();
+    const panes = container.querySelector('.panes') as HTMLElement;
+    expect(panes).toBeTruthy();
+    expect(panes.style.display).toBe('block');
+  });
 });

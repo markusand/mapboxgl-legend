@@ -77,6 +77,7 @@ A few options can be passed on legend initialization.
 
 | option | type | default | description |
 | --- | --- | --- | --- |
+| minimized | Boolean, undefined | `undefined` | If set, a button toggles layer visibility. Initial value is set as this attribute |
 | collapsed | Boolean | `false` | Set legend panels collapsed on load |
 | toggler | Boolean | `false` | Add button to show and hide layers |
 | highlight | Boolean | `false` | Add interactivity to legend items |
