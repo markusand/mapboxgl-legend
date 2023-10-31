@@ -79,7 +79,7 @@ A few options can be passed on legend initialization.
 | --- | --- | --- | --- |
 | minimized | Boolean, undefined | `undefined` | If set, a button toggles layer visibility. Initial value is set as this attribute |
 | collapsed | Boolean | `false` | Set legend panels collapsed on load |
-| toggler | Boolean | `false` | Add button to show and hide layers |
+| toggler | Boolean, string[] | `false` | Add button to show and hide layers. Provide an array of layer ids to toggle them with this button |
 | highlight | Boolean | `false` | Add interactivity to legend items |
 | layers | Array[string | RegExp], Object | `undefined` | List of layers to be added. If undefined all layers will be added |
 | onToggle | Function | `undefined` | Set a callback function to a layer visibility change. Function receives as parameters the `layerId` that changed and its visibility (boolean) |

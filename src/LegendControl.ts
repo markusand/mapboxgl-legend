@@ -109,15 +109,17 @@ export default class LegendControl implements IControl {
       .filter(Boolean) as HTMLElement[];
   }
 
-  private _toggleButton(layerId: string, key: string | RegExp) {
+  private _toggleButton(layerIds: string[], key: string | RegExp) {
     const { onToggle = this._options.onToggle } = this._options.layers?.get(key) || {};
-    const visibility = this._map?.getLayoutProperty(layerId, 'visibility') || 'visible';
+    const visibility = this._map?.getLayoutProperty(layerIds[0], 'visibility') || 'visible';
     const button = createElement('div', { classes: ['toggler', `toggler--${visibility}`] });
     button.addEventListener('click', event => {
       event.preventDefault();
       const visible = visibility === 'none' ? 'visible' : 'none';
-      this._map?.setLayoutProperty(layerId, 'visibility', visible);
-      onToggle?.(layerId, visible === 'visible');
+      layerIds.forEach(layerId => {
+        this._map?.setLayoutProperty(layerId, 'visibility', visible);
+        onToggle?.(layerId, visible === 'visible');
+      });
     });
     return button;
   }
@@ -149,6 +151,7 @@ export default class LegendControl implements IControl {
         // (re)Construct pane and replace (if already exist)
         const selector = `mapboxgl-ctrl-legend-pane--${id}`;
         const prevPane = this._panes.querySelector(`.${selector}`);
+        const layerIds = toggler ? typeof toggler === 'boolean' ? [id] : toggler : undefined;
         const pane = createElement('details', {
           classes: ['mapboxgl-ctrl-legend-pane', selector],
           attributes: { open: prevPane ? prevPane.getAttribute('open') !== null : !collapsed },
@@ -156,7 +159,7 @@ export default class LegendControl implements IControl {
             createElement('summary', {
               content: [
                 metadata?.name || id,
-                toggler && this._toggleButton(id, key),
+                layerIds && this._toggleButton(layerIds, key),
               ],
             }),
             ...paneBlocks,

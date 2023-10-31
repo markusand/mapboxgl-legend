@@ -4,7 +4,7 @@ export type { Map, Layer, Expression, ExpressionName };
 
 export type LayerOptions = {
   collapsed?: boolean;
-  toggler?: boolean;
+  toggler?: boolean | string[];
   attributes?: string[];
   highlight?: boolean;
   onToggle?: (layer: string, visibility: boolean) => void;

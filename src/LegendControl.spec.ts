@@ -132,4 +132,21 @@ describe('Legend Control', () => {
     expect(panes).toBeTruthy();
     expect(panes.style.display).toBe('block');
   });
+
+  it('toggle should toggle specified layers', () => {
+    const onToggle = vi.fn();
+    const { container } = createLegend({
+      layers: {
+        test_1: true,
+        test_2: {
+          toggler: ['test_1', 'test_2'],
+          collapsed: true,
+          onToggle,
+        },
+      },
+    });
+    const toggler = container.querySelector('.toggler') as HTMLButtonElement | null;
+    toggler?.click();
+    expect(onToggle.mock.calls).toHaveLength(2);
+  });
 });
