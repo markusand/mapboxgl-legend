@@ -81,7 +81,7 @@ A few options can be passed on legend initialization.
 | collapsed | Boolean | `false` | Set legend panels collapsed on load |
 | toggler | Boolean, string[] | `false` | Add button to show and hide layers. Provide an array of layer ids to toggle them with this button |
 | highlight | Boolean | `false` | Add interactivity to legend items |
-| layers | Array[string | RegExp], Object | `undefined` | List of layers to be added. If undefined all layers will be added |
+| layers | Array[string, RegExp], Object | `undefined` | List of layers to be added. If undefined all layers will be added |
 | onToggle | Function | `undefined` | Set a callback function to a layer visibility change. Function receives as parameters the `layerId` that changed and its visibility (boolean) |
 
 The layers option is an array of the layers' ids, or strings casted as regex that match the layers' ids. It can also be an object with keys being the layers' ids and values being an array of visible attributes, or `true` if all visible. For a fine grained control over layers, this object can also contain the same options `collapsed`, `toggler`, `attributes` and `onToggle`.
