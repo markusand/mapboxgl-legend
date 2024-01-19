@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import list from './list';
-import type { ParsedExpression } from '../../types';
+import list from '../list';
+import type { ParsedExpression } from '../../../types';
 
 const map = { setFilter: () => {} };
 

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import bubbles from './radius';
-import type { ParsedExpression } from '../types';
+import bubbles from '../radius';
+import type { ParsedExpression } from '../../types';
 
 const map = { setFilter: () => {} };
 

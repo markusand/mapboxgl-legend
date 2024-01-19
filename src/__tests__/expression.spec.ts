@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { Expression } from 'mapbox-gl';
-import expression from './expression';
+import expression from '../expression';
 
 const INTERPOLATE: Expression = ['interpolate', ['linear'], ['get', 'attribute'], 0, '#f00', 1, '#0f0', 2, '#00f'];
 const MATCH: Expression = ['match', ['get', 'attribute'], 0, '#f00', 1, '#0f0', 2, '#00f', '#aaa'];

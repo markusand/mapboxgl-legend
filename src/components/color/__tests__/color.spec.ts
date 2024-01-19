@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import components from './index';
+import components from '../index';
 
 const expression = {
   stops: [],

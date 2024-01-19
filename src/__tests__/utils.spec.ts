@@ -1,6 +1,6 @@
 /* eslint-disable import/no-unresolved */
 import { describe, it, expect } from 'vitest';
-import { ensureArray, rescale, chunk, zip, toPair, toBins, createElement, serializeLabel } from './utils';
+import { ensureArray, rescale, chunk, zip, toPair, toBins, createElement, serializeLabel } from '../utils';
 
 describe('Expression utilities', () => {
   it('should encapsulate variables in array if needed', () => {

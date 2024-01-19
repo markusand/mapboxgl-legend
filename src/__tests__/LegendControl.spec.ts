@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import type { Map } from 'mapbox-gl';
-import LegendControl, { LegendControlOptions } from './index';
+import LegendControl, { LegendControlOptions } from '../index';
 
 const layers = [
   { id: 'skip', type: 'fill', source: 'composite' },

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import image from './image';
-import type { ParsedExpression } from '../types';
+import image from '../image';
+import type { ParsedExpression } from '../../types';
 
 // Stub ImageData
 vi.stubGlobal('ImageData', class ImageData {});

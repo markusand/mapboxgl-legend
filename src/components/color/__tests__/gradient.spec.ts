@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import gradient from './gradient';
-import type { ParsedExpression } from '../../types';
+import gradient from '../gradient';
+import type { ParsedExpression } from '../../../types';
 
 const map = { setFilter: () => {} };
 
