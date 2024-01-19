@@ -27,17 +27,17 @@ export default class LegendControl implements IControl {
 
   private _map!: MapboxMap;
 
-  constructor(options: LegendControlOptions = {}) {
-    const { layers, ...rest } = options;
+  constructor(options?: LegendControlOptions) {
+    const { layers, ...rest } = options || {};
     this._options = { ...defaults, layers: undefined, ...rest };
     if (layers) this.addLayers(layers);
     
     this._panes = createElement('div', {
       classes: 'panes',
-      styles: { display: options.minimized ?? false ? 'none' : 'block' },
+      styles: { display: options?.minimized ?? false ? 'none' : 'block' },
     });
 
-    this._minimizer = options.minimized !== undefined
+    this._minimizer = options?.minimized !== undefined
       ? createElement('button', {
         classes: 'minimizer',
         events: {
@@ -68,21 +68,21 @@ export default class LegendControl implements IControl {
   }
 
   addLayers(layers: NonNullable<LegendControlOptions['layers']>) {
-    const saveLayerOptions = (name: string | RegExp, options: LayerOptions) => {
+    const saveLayerOptions = (name: string | RegExp, options?: LayerOptions) => {
       const {
         collapsed = this._options.collapsed,
         toggler = this._options.toggler,
         highlight = this._options.highlight,
         onToggle = this._options.onToggle,
         attributes,
-      } = options;
+      } = options || {};
       this._options.layers?.set(name, { collapsed, toggler, highlight, onToggle, attributes });
     };
     
     this._options.layers ??= new Map();
-    if (Array.isArray(layers)) layers.forEach(name => saveLayerOptions(name, {}));
+    if (Array.isArray(layers)) layers.forEach(name => saveLayerOptions(name));
     else Object.entries(layers).forEach(([name, options]) => {
-      if (typeof options === 'boolean') saveLayerOptions(name, {});
+      if (typeof options === 'boolean') saveLayerOptions(name);
       else if (Array.isArray(options)) saveLayerOptions(name, { attributes: options });
       else saveLayerOptions(name, options); 
     });
