@@ -1,6 +1,9 @@
 /* eslint-disable import/no-unresolved */
-import { describe, it, expect } from 'vitest';
-import { ensureArray, rescale, chunk, zip, toPair, toBins, createElement, serializeLabel } from '../utils';
+import { describe, it, expect, vi } from 'vitest';
+import { ensureArray, rescale, chunk, zip, toPair, toBins, createElement, createImageCanvas, serializeLabel } from '../utils';
+
+// Stub ImageData
+vi.stubGlobal('ImageData', class ImageData {});
 
 describe('Expression utilities', () => {
   it('should encapsulate variables in array if needed', () => {
@@ -78,6 +81,16 @@ describe('DOM utilities', () => {
     });
     expect(parent.childElementCount).toBe(1);
     expect(parent.firstElementChild).toBe(child);
+  });
+});
+
+describe('Image canvas', () => {
+  it('should create an image canvas', () => {
+    const raw = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+    const data = new Uint8ClampedArray(raw);
+    const canvas = createImageCanvas(data, 4, 4);
+    expect(canvas.width).toBe(4);
+    expect(canvas.height).toBe(4);
   });
 });
 
