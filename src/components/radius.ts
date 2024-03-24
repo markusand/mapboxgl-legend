@@ -9,7 +9,8 @@ export default (expression: Expression, layer: Layer, map: Map, options: LayerOp
   const { events } = highlighter(expression, layer, map);
   return createElement('ul', {
     classes: ['bubbles', `bubbles--${options.highlight ? 'highlight' : ''}`],
-    content: stops.sort((a, b) => b[1] - a[1]) // order from bigger to smaller
+    content: stops
+      .sort((a, b) => b[1] - a[1]) // order from bigger to smaller
       .map(([value, radius]) => {
         const content = serializeLabel(value, layer.metadata);
         return content && createElement('li', {
