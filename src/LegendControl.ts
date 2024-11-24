@@ -49,7 +49,7 @@ export default class LegendControl implements IControl {
       }) : undefined;
     
     this._container = createElement('div', {
-      classes: ['mapboxgl-ctrl', 'mapboxgl-ctrl-legend'],
+      classes: ['mapboxgl-ctrl', 'maplibregl-ctrl', 'mapboxgl-ctrl-legend'],
       content: [this._minimizer, this._panes],
     });
     

@@ -23,6 +23,8 @@ Expressions currently supported:
 - `step`
 - literals
 
+The legend works seamlessly with [MapLibre](https://maplibre.org/) as well.
+
 ## Get started
 
 Install npm package

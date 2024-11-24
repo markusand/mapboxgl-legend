@@ -82,9 +82,13 @@
     }
   }
 
+  .maplibregl-ctrl-bottom-right &,
+  .maplibregl-ctrl-top-right &,
   .mapboxgl-ctrl-bottom-right &,
   .mapboxgl-ctrl-top-right & { align-items: flex-end; }
 
+  .maplibregl-ctrl-bottom-right &,
+  .maplibregl-ctrl-bottom-left &,
   .mapboxgl-ctrl-bottom-right &,
   .mapboxgl-ctrl-bottom-left & { flex-direction: column-reverse; }
   
