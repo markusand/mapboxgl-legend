@@ -1,0 +1,27 @@
+name: Feature Request
+description: Suggest an idea for this project
+labels: [enhancement]
+assignees:
+  - markusand
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Detailed description
+      description: Describe in as much detail as possible what and why this feature is needed. You may attach a wireframe
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance criteria
+      description: What minimum requirements must be accomplished to consider the feature as done
+      placeholder: |
+        - [ ] A button appears if...
+        - [ ] Button is disabled until...
+        - [ ] When the user clicks the button...
+        - [ ] After done, a success message is shown
+        - [ ] Status is reset to empty state
+        - [ ] ...
+    validations:
+      required: true
