@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import type { Map } from 'mapbox-gl';
 import LegendControl, { LegendControlOptions } from '../index';
+import type { MapboxMap } from '/@/types';
 
 const layers = [
   { id: 'skip', type: 'fill', source: 'composite' },
@@ -23,7 +23,7 @@ const createMap = () => {
 const createLegend = (options?: LegendControlOptions) => {
   const map = createMap();
   const control = new LegendControl(options);
-  const container = control.onAdd(map as unknown as Map);
+  const container = control.onAdd(map as unknown as MapboxMap);
   map.dispatch('styledata');
   return { map, control, container };
 };

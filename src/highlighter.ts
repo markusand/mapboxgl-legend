@@ -1,5 +1,4 @@
-import type { Map, Layer } from 'mapbox-gl';
-import type { ParsedExpression } from './types';
+import type { MapboxMap, Layer, ParsedExpression } from './types';
 
 type Options = {
   delta?: number;
@@ -7,7 +6,7 @@ type Options = {
 
 const backup: Record<string, any[] | null> = {};
 
-export default (expression: ParsedExpression<any, any>, layer: Layer, map: Map) => {
+export default (expression: ParsedExpression<any, any>, layer: Layer, map: MapboxMap) => {
   const { getter } = expression;
 
   if (!(layer.id in backup)) backup[layer.id] = layer.filter ?? null;
@@ -23,7 +22,7 @@ export default (expression: ParsedExpression<any, any>, layer: Layer, map: Map) 
       map.setFilter(layer.id, ['all', lower, higher]);
     } else {
       const filter = typeof value === 'number'
-        ? ['all', ['>=', getter, value - delta], ['<=', getter, value + delta]]
+        ? ['all', ['>=', getter, `${value - delta}`], ['<=', getter, `${value + delta}`]]
         : ['==', getter, value];
       map.setFilter(layer.id, filter);
     }

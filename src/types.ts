@@ -1,6 +1,20 @@
-import type { Map, Layer, Expression, ExpressionName } from 'mapbox-gl';
+import type {
+  Map as MapboxMap,
+  Layer as MapboxLayer,
+  ExpressionSpecification as Expression,
+} from 'mapbox-gl';
 
-export type { Map, Layer, Expression, ExpressionName };
+export type { MapboxMap, Expression };
+
+export type Metadata = {
+  name?: string;
+  unit?: string;
+  labels?: Record<string, string | boolean>;
+};
+
+export type Layer = {
+  metadata?: Metadata;
+} & MapboxLayer;
 
 export type LayerOptions = {
   collapsed?: boolean;
@@ -16,7 +30,7 @@ export type LegendControlOptions = {
 } & LayerOptions;
 
 export type ParsedExpression<In, Out> = {
-  name: ExpressionName;
+  name: string;
   getter: Expression | undefined,
   stops: [In, Out][];
   inputs: In[];

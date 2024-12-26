@@ -1,10 +1,9 @@
 import './styles/main.scss';
 import { IControl } from 'mapbox-gl';
-import type { Map as MapboxMap, Layer } from 'mapbox-gl';
 import components from './components';
 import Expression from './expression';
 import { createElement } from './utils';
-import type { LayerOptions, LegendControlOptions } from './types';
+import type { MapboxMap, Layer, LayerOptions, LegendControlOptions } from './types';
 
 export type { LayerOptions, LegendControlOptions };
 
@@ -126,7 +125,7 @@ export default class LegendControl implements IControl {
 
   refresh() {
     const layersIds = [...this._options.layers?.keys() || []];
-    this._map.getStyle().layers
+    this._map.getStyle()?.layers
       .filter(layer => {
         const isValidLayer = 'source' in layer && layer.source !== 'composite';
         const isActiveLayer = !layersIds.length
@@ -144,7 +143,7 @@ export default class LegendControl implements IControl {
           .reduce((acc, [attribute, value]) => {
             const visible = attributes?.includes(attribute) ?? true;
             if (!visible) return acc;
-            const blocks = this._getBlocks(key, layer, attribute, value);
+            const blocks = this._getBlocks(key, layer as Layer, attribute, value);
             blocks?.forEach(block => acc.push(block));
             return acc;
           }, [] as HTMLElement[]);
