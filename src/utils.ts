@@ -50,6 +50,17 @@ export const createElement = (
   return el;
 };
 
+export const createImageCanvas = (data: any, width: number, height: number) => {
+  const size = Math.max(width, height);
+  const canvas = createElement('canvas', {
+    attributes: { width: size, height: size },
+  }) as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d');
+  const imageData = new ImageData(Uint8ClampedArray.from(data), width, height);
+  ctx?.putImageData(imageData, (size - width) / 2, (size - height) / 2);
+  return canvas;
+};
+
 type Metadata = {
   name?: string;
   unit?: string;

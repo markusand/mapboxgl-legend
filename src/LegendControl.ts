@@ -127,10 +127,12 @@ export default class LegendControl implements IControl {
   refresh() {
     const layersIds = [...this._options.layers?.keys() || []];
     this._map.getStyle().layers
-      .filter(layer => (layer as Layer).source && (layer as Layer).source !== 'composite')
-      .filter(layer => !this._options.layers || layersIds.some(name => {
-        return typeof name === 'string' ? layer.id === name : layer.id.match(name);
-      }))
+      .filter(layer => {
+        const isValidLayer = 'source' in layer && layer.source !== 'composite';
+        const isActiveLayer = !layersIds.length
+          || layersIds.some(name => typeof name === 'string' ? layer.id === name : layer.id.match(name));
+        return isValidLayer && isActiveLayer;
+      })
       .reverse() // Show in order that are drawn on map (first layers at the bottom, last on top)
       .forEach(layer => {
         const { id, layout, paint, metadata } = layer as Layer;
