@@ -22,8 +22,9 @@ export default (expression: ParsedExpression<any, any>, layer: Layer, map: Mapbo
       map.setFilter(layer.id, ['all', lower, higher]);
     } else {
       const filter = typeof value === 'number'
-        ? ['all', ['>=', getter, `${value - delta}`], ['<=', getter, `${value + delta}`]]
+        ? ['all', ['>=', getter, value - delta], ['<=', getter, value + delta]]
         : ['==', getter, value];
+      // @ts-expect-error Filter should accept numbers
       map.setFilter(layer.id, filter);
     }
   };

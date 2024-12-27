@@ -26,13 +26,13 @@ describe('Highlighter', () => {
   it('should apply highlight filter with number', () => {
     const setFilter = vi.spyOn(map, 'setFilter');
     highlight(2);
-    expect(setFilter).toHaveBeenCalledWith('layer_id', ['all', ['>=', ['get', 'attribute'], '2'], ['<=', ['get', 'attribute'], '2']]);
+    expect(setFilter).toHaveBeenCalledWith('layer_id', ['all', ['>=', ['get', 'attribute'], 2], ['<=', ['get', 'attribute'], 2]]);
   });
 
   it('should apply highlight filter with number + delta', () => {
     const setFilter = vi.spyOn(map, 'setFilter');
     highlight(2, { delta: 1 });
-    expect(setFilter).toHaveBeenCalledWith('layer_id', ['all', ['>=', ['get', 'attribute'], '1'], ['<=', ['get', 'attribute'], '3']]);
+    expect(setFilter).toHaveBeenCalledWith('layer_id', ['all', ['>=', ['get', 'attribute'], 1], ['<=', ['get', 'attribute'], 3]]);
   });
 
   it('should apply highlight filter with string', () => {
