@@ -1,7 +1,6 @@
-@import
-  "variables",
-  "lists",
-  "components";
+@use "variables";
+@use "lists";
+@use "components";
 
 .mapboxgl-ctrl-legend {
   font: var(--map-legend-font);
@@ -91,5 +90,4 @@
   .maplibregl-ctrl-bottom-left &,
   .mapboxgl-ctrl-bottom-right &,
   .mapboxgl-ctrl-bottom-left & { flex-direction: column-reverse; }
-  
 }
