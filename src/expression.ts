@@ -1,5 +1,5 @@
 import { chunk, zip, toPair, toBins } from './utils';
-import type { Expression, ExpressionName, ParsedExpression } from './types';
+import type { Expression, ParsedExpression } from './types';
 
 type Input<T> = T | null | [Input<T>, Input<T>];
 type Stopper = <T>(args: T[]) => [Input<T>, T][];
@@ -16,9 +16,7 @@ const stopper: Record<string, Stopper> = {
 const isExpression = (e: any): e is Expression => Array.isArray(e) && !!e.length && typeof e[0] === 'string';
 
 const parse = (input: any): ParsedExpression<any, any>[] => {
-  const [name, ...args] = isExpression(input)
-    ? input
-    : ['literal' as ExpressionName, input];
+  const [name, ...args] = isExpression(input) ? input : ['literal', input];
 
   if (name === 'case') return args.slice(1).flatMap(parse);
 

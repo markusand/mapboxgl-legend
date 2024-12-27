@@ -1,12 +1,12 @@
 import { createElement, serializeLabel, rescale } from '../../utils';
 import highlighter from '../../highlighter';
-import type { Map, Layer, ParsedExpression, LayerOptions } from '../../types';
+import type { MapboxMap, Layer, ParsedExpression, LayerOptions } from '/@/types';
 
 type Expression = ParsedExpression<number, string>;
 
 const cached = { x: 0 };
 
-export default (expression: Expression, layer: Layer, map: Map, options: LayerOptions) => {
+export default (expression: Expression, layer: Layer, map: MapboxMap, options: LayerOptions) => {
   const { inputs, stops, min, max } = expression;
 
   const { highlight } = highlighter(expression, layer, map);  

@@ -2,6 +2,7 @@
   "name": "mapboxgl-legend",
   "version": "1.15.0",
   "description": "Mapbox-GL plugin that automatically draws a legend from layer styles",
+  "type": "module",
   "main": "./dist/index.umd.js",
   "module": "./dist/index.es.js",
   "browser": "./dist/index.umd.js",
@@ -45,7 +46,7 @@
   "homepage": "https://github.com/markusand/mapboxgl-legend",
   "license": "ISC",
   "devDependencies": {
-    "@types/mapbox-gl": "^2.7.10",
+    "@types/node": "^22.10.2",
     "@typescript-eslint/eslint-plugin": "^6.9.1",
     "@typescript-eslint/parser": "^6.9.1",
     "@vitest/coverage-v8": "^1.2.1",
@@ -61,7 +62,7 @@
     "stylelint-config-standard-scss": "^13.0.0",
     "typescript": "^5.0.3",
     "vite": "^5.0.12",
-    "vite-plugin-dts": "^3.6.3",
+    "vite-plugin-dts": "^4.4.0",
     "vitest": "^1.2.1"
   }
 }

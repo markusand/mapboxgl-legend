@@ -1,3 +1,5 @@
+import type { Metadata } from '/@/types';
+
 export const ensureArray = <T>(thing: T | T[]): T[] => (Array.isArray(thing) ? thing : [thing]);
 
 export const rescale = (val: number, x1: number, y1: number, x2 = 0, y2 = 100) => (
@@ -32,7 +34,7 @@ export const createElement = (
     styles?: Record<string, string>;
     attributes?: Record<string, string | number | boolean | null>;
     events?: Partial<Record<keyof HTMLElementEventMap, (event: Event) => void>>,
-    content?: string | HTMLElement | false | (string | HTMLElement | undefined | false)[];
+    content?: string | HTMLElement | boolean | (string | HTMLElement | undefined | boolean)[];
     appendTo?: HTMLElement;
   } = {},
 ) => {
@@ -59,12 +61,6 @@ export const createImageCanvas = (data: any, width: number, height: number) => {
   const imageData = new ImageData(Uint8ClampedArray.from(data), width, height);
   ctx?.putImageData(imageData, (size - width) / 2, (size - height) / 2);
   return canvas;
-};
-
-type Metadata = {
-  name?: string;
-  unit?: string;
-  labels?: Record<string, string | false>;
 };
 
 export const serializeLabel = <T>(value: T | T[], metadata?: Metadata) => {

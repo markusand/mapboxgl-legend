@@ -16,7 +16,7 @@ describe('Color list panel', () => {
       max: 3,
     };
     const metadata = { labels: { 1: 'one', 3: 'three' } };
-    const el = list(expression, { id: '_', type: '_', metadata }, {} as any, {});
+    const el = list(expression, { id: '_', type: 'circle', metadata }, {} as any, {});
 
     expect(el.tagName).toBe('UL');
     expect(el.classList.contains('list')).toBeTruthy();
@@ -42,7 +42,7 @@ describe('Color list panel', () => {
       max: 15,
     };
     const metadata = { unit: 'k' };
-    const el = list(expression, { id: '_', type: '_', metadata }, {} as any, {});
+    const el = list(expression, { id: '_', type: 'circle', metadata }, {} as any, {});
 
     expect(el.tagName).toBe('UL');
     expect(el.classList.contains('list')).toBeTruthy();
@@ -68,7 +68,7 @@ describe('Color list panel', () => {
       max: NaN,
     };
     const metadata = { labels: { low: 'baix', medium: 'mig', high: 'alt' } };
-    const el = list(expression, { id: '_', type: '_', metadata }, {} as any, {});
+    const el = list(expression, { id: '_', type: 'circle', metadata }, {} as any, {});
 
     expect(el.tagName).toBe('UL');
     expect(el.classList.contains('list')).toBeTruthy();
@@ -94,7 +94,7 @@ describe('Color list panel', () => {
       max: 3,
     };
     const metadata = { labels: { 2: false } };
-    const el = list(expression, { id: '_', type: '_', metadata }, {} as any, {});
+    const el = list(expression, { id: '_', type: 'circle', metadata }, {} as any, {});
 
     expect(el.childElementCount).toBe(2);
   });
@@ -110,7 +110,7 @@ describe('Color list panel', () => {
       max: 3,
     };
     const metadata = { labels: { 2: false } };
-    const el = list(expression, { id: '_', type: '_', metadata }, map as any, { highlight: true });
+    const el = list(expression, { id: '_', type: 'circle', metadata }, map as any, { highlight: true });
   
     const setFilter = vi.spyOn(map, 'setFilter');
     el.firstElementChild?.dispatchEvent(new Event('mouseenter'));
