@@ -5,6 +5,13 @@ import { ensureArray, rescale, chunk, zip, toPair, toBins, createElement, create
 // Stub ImageData
 vi.stubGlobal('ImageData', class ImageData {});
 
+// Mock canvas getContext
+// @ts-expect-error Mocking the only method needed
+HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
+  putImageData: vi.fn(),
+}));
+
+
 describe('Expression utilities', () => {
   it('should encapsulate variables in array if needed', () => {
     expect(ensureArray('string')).toEqual(['string']);
