@@ -41,11 +41,12 @@ describe('Color list panel', () => {
       min: 1,
       max: 15,
     };
-    const metadata = { unit: 'k' };
+    const metadata = { unit: 'k', extraLegendClasses: ["some-custom-class"] };
     const el = list(expression, { id: '_', type: 'circle', metadata }, {} as any, {});
 
     expect(el.tagName).toBe('UL');
     expect(el.classList.contains('list')).toBeTruthy();
+    expect(el.classList.contains('some-custom-class')).toBeTruthy();
     expect(el.classList.contains('list--color')).toBeTruthy();
     expect(el.childElementCount).toBe(3);
 
