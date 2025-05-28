@@ -6,9 +6,11 @@ const layers = [
   { id: 'skip', type: 'fill', source: 'composite' },
   { id: 'test_1', type: 'fill', source: 'source', paint: { 'fill-color': 'red' } },
   { id: 'test_2', type: 'fill', source: 'source', paint: { 'fill-color': 'blue' } },
-  { id: 'test_classes', type: 'fill', source: 'source', 
+  { 
+    id: 'test_classes', type: 'fill', source: 'source', 
     paint: { 'fill-color': 'green' }, 
-    metadata: { extraLegendClasses: ["test-custom-class"]} },
+    metadata: { extraLegendClasses: ['test-custom-class'] }, 
+  },
 ];
 
 const createMap = () => {
@@ -129,7 +131,7 @@ describe('Legend Control', () => {
   it('should allow adding classes to specific layers', () => {
     const { container } = createLegend();
     expect(container.querySelector('.test-custom-class')).toBeTruthy();
-  })
+  });
 
   it('should load minimized', () => {
     const { container } = createLegend({ minimized: true });
