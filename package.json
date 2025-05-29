@@ -1,6 +1,6 @@
 {
   "name": "mapboxgl-legend",
-  "version": "1.15.0",
+  "version": "1.16.0",
   "description": "Mapbox-GL plugin that automatically draws a legend from layer styles",
   "type": "module",
   "main": "./dist/index.umd.js",
