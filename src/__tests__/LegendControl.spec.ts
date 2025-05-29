@@ -6,6 +6,11 @@ const layers = [
   { id: 'skip', type: 'fill', source: 'composite' },
   { id: 'test_1', type: 'fill', source: 'source', paint: { 'fill-color': 'red' } },
   { id: 'test_2', type: 'fill', source: 'source', paint: { 'fill-color': 'blue' } },
+  { 
+    id: 'test_classes', type: 'fill', source: 'source', 
+    paint: { 'fill-color': 'green' }, 
+    metadata: { extraLegendClasses: ['test-custom-class'] }, 
+  },
 ];
 
 const createMap = () => {
@@ -38,11 +43,11 @@ describe('Legend Control', () => {
   it('should mount layers panes with defaults', () => {
     const { container } = createLegend();
     const panes = container.querySelectorAll('.mapboxgl-ctrl-legend-pane');
-    expect(panes.length).toBe(2);
-    expect(panes[0].getAttribute('open')).toBeTruthy();
-    expect(panes[0].querySelector('toggler')).toBeFalsy();
-    expect(panes[0].querySelector('summary')?.textContent).toBe('test_2');
-    expect(panes[1].querySelector('summary')?.textContent).toBe('test_1');
+    expect(panes.length).toBe(3);
+    expect(panes[1].getAttribute('open')).toBeTruthy();
+    expect(panes[1].querySelector('toggler')).toBeFalsy();
+    expect(panes[1].querySelector('summary')?.textContent).toBe('test_2');
+    expect(panes[2].querySelector('summary')?.textContent).toBe('test_1');
   });
 
   it('should not mount layers when empty array provided', () => {
@@ -118,9 +123,14 @@ describe('Legend Control', () => {
 
   it('should remove pane', () => {
     const { control, container } = createLegend();
-    expect(container.querySelectorAll('.mapboxgl-ctrl-legend-pane')).toHaveLength(2);
+    expect(container.querySelectorAll('.mapboxgl-ctrl-legend-pane')).toHaveLength(3);
     control.removeLayers(['test_2']);
-    expect(container.querySelectorAll('.mapboxgl-ctrl-legend-pane')).toHaveLength(1);
+    expect(container.querySelectorAll('.mapboxgl-ctrl-legend-pane')).toHaveLength(2);
+  });
+
+  it('should allow adding classes to specific layers', () => {
+    const { container } = createLegend();
+    expect(container.querySelector('.test-custom-class')).toBeTruthy();
   });
 
   it('should load minimized', () => {

@@ -115,6 +115,7 @@ There are also a few options that be defined as a per-layer basis using the styl
 | name | String | Set the panel title name |
 | unit | String | Add a unit to all labels |
 | labels | Object | Map a value to a text that replaces it as a label |
+| extraLegendClasses | String[] | Classes to add to the layer's legend pane |
 
 Metadata provides an extra layer of control by hiding items that have a label set to `false`, except on step expressions.
 
