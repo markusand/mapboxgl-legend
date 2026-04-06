@@ -9,11 +9,10 @@ const cache = createCache<{ x: number }>();
 export default (expression: Expression, layer: Layer, map: MapboxMap, options: LayerOptions) => {
   const { inputs, stops, min, max } = expression;
 
-  const { highlight } = highlighter(expression, layer, map);  
-  const delta = (max - min) / 100;
   // Save previous mouse position to avoid flickering
   const mousePos = cache.get(map, layer.id, { x: 0 });
 
+  const { highlight } = highlighter(expression, layer, map);  
   const events = {
     mouseleave: () => highlight(undefined),
     mousemove: (event: Event) => {
@@ -21,7 +20,7 @@ export default (expression: Expression, layer: Layer, map: MapboxMap, options: L
       mousePos.x = x;
       const bar = target as HTMLDivElement;
       const value = rescale(x, 0, bar.offsetWidth, min, max);
-      highlight(value, { delta });
+      highlight(value, { delta: (max - min) / 100 });
       bar.style.setProperty('--x', `${x}px`);
     },
   };
