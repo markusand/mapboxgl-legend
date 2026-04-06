@@ -1,6 +1,10 @@
-@use "variables";
-@use "lists";
-@use "renderers";
+@import url("variables");
+@import url("lists");
+@import url("renderers/color");
+@import url("renderers/image");
+@import url("renderers/radius");
+
+/* @import url("renderers"); */
 
 .mapboxgl-ctrl-legend {
   font: var(--map-legend-font);
@@ -74,7 +78,7 @@
       opacity: var(--toggler-hidden-opacity);
       cursor: pointer;
 
-      &--visible {
+      &.toggler--visible {
         mask-image: var(--toggler-visible-icon);
         opacity: 1;
       }

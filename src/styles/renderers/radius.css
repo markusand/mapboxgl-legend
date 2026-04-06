@@ -49,7 +49,7 @@
     }
   }
 
-  &--highlight {
+  &.bubbles--highlight {
     &:hover li { opacity: 0.25; }
     li:hover { opacity: 1 }
   }

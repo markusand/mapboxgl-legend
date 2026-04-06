@@ -1,4 +1,4 @@
-import './styles/main.scss';
+import './styles/main.css';
 import { IControl } from 'mapbox-gl';
 import renderers from './renderers';
 import Expression from './expression';

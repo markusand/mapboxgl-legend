@@ -10,7 +10,7 @@
     text-transform: uppercase;
   }
 
-  &--highlight {
+  &.list--highlight {
     &:hover li { opacity: 0.25; }
 
     li:hover {

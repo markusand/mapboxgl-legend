@@ -14,9 +14,6 @@ export default defineConfig({
     dts({ insertTypesEntry: true }),
   ],
   css: {
-    preprocessorOptions: {
-      scss: { api: 'modern' },
-    },
     postcss: {
       plugins: [autoprefixer()],
     },

@@ -23,7 +23,7 @@
     border-radius: var(--map-legend-thumb-radius);
   }
 
-  &--highlight {
+  &.gradient--highlight {
     .bar:hover::before {
       content: attr(data-label);
       display: block;
