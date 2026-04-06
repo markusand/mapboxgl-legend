@@ -1,5 +1,5 @@
 import path from 'path';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 import dts from 'vite-plugin-dts';
 import autoprefixer from 'autoprefixer';
 
@@ -21,6 +21,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    restoreMocks: true,
   },
   build: {
     lib: {
