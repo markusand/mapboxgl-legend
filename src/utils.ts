@@ -1,4 +1,4 @@
-import type { Metadata } from '/@/types';
+import type { MapboxMap, Metadata, LayerOptions } from '/@/types';
 
 export const ensureArray = <T>(thing: T | T[]): T[] => (Array.isArray(thing) ? thing : [thing]);
 
@@ -76,4 +76,17 @@ export const serializeLabel = <T>(value: T | T[], metadata?: Metadata) => {
     : value !== null
       ? labels[`${value}`] ?? `${value}${unit}`
       : labels.other ?? 'other';
+};
+
+export const createCache = <T>() => {
+  const cache = new WeakMap<MapboxMap, Record<string, T>>();
+
+  const get = (map: MapboxMap, key: string, fallback: T): T => {
+    if (!cache.has(map)) cache.set(map, {});
+    const store = cache.get(map)!;
+    if (store[key] === undefined) store[key] = fallback;
+    return store[key];
+  };
+
+  return { get };
 };

@@ -1,20 +1,26 @@
+import type { FilterSpecification } from 'mapbox-gl';
+import { createCache } from './utils';
 import type { MapboxMap, Layer, ParsedExpression } from './types';
 
 type Options = {
   delta?: number;
 };
 
-const backup: Record<string, any[] | null> = {};
+const cache = createCache<FilterSpecification | null>();
 
 export default (expression: ParsedExpression<any, any>, layer: Layer, map: MapboxMap) => {
   const { getter } = expression;
 
-  if (!(layer.id in backup)) backup[layer.id] = layer.filter ?? null;
-
+  // Save original layer filter to be restored on mouseout
+  const original = cache.get(map, layer.id, layer.filter ?? null);
+  
   const highlight = (value: string | number | number[] | undefined, options?: Options) => {
     const { delta = 0 } = options || {};
     if (!getter) return;
-    if (value == null) map.setFilter(layer.id, backup[layer.id]);
+
+    // Restore original layer filter
+    if (value === undefined) map.setFilter(layer.id, original);
+    
     else if (Array.isArray(value)) {
       const [min, max] = value;
       const lower = min ? ['>=', getter, min] : true;

@@ -1,21 +1,24 @@
-import { createElement, serializeLabel, rescale } from '../../utils';
+import { createElement, serializeLabel, rescale, createCache } from '../../utils';
 import highlighter from '../../highlighter';
 import type { MapboxMap, Layer, ParsedExpression, LayerOptions } from '/@/types';
 
 type Expression = ParsedExpression<number, string>;
 
-const cached = { x: 0 };
+const cache = createCache<{ x: number }>();
 
 export default (expression: Expression, layer: Layer, map: MapboxMap, options: LayerOptions) => {
   const { inputs, stops, min, max } = expression;
 
   const { highlight } = highlighter(expression, layer, map);  
   const delta = (max - min) / 100;
+  // Save previous mouse position to avoid flickering
+  const mousePos = cache.get(map, layer.id, { x: 0 });
+
   const events = {
     mouseleave: () => highlight(undefined),
     mousemove: (event: Event) => {
       const { offsetX: x, target } = event as MouseEvent;
-      cached.x = x;
+      mousePos.x = x;
       const bar = target as HTMLDivElement;
       const value = rescale(x, 0, bar.offsetWidth, min, max);
       highlight(value, { delta });
@@ -41,7 +44,7 @@ export default (expression: Expression, layer: Layer, map: MapboxMap, options: L
         classes: 'bar',
         styles: {
           'background-image': `linear-gradient(90deg, ${gradient})`,
-          '--x': `${cached.x || 0}px`,
+          '--x': `${mousePos.x}px`,
         },
         events: options.highlight ? events : {},
       }),
