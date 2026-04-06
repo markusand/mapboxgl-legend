@@ -1,6 +1,6 @@
 @use "variables";
 @use "lists";
-@use "components";
+@use "renderers";
 
 .mapboxgl-ctrl-legend {
   font: var(--map-legend-font);

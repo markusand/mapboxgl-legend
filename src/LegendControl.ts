@@ -1,6 +1,6 @@
 import './styles/main.scss';
 import { IControl } from 'mapbox-gl';
-import components from './components';
+import components from './renderers';
 import Expression from './expression';
 import { createElement } from './utils';
 import type { MapboxMap, Layer, LayerOptions, LegendControlOptions } from './types';
