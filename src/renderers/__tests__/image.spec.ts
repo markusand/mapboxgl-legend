@@ -39,18 +39,18 @@ describe('Image panel', () => {
     // @ts-ignore Can't mock full Map implementation
     const el = image(expression, { id: '_', type: 'circle', metadata }, map, {});
 
-    expect(el.tagName).toBe('UL');
-    expect(el.classList.contains('list')).toBeTruthy();
-    expect(el.classList.contains('list--icons')).toBeTruthy();
-    expect(el.childElementCount).toBe(2);
-    expect(el.firstElementChild?.tagName).toBe('LI');
+    expect(el?.tagName).toBe('UL');
+    expect(el?.classList.contains('list')).toBeTruthy();
+    expect(el?.classList.contains('list--icons')).toBeTruthy();
+    expect(el?.childElementCount).toBe(2);
+    expect(el?.firstElementChild?.tagName).toBe('LI');
 
-    const img = el.firstElementChild?.firstElementChild as HTMLImageElement;
+    const img = el?.firstElementChild?.firstElementChild as HTMLImageElement;
     expect(img.tagName).toBe('IMG');
     expect(img.classList.contains('icon')).toBeTruthy();
     expect(img.src).toBe('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==');
     
-    const label = el.firstElementChild?.textContent;
+    const label = el?.firstElementChild?.textContent;
     expect(label).toBe('Image A');
   });
 
@@ -67,7 +67,7 @@ describe('Image panel', () => {
     const metadata = { labels: { a: 'Image A' } };
     const el = image(expression, { id: '_', type: 'circle', metadata }, map as any, {});
 
-    expect(el.childElementCount).toBe(1);
+    expect(el?.childElementCount).toBe(1);
   });
 
   it('should hide an item with label set to false', () => {
@@ -83,7 +83,7 @@ describe('Image panel', () => {
     const metadata = { labels: { a: 'Image A', b: false } };
     const el = image(expression, { id: '_', type: 'circle', metadata }, map as any, {});
 
-    expect(el.childElementCount).toBe(1);
+    expect(el?.childElementCount).toBe(1);
   });
 
   it('should set legend highlighting', () => {
@@ -98,11 +98,11 @@ describe('Image panel', () => {
     };
     const metadata = { labels: { a: 'Image A', b: false } };
     const el = image(expression, { id: '_', type: 'circle', metadata }, map as any, { highlight: true });
-    expect(el.className).contain('--highlight');
+    expect(el?.className).contain('--highlight');
   
     const setFilter = vi.spyOn(map, 'setFilter');
-    el.firstElementChild?.dispatchEvent(new Event('mouseenter'));
-    el.firstElementChild?.dispatchEvent(new Event('mouseleave'));
+    el?.firstElementChild?.dispatchEvent(new Event('mouseenter'));
+    el?.firstElementChild?.dispatchEvent(new Event('mouseleave'));
     expect(setFilter).toHaveBeenCalledTimes(2);
   });
 });

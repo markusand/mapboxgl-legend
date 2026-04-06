@@ -18,11 +18,11 @@ describe('Radius panel', () => {
     const metadata = { labels: { 1: 'one', 3: 'three' } };
     const el = bubbles(expression, { id: '_', type: 'circle', metadata }, {} as any, {});
 
-    expect(el.tagName).toBe('UL');
-    expect(el.classList.contains('bubbles')).toBeTruthy();
-    expect(el.childElementCount).toBe(3);
+    expect(el?.tagName).toBe('UL');
+    expect(el?.classList.contains('bubbles')).toBeTruthy();
+    expect(el?.childElementCount).toBe(3);
 
-    const { firstElementChild: first, lastElementChild: last } = el;
+    const { firstElementChild: first, lastElementChild: last } = el ?? {};
     expect(first?.tagName).toBe('LI');
     expect(first?.getAttribute('style')).toBe('--radius: 30px;');
     expect(first?.firstElementChild?.tagName).toBe('SPAN');
@@ -43,7 +43,7 @@ describe('Radius panel', () => {
     const metadata = { labels: { 1: 'one', 3: false } };
     const el = bubbles(expression, { id: '_', type: 'circle', metadata }, {} as any, {});
 
-    expect(el.childElementCount).toBe(2);
+    expect(el?.childElementCount).toBe(2);
   });
 
   it('should set legend highlighting', () => {
@@ -58,11 +58,11 @@ describe('Radius panel', () => {
     };
     const metadata = { labels: { 1: 'one', 3: false } };
     const el = bubbles(expression, { id: '_', type: 'circle', metadata }, map as any, { highlight: true });
-    expect(el.className).contain('--highlight');
+    expect(el?.className).contain('--highlight');
   
     const setFilter = vi.spyOn(map, 'setFilter');
-    el.firstElementChild?.dispatchEvent(new Event('mouseenter'));
-    el.firstElementChild?.dispatchEvent(new Event('mouseleave'));
+    el?.firstElementChild?.dispatchEvent(new Event('mouseenter'));
+    el?.firstElementChild?.dispatchEvent(new Event('mouseleave'));
     expect(setFilter).toHaveBeenCalledTimes(2);
   });
 });

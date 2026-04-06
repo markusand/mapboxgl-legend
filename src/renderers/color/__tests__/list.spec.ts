@@ -18,12 +18,12 @@ describe('Color list panel', () => {
     const metadata = { labels: { 1: 'one', 3: 'three' } };
     const el = list(expression, { id: '_', type: 'circle', metadata }, {} as any, {});
 
-    expect(el.tagName).toBe('UL');
-    expect(el.classList.contains('list')).toBeTruthy();
-    expect(el.classList.contains('list--color')).toBeTruthy();
-    expect(el.childElementCount).toBe(3);
+    expect(el?.tagName).toBe('UL');
+    expect(el?.classList.contains('list')).toBeTruthy();
+    expect(el?.classList.contains('list--color')).toBeTruthy();
+    expect(el?.childElementCount).toBe(3);
 
-    const { firstElementChild: first, lastElementChild: last } = el;
+    const { firstElementChild: first, lastElementChild: last } = el || {};
     expect(first?.tagName).toBe('LI');
     expect(first?.getAttribute('style')).toBe('--color: #f00;');
     expect(first?.textContent).toBe('one');
@@ -44,12 +44,12 @@ describe('Color list panel', () => {
     const metadata = { unit: 'k' };
     const el = list(expression, { id: '_', type: 'circle', metadata }, {} as any, {});
 
-    expect(el.tagName).toBe('UL');
-    expect(el.classList.contains('list')).toBeTruthy();
-    expect(el.classList.contains('list--color')).toBeTruthy();
-    expect(el.childElementCount).toBe(3);
+    expect(el?.tagName).toBe('UL');
+    expect(el?.classList.contains('list')).toBeTruthy();
+    expect(el?.classList.contains('list--color')).toBeTruthy();
+    expect(el?.childElementCount).toBe(3);
 
-    const { firstElementChild: first, lastElementChild: last } = el;
+    const { firstElementChild: first, lastElementChild: last } = el || {};
     expect(first?.tagName).toBe('LI');
     expect(first?.getAttribute('style')).toBe('--color: #f00;');
     expect(first?.textContent).toBe('1k - 5k');
@@ -70,12 +70,12 @@ describe('Color list panel', () => {
     const metadata = { labels: { low: 'baix', medium: 'mig', high: 'alt' } };
     const el = list(expression, { id: '_', type: 'circle', metadata }, {} as any, {});
 
-    expect(el.tagName).toBe('UL');
-    expect(el.classList.contains('list')).toBeTruthy();
-    expect(el.classList.contains('list--color')).toBeTruthy();
-    expect(el.childElementCount).toBe(3);
+    expect(el?.tagName).toBe('UL');
+    expect(el?.classList.contains('list')).toBeTruthy();
+    expect(el?.classList.contains('list--color')).toBeTruthy();
+    expect(el?.childElementCount).toBe(3);
 
-    const { firstElementChild: first, lastElementChild: last } = el;
+    const { firstElementChild: first, lastElementChild: last } = el || {};
     expect(first?.tagName).toBe('LI');
     expect(first?.getAttribute('style')).toBe('--color: #f00;');
     expect(first?.textContent).toBe('baix');
@@ -96,7 +96,7 @@ describe('Color list panel', () => {
     const metadata = { labels: { 2: false } };
     const el = list(expression, { id: '_', type: 'circle', metadata }, {} as any, {});
 
-    expect(el.childElementCount).toBe(2);
+    expect(el?.childElementCount).toBe(2);
   });
 
   it('should set legend highlighting', () => {
@@ -113,8 +113,8 @@ describe('Color list panel', () => {
     const el = list(expression, { id: '_', type: 'circle', metadata }, map as any, { highlight: true });
   
     const setFilter = vi.spyOn(map, 'setFilter');
-    el.firstElementChild?.dispatchEvent(new Event('mouseenter'));
-    el.firstElementChild?.dispatchEvent(new Event('mouseleave'));
+    el?.firstElementChild?.dispatchEvent(new Event('mouseenter'));
+    el?.firstElementChild?.dispatchEvent(new Event('mouseleave'));
     expect(setFilter).toHaveBeenCalledTimes(2);
   });
 });

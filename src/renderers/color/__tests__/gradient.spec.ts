@@ -17,11 +17,11 @@ describe('Color gradient panel', () => {
     };
     const el = gradient(expression, { id: '_', type: 'circle' }, {} as any, {});
 
-    expect(el.tagName).toBe('DIV');
-    expect(el.classList.contains('gradient')).toBeTruthy();
-    expect(el.childElementCount).toBe(2);
+    expect(el?.tagName).toBe('DIV');
+    expect(el?.classList.contains('gradient')).toBeTruthy();
+    expect(el?.childElementCount).toBe(2);
 
-    const { firstElementChild: labels, lastElementChild: bar } = el;
+    const { firstElementChild: labels, lastElementChild: bar } = el || {};
     expect(labels?.tagName).toBe('P');
     expect(labels?.childElementCount).toBe(3);
 
@@ -42,7 +42,7 @@ describe('Color gradient panel', () => {
     };
     const metadata = { labels: { 2: false } };
     const el = gradient(expression, { id: '_', type: 'circle', metadata }, {} as any, {});
-    expect(el.firstElementChild?.childElementCount).toBe(2);
+    expect(el?.firstElementChild?.childElementCount).toBe(2);
   });
 
   it('should set legend highlighting', () => {
@@ -59,7 +59,7 @@ describe('Color gradient panel', () => {
     const el = gradient(expression, { id: '_', type: 'circle', metadata }, map as any, { highlight: true  });
   
     const setFilter = vi.spyOn(map, 'setFilter');
-    const bar = el.querySelector('.bar');
+    const bar = el?.querySelector('.bar');
     bar?.dispatchEvent(new Event('mousemove'));
     bar?.dispatchEvent(new Event('mouseleave'));
     expect(setFilter).toHaveBeenCalledTimes(2);
