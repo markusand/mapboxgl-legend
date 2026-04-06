@@ -1,10 +1,10 @@
 import gradient from './gradient';
 import list from './list';
-import type { MapboxMap, Layer, ParsedExpression, LayerOptions } from '../../types';
+import type { Renderer } from '../../types';
 
-type Expression = ParsedExpression<any, any>;
+type ColorRenderer = Renderer<any, any>;
 
-export default (expression: Expression, layer: Layer, map: MapboxMap, options: LayerOptions) => {
+const renderer: ColorRenderer = (expression, layer, map, options) => {
   switch (expression.name) {
     case 'interpolate':
       return gradient(expression, layer, map, options);
@@ -16,3 +16,5 @@ export default (expression: Expression, layer: Layer, map: MapboxMap, options: L
       return undefined;
   }
 };
+
+export default renderer;

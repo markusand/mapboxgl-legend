@@ -1,6 +1,6 @@
 import './styles/main.scss';
 import { IControl } from 'mapbox-gl';
-import components from './renderers';
+import renderers from './renderers';
 import Expression from './expression';
 import { createElement } from './utils';
 import type { MapboxMap, Layer, LayerOptions, LegendControlOptions } from './types';
@@ -99,12 +99,12 @@ export default class LegendControl implements IControl {
 
   private _getBlocks(key: string | RegExp, layer: Layer, attribute: string, value: any) {
     const [property] = attribute.split('-').slice(-1);
-    const component = components[property as keyof typeof components];
-    if (!component) return;
+    const renderer = renderers[property];
+    if (!renderer) return;
     const expressions = Expression.parse(value);
     const options = this._options.layers?.get(key) || this._options;
     return expressions
-      .map(expression => component(expression, layer, this._map, options))
+      .map(expression => renderer(expression, layer, this._map, options))
       .filter(Boolean) as HTMLElement[];
   }
 

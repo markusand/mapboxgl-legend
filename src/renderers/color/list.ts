@@ -1,10 +1,8 @@
 import { createElement, serializeLabel } from '../../utils';
 import highlighter from '../../highlighter';
-import type { MapboxMap, Layer, ParsedExpression, LayerOptions } from '../../types';
+import type { Renderer } from '../../types';
 
-type Expression =  ParsedExpression<string | number | number[], string>;
-
-export default (expression: Expression, layer: Layer, map: MapboxMap, options: LayerOptions) => {
+const renderer: Renderer = (expression, layer, map, options) => {
   const { stops } = expression;
   const { events } = highlighter(expression, layer, map);
   return createElement('ul', {
@@ -19,3 +17,5 @@ export default (expression: Expression, layer: Layer, map: MapboxMap, options: L
     }),
   });
 };
+
+export default renderer;

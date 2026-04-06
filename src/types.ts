@@ -39,3 +39,10 @@ export type ParsedExpression<In, Out> = {
   min: number;
   max: number;
 };
+
+export type Renderer<In=any, Out=any> = (
+  expression: ParsedExpression<In, Out>,
+  layer: Layer,
+  map: MapboxMap,
+  options: LayerOptions,
+) => HTMLElement | undefined;

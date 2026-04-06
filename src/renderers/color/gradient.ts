@@ -1,12 +1,12 @@
 import { createElement, serializeLabel, rescale, createCache } from '../../utils';
 import highlighter from '../../highlighter';
-import type { MapboxMap, Layer, ParsedExpression, LayerOptions } from '/@/types';
+import type { Renderer } from '/@/types';
 
-type Expression = ParsedExpression<number, string>;
+type GradientRenderer = Renderer<number, string>;
 
 const cache = createCache<{ x: number }>();
 
-export default (expression: Expression, layer: Layer, map: MapboxMap, options: LayerOptions) => {
+const renderer: GradientRenderer = (expression, layer, map, options) => {
   const { inputs, stops, min, max } = expression;
 
   // Save previous mouse position to avoid flickering
@@ -50,3 +50,5 @@ export default (expression: Expression, layer: Layer, map: MapboxMap, options: L
     ],
   });
 };
+
+export default renderer;
