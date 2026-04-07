@@ -1,4 +1,3 @@
-/* eslint-disable import/no-unresolved */
 import { describe, it, expect, vi } from 'vitest';
 import { ensureArray, rescale, chunk, zip, toPair, toBins, createElement, createImageCanvas, serializeLabel } from '../utils';
 

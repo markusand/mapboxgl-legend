@@ -1,21 +1,22 @@
 import { describe, it, expect, vi } from 'vitest';
 import highlighter from '../highlighter';
+import type { ParsedExpression, Layer, MapboxMap } from '/@/types';
 
-const map = { setFilter: () => {} };
+const map = { setFilter: () => {} } as unknown as MapboxMap;
 
 const { events, highlight } = highlighter(
-  { getter: ['get', 'attribute'] } as any,
-  { id: 'layer_id' } as any,
-  map as any,
+  { getter: ['get', 'attribute'] } as unknown as ParsedExpression<unknown, unknown>,
+  { id: 'layer_id' } as Layer,
+  map,
 );
 
 describe('Highlighter', () => {
   it("should restore layer's default filter", () => {
     const setFilter = vi.spyOn(map, 'setFilter');
     const { highlight: filteredHighlight } = highlighter(
-      { getter: ['get', 'attribute'] } as any,
-      { id: 'backuped', filter: ['==', ['get', 'hello'], 'world'] } as any,
-      map as any,
+      { getter: ['get', 'attribute'] } as unknown as ParsedExpression<unknown, unknown>,
+      { id: 'backuped', filter: ['==', ['get', 'hello'], 'world'] } as unknown as Layer,
+      map,
     );
     filteredHighlight(2);
     filteredHighlight(undefined);
@@ -68,9 +69,9 @@ describe('Highlighter', () => {
   it('should skip highlight if literal attribute (undefined getter)', () => {
     const setFilter = vi.spyOn(map, 'setFilter');
     const { highlight: skippableHighlight } = highlighter(
-      { getter: undefined } as any,
-      { id: 'layer_id' } as any,
-      map as any,
+      { getter: undefined } as unknown as ParsedExpression<unknown, unknown>,
+      { id: 'layer_id' } as Layer,
+      map,
     );
     skippableHighlight(2);
     expect(setFilter).not.toHaveBeenCalled();

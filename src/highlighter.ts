@@ -8,19 +8,19 @@ type Options = {
 
 const cache = createCache<FilterSpecification | null>();
 
-export default (expression: ParsedExpression<any, any>, layer: Layer, map: MapboxMap) => {
+export default (expression: ParsedExpression<unknown, unknown>, layer: Layer, map: MapboxMap) => {
   const { getter } = expression;
 
   // Save original layer filter to be restored on mouseout
   const original = cache.get(map, layer.id, layer.filter ?? null);
-  
+
   const highlight = (value: string | number | number[] | undefined, options?: Options) => {
     const { delta = 0 } = options || {};
     if (!getter) return;
 
     // Restore original layer filter
     if (value === undefined) map.setFilter(layer.id, original);
-    
+
     else if (Array.isArray(value)) {
       const [min, max] = value;
       const lower = min ? ['>=', getter, min] : true;

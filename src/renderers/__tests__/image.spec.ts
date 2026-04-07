@@ -1,13 +1,13 @@
 import { describe, it, expect, vi } from 'vitest';
 import image from '../image';
-import type { ParsedExpression } from '../../types';
+import type { ParsedExpression, MapboxMap } from '/@/types';
 
 // Stub ImageData
 vi.stubGlobal('ImageData', class ImageData {});
 
 // Mock canvas
 HTMLCanvasElement.prototype.toDataURL = () => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
-// @ts-ignore Can't mock full CanvasRenderingContext2D
+// @ts-expect-error Can't mock full CanvasRenderingContext2D
 HTMLCanvasElement.prototype.getContext = () => ({ putImageData: () => {} });
 
 // Mock mapbox map
@@ -22,7 +22,7 @@ const map = {
       return images[name as keyof typeof images];
     },
   },
-};
+} as unknown as MapboxMap;
 
 describe('Image panel', () => {
   it('should create a panel with icons list', () => {
@@ -36,7 +36,6 @@ describe('Image panel', () => {
       max: NaN,
     };
     const metadata = { labels: { a: 'Image A' } };
-    // @ts-ignore Can't mock full Map implementation
     const el = image(expression, { id: '_', type: 'circle', metadata }, map, {});
 
     expect(el?.tagName).toBe('UL');
@@ -65,7 +64,7 @@ describe('Image panel', () => {
       max: NaN,
     };
     const metadata = { labels: { a: 'Image A' } };
-    const el = image(expression, { id: '_', type: 'circle', metadata }, map as any, {});
+    const el = image(expression, { id: '_', type: 'circle', metadata }, map, {});
 
     expect(el?.childElementCount).toBe(1);
   });
@@ -81,7 +80,7 @@ describe('Image panel', () => {
       max: NaN,
     };
     const metadata = { labels: { a: 'Image A', b: false } };
-    const el = image(expression, { id: '_', type: 'circle', metadata }, map as any, {});
+    const el = image(expression, { id: '_', type: 'circle', metadata }, map, {});
 
     expect(el?.childElementCount).toBe(1);
   });
@@ -97,7 +96,7 @@ describe('Image panel', () => {
       max: NaN,
     };
     const metadata = { labels: { a: 'Image A', b: false } };
-    const el = image(expression, { id: '_', type: 'circle', metadata }, map as any, { highlight: true });
+    const el = image(expression, { id: '_', type: 'circle', metadata }, map, { highlight: true });
     expect(el?.className).contain('--highlight');
   
     const setFilter = vi.spyOn(map, 'setFilter');

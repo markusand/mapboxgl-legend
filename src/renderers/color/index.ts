@@ -1,7 +1,8 @@
 import gradient from './gradient';
 import list from './list';
-import type { Renderer } from '../../types';
+import type { Renderer } from '/@/types';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ColorRenderer = Renderer<any, any>;
 
 const renderer: ColorRenderer = (expression, layer, map, options) => {

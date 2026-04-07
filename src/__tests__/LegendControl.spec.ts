@@ -14,8 +14,10 @@ const layers = [
 ];
 
 const createMap = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   const handlers: Record<string, Function> = {};
   return {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
     on: (event: string, callback: Function) => handlers[event] = callback,
     off: (event: string) => delete handlers[event],
     dispatch: (event: string) => handlers[event]?.(),

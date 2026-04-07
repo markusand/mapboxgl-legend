@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import gradient from '../gradient';
-import type { ParsedExpression } from '../../../types';
+import type { ParsedExpression, MapboxMap } from '/@/types';
 
-const map = { setFilter: () => {} };
+const map = { setFilter: () => {} } as unknown as MapboxMap;
 
 describe('Color gradient panel', () => {
   it('should create a panel with colors gradient bar', () => {
@@ -15,7 +15,7 @@ describe('Color gradient panel', () => {
       min: 1,
       max: 3,
     };
-    const el = gradient(expression, { id: '_', type: 'circle' }, {} as any, {});
+    const el = gradient(expression, { id: '_', type: 'circle' }, map, {});
 
     expect(el?.tagName).toBe('DIV');
     expect(el?.classList.contains('gradient')).toBeTruthy();
@@ -41,7 +41,7 @@ describe('Color gradient panel', () => {
       max: 3,
     };
     const metadata = { labels: { 2: false } };
-    const el = gradient(expression, { id: '_', type: 'circle', metadata }, {} as any, {});
+    const el = gradient(expression, { id: '_', type: 'circle', metadata }, map, {});
     expect(el?.firstElementChild?.childElementCount).toBe(2);
   });
 
@@ -56,7 +56,7 @@ describe('Color gradient panel', () => {
       max: 3,
     };
     const metadata = { labels: { 2: false } };
-    const el = gradient(expression, { id: '_', type: 'circle', metadata }, map as any, { highlight: true  });
+    const el = gradient(expression, { id: '_', type: 'circle', metadata }, map, { highlight: true  });
   
     const setFilter = vi.spyOn(map, 'setFilter');
     const bar = el?.querySelector('.bar');

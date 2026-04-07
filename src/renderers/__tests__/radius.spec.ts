@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import bubbles from '../radius';
-import type { ParsedExpression } from '../../types';
+import type { MapboxMap, ParsedExpression } from '/@/types';
 
-const map = { setFilter: () => {} };
+const map = { setFilter: () => {} } as unknown as MapboxMap;
 
 describe('Radius panel', () => {
   it('should create a panel with bubbles', () => {
@@ -16,7 +16,7 @@ describe('Radius panel', () => {
       max: 3,
     };
     const metadata = { labels: { 1: 'one', 3: 'three' } };
-    const el = bubbles(expression, { id: '_', type: 'circle', metadata }, {} as any, {});
+    const el = bubbles(expression, { id: '_', type: 'circle', metadata }, map, {});
 
     expect(el?.tagName).toBe('UL');
     expect(el?.classList.contains('bubbles')).toBeTruthy();
@@ -41,7 +41,7 @@ describe('Radius panel', () => {
       max: 3,
     };
     const metadata = { labels: { 1: 'one', 3: false } };
-    const el = bubbles(expression, { id: '_', type: 'circle', metadata }, {} as any, {});
+    const el = bubbles(expression, { id: '_', type: 'circle', metadata }, map, {});
 
     expect(el?.childElementCount).toBe(2);
   });
@@ -57,7 +57,7 @@ describe('Radius panel', () => {
       max: 3,
     };
     const metadata = { labels: { 1: 'one', 3: false } };
-    const el = bubbles(expression, { id: '_', type: 'circle', metadata }, map as any, { highlight: true });
+    const el = bubbles(expression, { id: '_', type: 'circle', metadata }, map, { highlight: true });
     expect(el?.className).contain('--highlight');
   
     const setFilter = vi.spyOn(map, 'setFilter');

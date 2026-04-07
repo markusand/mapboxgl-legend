@@ -12,7 +12,7 @@ const renderer: ImageRenderer = (expression, layer, map, options) => {
     content: stops.map(([value, image]) => {
       const label = serializeLabel(value, layer.metadata);
       if (!label) return undefined;
-      // @ts-ignore image string not matching ImageId
+      // @ts-expect-error image string not matching ImageId
       const { height, width, data } = map.style.getImage(image)?.data || {};
       if (!height || !width || !data) return undefined;
       const canvas = createImageCanvas(data, width, height);

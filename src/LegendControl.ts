@@ -97,7 +97,7 @@ export default class LegendControl implements IControl {
     });
   }
 
-  private _getBlocks(key: string | RegExp, layer: Layer, attribute: string, value: any) {
+  private _getBlocks(key: string | RegExp, layer: Layer, attribute: string, value: unknown) {
     const [property] = attribute.split('-').slice(-1);
     const renderer = renderers[property];
     if (!renderer) return;

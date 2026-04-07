@@ -12,7 +12,7 @@ const renderer: GradientRenderer = (expression, layer, map, options) => {
   // Save previous mouse position to avoid flickering
   const mousePos = cache.get(map, layer.id, { x: 0 });
 
-  const { highlight } = highlighter(expression, layer, map);  
+  const { highlight } = highlighter(expression, layer, map);
   const events = {
     mouseleave: () => highlight(undefined),
     mousemove: (event: Event) => {

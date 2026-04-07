@@ -10,19 +10,19 @@ const stopper: Record<string, Stopper> = {
   interpolate: args => extract(args, 2),
   match: args => extract(args, 1).map(toPair),
   step: args => toBins([[null, args[1]], ...extract(args, 2)]),
-  literal: args => [[...args, ...args]] as any,
+  literal: args => args.map(v => [v, v]),
 };
 
-const isExpression = (e: any): e is Expression => Array.isArray(e) && !!e.length && typeof e[0] === 'string';
+const isExpression = (e: unknown): e is Expression => Array.isArray(e) && !!e.length && typeof e[0] === 'string';
 
-const parse = (input: any): ParsedExpression<any, any>[] => {
+const parse = (input: unknown): ParsedExpression<unknown, unknown>[] => {
   const [name, ...args] = isExpression(input) ? input : ['literal', input];
 
   if (name === 'case') return args.slice(1).flatMap(parse);
 
   const stops = stopper[name]?.(args);
   if (!stops) return [];
-  
+
   const getter = name === 'literal'
     ? undefined
     : ['match', 'step'].includes(name)

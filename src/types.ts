@@ -40,6 +40,7 @@ export type ParsedExpression<In, Out> = {
   max: number;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Renderer<In=any, Out=any> = (
   expression: ParsedExpression<In, Out>,
   layer: Layer,

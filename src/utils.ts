@@ -1,4 +1,4 @@
-import type { MapboxMap, Metadata, LayerOptions } from '/@/types';
+import type { MapboxMap, Metadata } from '/@/types';
 
 export const ensureArray = <T>(thing: T | T[]): T[] => (Array.isArray(thing) ? thing : [thing]);
 
@@ -52,7 +52,7 @@ export const createElement = (
   return el;
 };
 
-export const createImageCanvas = (data: any, width: number, height: number) => {
+export const createImageCanvas = (data: Iterable<number>, width: number, height: number) => {
   const size = Math.max(width, height);
   const canvas = createElement('canvas', {
     attributes: { width: size, height: size },
