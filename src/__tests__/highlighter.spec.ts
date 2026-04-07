@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import highlighter from '../highlighter';
+import highlighter from '/@/highlighter';
 import type { ParsedExpression, Layer, MapboxMap } from '/@/types';
 
 const map = { setFilter: () => {} } as unknown as MapboxMap;

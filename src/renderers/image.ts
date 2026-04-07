@@ -1,6 +1,6 @@
-import { createElement, createImageCanvas, serializeLabel } from '../utils';
-import highlighter from '../highlighter';
-import type { Renderer } from '../types';
+import { createElement, createImageCanvas, serializeLabel } from '/@/utils';
+import highlighter from '/@/highlighter';
+import type { Renderer } from '/@/types';
 
 type ImageRenderer = Renderer<string | number, string>;
 

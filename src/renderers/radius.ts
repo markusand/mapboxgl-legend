@@ -1,6 +1,6 @@
-import { createElement, serializeLabel } from '../utils';
-import highlighter from '../highlighter';
-import type { Renderer } from '../types';
+import { createElement, serializeLabel } from '/@/utils';
+import highlighter from '/@/highlighter';
+import type { Renderer } from '/@/types';
 
 type RadiusRenderer = Renderer<string | number, number>;
 

@@ -1,5 +1,5 @@
-import { createElement, serializeLabel, rescale, createCache } from '../../utils';
-import highlighter from '../../highlighter';
+import { createElement, serializeLabel, rescale, createCache } from '/@/utils';
+import highlighter from '/@/highlighter';
 import type { Renderer } from '/@/types';
 
 type GradientRenderer = Renderer<number, string>;

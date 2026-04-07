@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import LegendControl, { LegendControlOptions } from '../index';
+import LegendControl, { LegendControlOptions } from '/@/index';
 import type { MapboxMap } from '/@/types';
 
 const layers = [
