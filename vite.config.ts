@@ -27,6 +27,7 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'LegendControl',
+      cssFileName: 'style',
       fileName: format => `index.${format}.js`,
     },
   },
