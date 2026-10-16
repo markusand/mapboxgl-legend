@@ -3,14 +3,14 @@
   "version": "1.16.0",
   "description": "Mapbox-GL plugin that automatically draws a legend from layer styles",
   "type": "module",
-  "main": "./dist/index.umd.js",
+  "main": "./dist/index.umd.cjs",
   "module": "./dist/index.es.js",
-  "browser": "./dist/index.umd.js",
+  "browser": "./dist/index.umd.cjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/index.es.js",
-      "require": "./dist/index.umd.js",
+      "require": "./dist/index.umd.cjs",
       "types": "./dist/index.d.ts"
     },
     "./dist/style.css": {

@@ -28,7 +28,7 @@ export default defineConfig({
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'LegendControl',
       cssFileName: 'style',
-      fileName: format => `index.${format}.js`,
+      fileName: format => (format === 'umd' ? 'index.umd.cjs' : `index.${format}.js`),
     },
   },
 });
