@@ -1,24 +1,29 @@
 import type { MapboxMap, Metadata } from '/@/types';
 
-export const ensureArray = <T>(thing: T | T[]): T[] => (Array.isArray(thing) ? thing : [thing]);
+export const ensureArray = <T>(thing: T | T[]): T[] => Array.isArray(thing) ? thing : [thing];
 
+// Linear interpolation: maps val from [x1,y1] range into [x2,y2] range
 export const rescale = (val: number, x1: number, y1: number, x2 = 0, y2 = 100) => (
   ((val - x1) * (y2 - x2)) / (y1 - x1) + x2
 );
 
+// Splits array into consecutive sub-arrays of length size
 export const chunk = <T>(array: T[], size: number): T[][] => Array.from(
   { length: Math.ceil(array.length / size) },
-  (v, i) => array.slice(i * size, i * size + size),
+  (_, i) => array.slice(i * size, i * size + size),
 );
 
+// Transposes rows and columns: zip([1,2],[3,4]) → [[1,3],[2,4]]
 export const zip = <T>(...arrays: T[][]): T[][] => (
   arrays[0].map((first, i) => arrays.slice(1).reduce((acc, other) => [...acc, other[i]], [first]))
 );
 
+// Normalises a match stop: single-value [out] becomes [null, out]; two-value stays as-is
 export const toPair = <T>(stop: [T] | [T, T]): [T | null, T] => (
   (stop.length === 2 ? stop : [null, ...stop])
 );
 
+// Pairs each stop with the next one as a [low, high] range; last stop gets null as upper bound
 export const toBins = <T, K>(stops: [T, K][]): [[T | null, T | null], K][] => {
   return stops.reduce((acc, [low, out], i) => {
     if (i === stops.length - 1) acc.push([[low, null], out]);
@@ -63,6 +68,8 @@ export const createImageCanvas = (data: Iterable<number>, width: number, height:
   return canvas;
 };
 
+// Formats a stop value (or [low, high] bin) into a human-readable label.
+// Null bounds indicate unbounded ranges: [null, x] → "< x", [x, null] → "> x"
 export const serializeLabel = <T>(value: T | T[], metadata?: Metadata) => {
   const { labels = {}, unit = '' } = metadata || {};
   return Array.isArray(value)
@@ -78,6 +85,7 @@ export const serializeLabel = <T>(value: T | T[], metadata?: Metadata) => {
       : labels.other ?? 'other';
 };
 
+// WeakMap-backed per-map store so entries are released when a map instance is destroyed
 export const createCache = <T>() => {
   const cache = new WeakMap<MapboxMap, Record<string, T>>();
 

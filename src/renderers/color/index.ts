@@ -5,6 +5,7 @@ import type { Renderer } from '/@/types';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ColorRenderer = Renderer<any, any>;
 
+// Continuous interpolations render as a gradient bar; discrete expressions render as a colour list
 const renderer: ColorRenderer = (expression, layer, map, options) => {
   switch (expression.name) {
     case 'interpolate':

@@ -13,8 +13,10 @@ const renderer: ImageRenderer = (expression, layer, map, options) => {
       const label = serializeLabel(value, layer.metadata);
       if (!label) return undefined;
       // @ts-expect-error image string not matching ImageId
+      // Extract raw pixel data from the map's internal sprite atlas
       const { height, width, data } = map.style.getImage(image)?.data || {};
       if (!height || !width || !data) return undefined;
+      // Rasterise the sprite image to a data URL for use in an <img> element
       const canvas = createImageCanvas(data, width, height);
       return createElement('li', {
         events: options.highlight ? events(value) : {},

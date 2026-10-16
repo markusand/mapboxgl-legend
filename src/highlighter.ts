@@ -6,6 +6,7 @@ type Options = {
   delta?: number;
 };
 
+// Cache original filters per map+layer so multiple legend items don't overwrite each other
 const cache = createCache<FilterSpecification | null>();
 
 export default (expression: ParsedExpression<unknown, unknown>, layer: Layer, map: MapboxMap) => {
@@ -22,11 +23,13 @@ export default (expression: ParsedExpression<unknown, unknown>, layer: Layer, ma
     if (value === undefined) map.setFilter(layer.id, original);
 
     else if (Array.isArray(value)) {
+      // Range filter: [min, max] — falsy bounds (e.g. 0 or missing) are treated as unbounded
       const [min, max] = value;
       const lower = min ? ['>=', getter, min] : true;
       const higher = max ? ['<', getter, max] : true;
       map.setFilter(layer.id, ['all', lower, higher]);
     } else {
+      // Numeric values use a tolerance window (delta) to account for floating-point imprecision
       const filter = typeof value === 'number'
         ? ['all', ['>=', getter, value - delta], ['<=', getter, value + delta]]
         : ['==', getter, value];
