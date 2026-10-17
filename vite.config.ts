@@ -4,15 +4,20 @@ import autoprefixer from 'autoprefixer';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // Git pre-commit hooks: run check+fix on all staged files
   staged: {
     '*': 'vp check --fix',
   },
+
+  // Code formatting (Prettier-compatible options via vite-plus)
   fmt: {
     singleQuote: true,
     arrowParens: 'avoid',
-    printWidth: 100, // your old max-len
-    sortPackageJson: false, // keeps package.json field order as-is
+    printWidth: 100,
+    sortPackageJson: false,
   },
+
+  // Linting (oxlint via vite-plus): plugins, base rules, and TypeScript overrides
   lint: {
     plugins: ['oxc', 'typescript', 'unicorn', 'import'],
     categories: {
@@ -161,9 +166,13 @@ export default defineConfig({
       },
     ],
   },
+
+  // Vite module resolution
   resolve: {
     alias: [{ find: '/@', replacement: path.resolve(import.meta.dirname, './src') }],
   },
+
+  // Library bundling: ESM + UMD outputs with .d.ts generation
   pack: {
     entry: ['src/index.ts'],
     format: ['esm', 'umd'],
@@ -174,11 +183,15 @@ export default defineConfig({
     outExtensions: ({ format }) =>
       format === 'umd' ? { js: '.cjs' } : { js: '.es.js', dts: '.d.ts' },
   },
+
+  // PostCSS processing
   css: {
     postcss: {
       plugins: [autoprefixer()],
     },
   },
+
+  // Vitest configuration
   test: {
     // Vitest v4 compatibility: preserve mock call history.
     // Remove after tests no longer rely on calls from setup or earlier tests.
