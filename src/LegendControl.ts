@@ -153,18 +153,11 @@ export default class LegendControl implements IControl {
         const key = this._resolveKey(id);
         const { collapsed, toggler, attributes } = this._getOptions(key);
 
-        // Construct all required blocks, break if none
-        const paneBlocks = Object.entries({ ...layout, ...paint }).reduce(
-          (acc, [attribute, value]) => {
-            const visible = attributes?.includes(attribute) ?? true;
-            if (!visible) return acc;
-            const blocks = this._getBlocks(key, layer as Layer, attribute, value);
-            blocks?.forEach(block => acc.push(block));
-            return acc;
-          },
-          [] as HTMLElement[],
-        );
-        if (!paneBlocks.length) return;
+        const blocks = Object.entries({ ...layout, ...paint })
+          .filter(([attr]) => attributes?.includes(attr) ?? true)
+          .flatMap(([attr, value]) => this._getBlocks(key, layer as Layer, attr, value) ?? []);
+
+        if (!blocks.length) return;
 
         // (re)Construct pane and replace (if already exist)
         const selector = `mapboxgl-ctrl-legend-pane--${id}`;
@@ -181,7 +174,7 @@ export default class LegendControl implements IControl {
                 layerIds && this._toggleButton(layerIds, key),
               ],
             }),
-            ...paneBlocks,
+            ...blocks,
           ],
         });
         if (prevPane) this._panes.replaceChild(pane, prevPane);
