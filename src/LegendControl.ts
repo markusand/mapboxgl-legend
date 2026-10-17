@@ -55,8 +55,6 @@ export default class LegendControl implements IControl {
       classes: ['mapboxgl-ctrl', 'maplibregl-ctrl', 'mapboxgl-ctrl-legend'],
       content: [this._minimizer, this._panes],
     });
-
-    this.refresh = this.refresh.bind(this);
   }
 
   onAdd(map: MapboxMap) {
@@ -156,7 +154,7 @@ export default class LegendControl implements IControl {
     return button;
   }
 
-  refresh() {
+  refresh = () => {
     const layersIds = this._options.layers ? [...this._options.layers.keys()] : undefined;
     this._map
       .getStyle()
@@ -209,5 +207,5 @@ export default class LegendControl implements IControl {
         if (prevPane) this._panes.replaceChild(pane, prevPane);
         else this._panes.appendChild(pane);
       });
-  }
+  };
 }
