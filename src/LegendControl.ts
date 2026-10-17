@@ -102,7 +102,7 @@ export default class LegendControl implements IControl {
     const [property] = attribute.split('-').slice(-1);
     const renderer = renderers[property];
     if (!renderer) return;
-    const options = this._options.layers?.get(key) || this._options;
+    const options = this._getOptions(key);
     const resolved = { ...options, ...resolveMeta(layer, options, attribute) };
     return Expression.parse(value)
       .map(expression => renderer(expression, layer, resolved, this._map))
@@ -134,16 +134,24 @@ export default class LegendControl implements IControl {
     return !keys || [...keys].some(match);
   };
 
+  private _resolveKey = (id: string): string | RegExp => {
+    const ids = Array.from(this._options.layers?.keys() ?? []);
+    return ids.find(_id => id.match(_id)) ?? id;
+  };
+
+  private _getOptions = (key: string | RegExp): LayerOptions => {
+    return this._options.layers?.get(key) ?? this._options;
+  };
+
   refresh = () => {
-    const layersIds = this._options.layers ? [...this._options.layers.keys()] : undefined;
     const style = this._map.getStyle();
     style.layers
       .filter(this._isActiveLayer)
       .reverse()
       .forEach(layer => {
         const { id, layout, paint, metadata } = layer as Layer;
-        const key = layersIds?.find(name => id.match(name)) || id;
-        const { collapsed, toggler, attributes } = this._options.layers?.get(key) || this._options;
+        const key = this._resolveKey(id);
+        const { collapsed, toggler, attributes } = this._getOptions(key);
 
         // Construct all required blocks, break if none
         const paneBlocks = Object.entries({ ...layout, ...paint }).reduce(
