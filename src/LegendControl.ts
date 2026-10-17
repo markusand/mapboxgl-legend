@@ -142,40 +142,42 @@ export default class LegendControl implements IControl {
     return this._options.layers?.get(key) ?? this._options;
   };
 
+  private _render = (layer: LayerSpecification): void => {
+    const { id, layout, paint, metadata } = layer as Layer;
+    const key = this._resolveKey(id);
+    const { collapsed, attributes, toggler, onToggle } = this._getOptions(key);
+
+    const blocks = Object.entries({ ...layout, ...paint })
+      .filter(([attr]) => attributes?.includes(attr) ?? true)
+      .flatMap(([attr, value]) => this._getBlocks(key, layer as Layer, attr, value) ?? []);
+
+    if (!blocks.length) return;
+
+    // (re)Construct pane and replace (if already exist)
+    const selector = `mapboxgl-ctrl-legend-pane--${id}`;
+    const prevPane = this._panes.querySelector(`.${selector}`);
+    const open = prevPane ? prevPane.getAttribute('open') !== null : !collapsed;
+
+    const toggle = toggler
+      ? this._toggler(typeof toggler === 'boolean' ? [id] : toggler, onToggle)
+      : false;
+
+    const { classes = [], name = id } = metadata?.legend || {};
+    const pane = createElement('details', {
+      classes: ['mapboxgl-ctrl-legend-pane', selector, ...classes],
+      attributes: { open },
+      content: [createElement('summary', { content: [name, toggle] }), ...blocks],
+    });
+
+    if (prevPane) this._panes.replaceChild(pane, prevPane);
+    else this._panes.appendChild(pane);
+  };
+
   refresh = () => {
-    const style = this._map.getStyle();
-    style.layers
+    // oxfmt-ignore
+    this._map.getStyle().layers
       .filter(this._isActiveLayer)
       .reverse()
-      .forEach(layer => {
-        const { id, layout, paint, metadata } = layer as Layer;
-        const key = this._resolveKey(id);
-        const { collapsed, attributes, toggler, onToggle } = this._getOptions(key);
-
-        const blocks = Object.entries({ ...layout, ...paint })
-          .filter(([attr]) => attributes?.includes(attr) ?? true)
-          .flatMap(([attr, value]) => this._getBlocks(key, layer as Layer, attr, value) ?? []);
-
-        if (!blocks.length) return;
-
-        // (re)Construct pane and replace (if already exist)
-        const selector = `mapboxgl-ctrl-legend-pane--${id}`;
-        const prevPane = this._panes.querySelector(`.${selector}`);
-        const open = prevPane ? prevPane.getAttribute('open') !== null : !collapsed;
-
-        const toggle = toggler
-          ? this._toggler(typeof toggler === 'boolean' ? [id] : toggler, onToggle)
-          : false;
-
-        const { classes = [], name = id } = metadata?.legend || {};
-        const pane = createElement('details', {
-          classes: ['mapboxgl-ctrl-legend-pane', selector, ...classes],
-          attributes: { open },
-          content: [createElement('summary', { content: [name, toggle] }), ...blocks],
-        });
-
-        if (prevPane) this._panes.replaceChild(pane, prevPane);
-        else this._panes.appendChild(pane);
-      });
+      .forEach(this._render);
   };
 }
