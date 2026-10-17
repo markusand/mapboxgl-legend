@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vite-plus/test';
 import image from '../image';
 import type { ParsedExpression, MapboxMap } from '/@/types';
 
@@ -6,7 +6,8 @@ import type { ParsedExpression, MapboxMap } from '/@/types';
 vi.stubGlobal('ImageData', class ImageData {});
 
 // Mock canvas
-HTMLCanvasElement.prototype.toDataURL = () => 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+HTMLCanvasElement.prototype.toDataURL = () =>
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
 // @ts-expect-error Can't mock full CanvasRenderingContext2D
 HTMLCanvasElement.prototype.getContext = () => ({ putImageData: () => {} });
 
@@ -29,7 +30,10 @@ describe('Image panel', () => {
     const expression: ParsedExpression<string, string> = {
       name: 'match',
       getter: ['get', 'attribute'],
-      stops: [['a', 'image-a'], ['b', 'image-b']],
+      stops: [
+        ['a', 'image-a'],
+        ['b', 'image-b'],
+      ],
       inputs: ['a', 'b'],
       outputs: ['image-a', 'image-b'],
       min: NaN,
@@ -47,8 +51,10 @@ describe('Image panel', () => {
     const img = el?.firstElementChild?.firstElementChild as HTMLImageElement;
     expect(img.tagName).toBe('IMG');
     expect(img.classList.contains('icon')).toBeTruthy();
-    expect(img.src).toBe('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==');
-    
+    expect(img.src).toBe(
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+    );
+
     const label = el?.firstElementChild?.textContent;
     expect(label).toBe('Image A');
   });
@@ -57,7 +63,10 @@ describe('Image panel', () => {
     const expression: ParsedExpression<string, string> = {
       name: 'match',
       getter: ['get', 'attribute'],
-      stops: [['a', 'image-a'], ['b', 'image-not-exists']],
+      stops: [
+        ['a', 'image-a'],
+        ['b', 'image-not-exists'],
+      ],
       inputs: ['a', 'b'],
       outputs: ['image-a', 'image-b'],
       min: NaN,
@@ -73,7 +82,10 @@ describe('Image panel', () => {
     const expression: ParsedExpression<string, string> = {
       name: 'match',
       getter: ['get', 'attribute'],
-      stops: [['a', 'image-a'], ['b', 'image-b']],
+      stops: [
+        ['a', 'image-a'],
+        ['b', 'image-b'],
+      ],
       inputs: ['a', 'b'],
       outputs: ['image-a', 'image-b'],
       min: NaN,
@@ -89,7 +101,10 @@ describe('Image panel', () => {
     const expression: ParsedExpression<string, string> = {
       name: 'match',
       getter: ['get', 'attribute'],
-      stops: [['a', 'image-a'], ['b', 'image-b']],
+      stops: [
+        ['a', 'image-a'],
+        ['b', 'image-b'],
+      ],
       inputs: ['a', 'b'],
       outputs: ['image-a', 'image-b'],
       min: NaN,
@@ -98,7 +113,7 @@ describe('Image panel', () => {
     const metadata = { labels: { a: 'Image A', b: false } };
     const el = image(expression, { id: '_', type: 'circle', metadata }, map, { highlight: true });
     expect(el?.className).contain('--highlight');
-  
+
     const setFilter = vi.spyOn(map, 'setFilter');
     el?.firstElementChild?.dispatchEvent(new Event('mouseenter'));
     el?.firstElementChild?.dispatchEvent(new Event('mouseleave'));

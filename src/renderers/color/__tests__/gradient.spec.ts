@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vite-plus/test';
 import gradient from '../gradient';
 import type { ParsedExpression, MapboxMap } from '/@/types';
 
@@ -9,7 +9,11 @@ describe('Color gradient panel', () => {
     const expression: ParsedExpression<number, string> = {
       name: 'interpolate',
       getter: ['get', 'attribute'],
-      stops: [[1, '#f00'], [2, '#0f0'], [3, '#00f']],
+      stops: [
+        [1, '#f00'],
+        [2, '#0f0'],
+        [3, '#00f'],
+      ],
       inputs: [1, 2, 3],
       outputs: ['#f00', '#0f0', '#00f'],
       min: 1,
@@ -34,7 +38,11 @@ describe('Color gradient panel', () => {
     const expression: ParsedExpression<number, string> = {
       name: 'interpolate',
       getter: ['get', 'attribute'],
-      stops: [[1, '#f00'], [2, '#0f0'], [3, '#00f']],
+      stops: [
+        [1, '#f00'],
+        [2, '#0f0'],
+        [3, '#00f'],
+      ],
       inputs: [1, 2, 3],
       outputs: ['#f00', '#0f0', '#00f'],
       min: 1,
@@ -49,15 +57,21 @@ describe('Color gradient panel', () => {
     const expression: ParsedExpression<number, string> = {
       name: 'interpolate',
       getter: ['get', 'attribute'],
-      stops: [[1, '#f00'], [2, '#0f0'], [3, '#00f']],
+      stops: [
+        [1, '#f00'],
+        [2, '#0f0'],
+        [3, '#00f'],
+      ],
       inputs: [1, 2, 3],
       outputs: ['#f00', '#0f0', '#00f'],
       min: 1,
       max: 3,
     };
     const metadata = { labels: { 2: false } };
-    const el = gradient(expression, { id: '_', type: 'circle', metadata }, map, { highlight: true  });
-  
+    const el = gradient(expression, { id: '_', type: 'circle', metadata }, map, {
+      highlight: true,
+    });
+
     const setFilter = vi.spyOn(map, 'setFilter');
     const bar = el?.querySelector('.bar');
     bar?.dispatchEvent(new Event('mousemove'));
