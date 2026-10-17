@@ -10,7 +10,7 @@ export type Metadata = {
   name?: string;
   unit?: string;
   labels?: Record<string, string | boolean>;
-  extraLegendClasses?: string[];
+  classes?: string[];
 };
 
 export type LayerMetadata = {

@@ -18,6 +18,11 @@
         bottom: 0;
         width: 100%;
       }
+
+      .ethnicity-legend {
+        border-left: 3px solid #aa9761;
+        padding: 0.1px !important;
+      }
     </style>
   </head>
 
@@ -65,7 +70,10 @@
       }, 5000);
 
       map.on('load', () => {
-        map.addSource('ethnicity', { type: 'vector', url: 'mapbox://examples.8fgz4egr' });
+        map.addSource('ethnicity', {
+          type: 'vector',
+          url: 'mapbox://examples.8fgz4egr',
+        });
 
         map.addSource('neighborhoods', {
           type: 'geojson',
@@ -101,6 +109,11 @@
               '#e8e59d',
               '#ccc',
             ],
+          },
+          metadata: {
+            legend: {
+              classes: ['ethnicity-legend'],
+            },
           },
         });
 
