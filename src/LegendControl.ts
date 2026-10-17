@@ -88,8 +88,8 @@ export default class LegendControl implements IControl {
 
   removeLayers(keys: LayerKey[]): void {
     keys.forEach(key => {
-      const opts = this._options.layers?.get(key);
-      if (opts) this._stash.set(key, opts);
+      const options = this._options.layers?.get(key);
+      if (options) this._stash.set(key, options);
       this._options.layers?.delete(key);
       const pane = this._panes.querySelector(`.mapboxgl-ctrl-legend-pane--${key}`);
       if (pane) this._panes.removeChild(pane);
