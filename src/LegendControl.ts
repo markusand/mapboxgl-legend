@@ -20,13 +20,9 @@ export default class LegendControl implements IControl {
   } & Omit<LegendControlOptions, 'layers'>;
 
   private _container: HTMLElement;
-
   private _panes: HTMLElement;
-
   private _minimizer: HTMLElement | undefined;
-
   private _stash = new Map<string | RegExp, LayerOptions>();
-
   private _map!: MapboxMap;
 
   constructor(options?: LegendControlOptions) {
@@ -58,18 +54,18 @@ export default class LegendControl implements IControl {
     });
   }
 
-  onAdd(map: MapboxMap) {
+  onAdd(map: MapboxMap): HTMLElement {
     this._map = map;
     this._map.on('styledata', this.refresh);
     return this._container;
   }
 
-  onRemove() {
+  onRemove(): void {
     this._container.parentNode?.removeChild(this._container);
     this._map?.off('styledata', this.refresh);
   }
 
-  addLayers(layers: NonNullable<LegendControlOptions['layers']>) {
+  addLayers(layers: NonNullable<LegendControlOptions['layers']>): void {
     const saveLayerOptions = (name: string | RegExp, options?: LayerOptions) => {
       const stashed = this._stash.get(name);
       if (stashed) this._stash.delete(name);
@@ -88,7 +84,7 @@ export default class LegendControl implements IControl {
     if (this._map?.isStyleLoaded()) this.refresh();
   }
 
-  removeLayers(layerIds: (string | RegExp)[]) {
+  removeLayers(layerIds: (string | RegExp)[]): void {
     layerIds.forEach(id => {
       const opts = this._options.layers?.get(id);
       if (opts) this._stash.set(id, opts);
@@ -98,7 +94,12 @@ export default class LegendControl implements IControl {
     });
   }
 
-  private _getBlocks(key: string | RegExp, layer: Layer, attribute: string, value: unknown) {
+  private _getBlocks(
+    key: string | RegExp,
+    layer: Layer,
+    attribute: string,
+    value: unknown,
+  ): HTMLElement[] | undefined {
     const [property] = attribute.split('-').slice(-1);
     const renderer = renderers[property];
     if (!renderer) return;
@@ -109,7 +110,7 @@ export default class LegendControl implements IControl {
       .filter(Boolean) as HTMLElement[];
   }
 
-  private _toggler(layers: string[], onToggle?: OnToggle) {
+  private _toggler(layers: string[], onToggle?: OnToggle): HTMLElement {
     const visibility = this._map?.getLayoutProperty(layers[0], 'visibility') || 'visible';
     return createElement('button', {
       classes: ['toggler', `toggler--${visibility as string}`],
@@ -125,7 +126,7 @@ export default class LegendControl implements IControl {
     });
   }
 
-  private _isActiveLayer = (layer: LayerSpecification) => {
+  private _isActiveLayer = (layer: LayerSpecification): boolean => {
     if (!('source' in layer) || layer.source === 'composite') return false;
     const match = (key: string | RegExp) =>
       typeof key === 'string' ? layer.id === key : layer.id.match(key);
@@ -173,7 +174,7 @@ export default class LegendControl implements IControl {
     else this._panes.appendChild(pane);
   };
 
-  refresh = () => {
+  refresh = (): void => {
     // oxfmt-ignore
     this._map.getStyle().layers
       .filter(this._isActiveLayer)
