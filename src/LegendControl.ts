@@ -72,26 +72,7 @@ export default class LegendControl implements IControl {
     const saveLayerOptions = (name: string | RegExp, options?: LayerOptions) => {
       const stashed = this._stash.get(name);
       if (stashed) this._stash.delete(name);
-      const {
-        collapsed = stashed?.collapsed ?? this._options.collapsed,
-        toggler = stashed?.toggler ?? this._options.toggler,
-        highlight = stashed?.highlight ?? this._options.highlight,
-        onToggle = stashed?.onToggle ?? this._options.onToggle,
-        attributes = stashed?.attributes,
-        unit = stashed?.unit,
-        labels = stashed?.labels,
-        properties = stashed?.properties,
-      } = options || {};
-      this._options.layers?.set(name, {
-        collapsed,
-        toggler,
-        highlight,
-        onToggle,
-        attributes,
-        unit,
-        labels,
-        properties,
-      });
+      this._options.layers?.set(name, { ...defaults, ...this._options, ...stashed, ...options });
     };
 
     this._options.layers ??= new Map();
