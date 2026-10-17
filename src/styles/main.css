@@ -72,6 +72,7 @@
     }
 
     .toggler {
+      all: unset;
       color: inherit;
       margin-left: auto;
       width: var(--map-legend-title-size);
@@ -82,6 +83,10 @@
       mask-size: 100%;
       opacity: var(--toggler-hidden-opacity);
       cursor: pointer;
+
+      &:hover {
+        background-color: currentcolor;
+      }
 
       &.toggler--visible {
         mask-image: var(--toggler-visible-icon);

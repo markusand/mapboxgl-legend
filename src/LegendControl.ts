@@ -4,7 +4,7 @@ import renderers from './renderers';
 import Expression from './expression';
 import { resolveMeta } from './metadata';
 import { createElement } from './dom';
-import type { MapboxMap, Layer, LayerOptions, LegendControlOptions } from './types';
+import type { MapboxMap, Layer, LayerOptions, OnToggle, LegendControlOptions } from './types';
 
 export type { LayerOptions, LegendControlOptions };
 
@@ -109,21 +109,20 @@ export default class LegendControl implements IControl {
       .filter(Boolean) as HTMLElement[];
   }
 
-  private _toggleButton(layerIds: string[], key: string | RegExp) {
-    const { onToggle = this._options.onToggle } = this._options.layers?.get(key) || {};
-    const visibility = this._map?.getLayoutProperty(layerIds[0], 'visibility') || 'visible';
-    const button = createElement('div', {
+  private _toggler(layers: string[], onToggle?: OnToggle) {
+    const visibility = this._map?.getLayoutProperty(layers[0], 'visibility') || 'visible';
+    return createElement('button', {
       classes: ['toggler', `toggler--${visibility as string}`],
+      events: {
+        click: () => {
+          const visible = visibility === 'none' ? 'visible' : 'none';
+          layers.forEach(layer => {
+            this._map?.setLayoutProperty(layer, 'visibility', visible);
+            onToggle?.(layer, visible === 'visible');
+          });
+        },
+      },
     });
-    button.addEventListener('click', event => {
-      event.preventDefault();
-      const visible = visibility === 'none' ? 'visible' : 'none';
-      layerIds.forEach(layerId => {
-        this._map?.setLayoutProperty(layerId, 'visibility', visible);
-        onToggle?.(layerId, visible === 'visible');
-      });
-    });
-    return button;
   }
 
   private _isActiveLayer = (layer: LayerSpecification) => {
@@ -151,7 +150,7 @@ export default class LegendControl implements IControl {
       .forEach(layer => {
         const { id, layout, paint, metadata } = layer as Layer;
         const key = this._resolveKey(id);
-        const { collapsed, toggler, attributes } = this._getOptions(key);
+        const { collapsed, attributes, toggler, onToggle } = this._getOptions(key);
 
         const blocks = Object.entries({ ...layout, ...paint })
           .filter(([attr]) => attributes?.includes(attr) ?? true)
@@ -162,17 +161,17 @@ export default class LegendControl implements IControl {
         // (re)Construct pane and replace (if already exist)
         const selector = `mapboxgl-ctrl-legend-pane--${id}`;
         const prevPane = this._panes.querySelector(`.${selector}`);
-        const layerIds = toggler ? (typeof toggler === 'boolean' ? [id] : toggler) : undefined;
+        const toggle = toggler
+          ? this._toggler(typeof toggler === 'boolean' ? [id] : toggler, onToggle)
+          : false;
+
         const extraClasses = metadata?.legend?.classes ?? [];
         const pane = createElement('details', {
           classes: ['mapboxgl-ctrl-legend-pane', selector, ...extraClasses],
           attributes: { open: prevPane ? prevPane.getAttribute('open') !== null : !collapsed },
           content: [
             createElement('summary', {
-              content: [
-                metadata?.legend?.name || id,
-                layerIds && this._toggleButton(layerIds, key),
-              ],
+              content: [metadata?.legend?.name || id, toggle],
             }),
             ...blocks,
           ],
