@@ -2,7 +2,7 @@
   --map-legend-maxwidth: 50%;
   --map-legend-maxheight: 75dvh;
   --map-legend-margin: 0.75rem;
-  --map-legend-font: 1rem / 1 "Arial Unicode MS Regular", sans-serif;
+  --map-legend-font: 1rem / 1 'Arial Unicode MS Regular', sans-serif;
 
   /* Pane */
   --map-legend-minwidth: 150px;

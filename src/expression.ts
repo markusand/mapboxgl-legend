@@ -23,7 +23,8 @@ const stopper: Record<string, Stopper> = {
   literal: args => args.map(v => [v, v]),
 };
 
-const isExpression = (e: unknown): e is Expression => Array.isArray(e) && !!e.length && typeof e[0] === 'string';
+const isExpression = (e: unknown): e is Expression =>
+  Array.isArray(e) && !!e.length && typeof e[0] === 'string';
 
 const parse = (input: unknown): ParsedExpression<unknown, unknown>[] => {
   const [name, ...args] = isExpression(input) ? input : ['literal', input];
@@ -36,16 +37,13 @@ const parse = (input: unknown): ParsedExpression<unknown, unknown>[] => {
 
   // Resolve the data property being mapped: match/step bind the getter at args[0],
   // interpolate wraps it one level deeper at args[1] (after the interpolation type)
-  const getter = name === 'literal'
-    ? undefined
-    : ['match', 'step'].includes(name)
-      ? args[0]
-      : args[1];
+  const getter =
+    name === 'literal' ? undefined : ['match', 'step'].includes(name) ? args[0] : args[1];
 
   const [inputs, outputs] = zip(...stops);
   // Flatten nested range inputs (step bins) before computing the numeric extent
-  const min = Math.min(...inputs.flat(2) as number[]);
-  const max = Math.max(...inputs.flat(2) as number[]);
+  const min = Math.min(...(inputs.flat(2) as number[]));
+  const max = Math.max(...(inputs.flat(2) as number[]));
 
   return [{ name, getter, stops, inputs, outputs, min, max }];
 };

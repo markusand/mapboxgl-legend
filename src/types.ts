@@ -32,7 +32,7 @@ export type LegendControlOptions = {
 
 export type ParsedExpression<In, Out> = {
   name: string;
-  getter: Expression | undefined,
+  getter: Expression | undefined;
   stops: [In, Out][];
   inputs: In[];
   outputs: Out[];
@@ -40,8 +40,8 @@ export type ParsedExpression<In, Out> = {
   max: number;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Renderer<In=any, Out=any> = (
+// oxlint-disable-next-line @typescript-eslint/no-explicit-any
+export type Renderer<In = any, Out = any> = (
   expression: ParsedExpression<In, Out>,
   layer: Layer,
   map: MapboxMap,

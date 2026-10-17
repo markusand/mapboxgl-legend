@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -42,30 +42,29 @@
         // layers: ['facilities', 'life-expectancy'],
         layers: {
           'life-expectancy': true,
-          'facilities': {
+          facilities: {
             toggler: false,
             collapsed: true,
           },
-          'ethnicity': { highlight: false },
-          'patterns': true,
+          ethnicity: { highlight: false },
+          patterns: true,
           'muni-routes': true,
           'fire-events': {
             collapsed: true,
             onToggle: () => console.log('This is special'),
           },
         },
-        onToggle: (layer) => console.log(`${layer} toggled`),
+        onToggle: layer => console.log(`${layer} toggled`),
       });
 
       map.addControl(legend, 'bottom-left');
-      
+
       setTimeout(() => {
         legend.removeLayers(['muni-routes']);
         setTimeout(() => legend.addLayers(['muni-routes']), 5000);
       }, 5000);
 
       map.on('load', () => {
-
         map.addSource('ethnicity', { type: 'vector', url: 'mapbox://examples.8fgz4egr' });
 
         map.addSource('neighborhoods', {
@@ -92,10 +91,14 @@
             'circle-color': [
               'match',
               ['get', 'ethnicity'],
-              'White', '#f1e8c8',
-              'Black', '#443722',
-              'Hispanic', '#aa9761',
-              'Asian', '#e8e59d',
+              'White',
+              '#f1e8c8',
+              'Black',
+              '#443722',
+              'Hispanic',
+              '#aa9761',
+              'Asian',
+              '#e8e59d',
               '#ccc',
             ],
           },
@@ -110,18 +113,26 @@
               'step',
               ['to-number', ['get', 'suppression_personnel']],
               '#ccc',
-              5, '#d3f2a3',
-              10, '#4c9b82',
-              20, '#074050',
+              5,
+              '#d3f2a3',
+              10,
+              '#4c9b82',
+              20,
+              '#074050',
             ],
             'circle-opacity': 0.5,
             'circle-radius': [
-              'interpolate', ['linear'],
+              'interpolate',
+              ['linear'],
               ['to-number', ['get', 'suppression_personnel']],
-              1, 5,
-              10, 15,
-              25, 25,
-              50, 35,
+              1,
+              5,
+              10,
+              15,
+              25,
+              25,
+              50,
+              35,
             ],
           },
           metadata: {
@@ -131,7 +142,29 @@
         });
 
         const lifeExpectancy = [
-          ['Tenderloin', 72.2], ['SoMa', 73.5], ['Rincon Hill', 81.6], ['South Beach', 82.5], ['Chinatown', 83.2], ['Nob Hill', 81.1], ['Mission', 82.8], ['Ingleside', 81.8], ['Taraval', 82.8], ['Castro', 83.1], ['Lower Pacific Heights', 82.7], ['Panhandle', 82.8], ['Financial District', 86], ['Inner Richmond', 83.9], ['Outer Richmond', 84.1], ['Sunset', 83.9], ['Marina', 84.3], ['Bayview', 77.4], ['Portola', 84.7], ['Twin Peaks', 84.5], ['Lake Merced', 83.5], ['North Beach', 83.5], ['Bayshore', 81.9],
+          ['Tenderloin', 72.2],
+          ['SoMa', 73.5],
+          ['Rincon Hill', 81.6],
+          ['South Beach', 82.5],
+          ['Chinatown', 83.2],
+          ['Nob Hill', 81.1],
+          ['Mission', 82.8],
+          ['Ingleside', 81.8],
+          ['Taraval', 82.8],
+          ['Castro', 83.1],
+          ['Lower Pacific Heights', 82.7],
+          ['Panhandle', 82.8],
+          ['Financial District', 86],
+          ['Inner Richmond', 83.9],
+          ['Outer Richmond', 84.1],
+          ['Sunset', 83.9],
+          ['Marina', 84.3],
+          ['Bayview', 77.4],
+          ['Portola', 84.7],
+          ['Twin Peaks', 84.5],
+          ['Lake Merced', 83.5],
+          ['North Beach', 83.5],
+          ['Bayshore', 81.9],
         ].flatMap(([name, exp]) => [['==', ['get', 'neighborhood'], name], exp]);
 
         map.addLayer({
@@ -142,11 +175,16 @@
             'fill-color': [
               'case',
               ['!=', ['get', 'neighborhood'], 'Tenderloin'],
-              ['interpolate', ['linear'],
+              [
+                'interpolate',
+                ['linear'],
                 ['case', ...lifeExpectancy, 0],
-                70, '#a16928',
-                80, '#edeac2',
-                90, '#2887a1',
+                70,
+                '#a16928',
+                80,
+                '#edeac2',
+                90,
+                '#2887a1',
               ],
               '#cc3322',
             ],
@@ -167,16 +205,26 @@
           type: 'symbol',
           layout: {
             'icon-image': [
-              'match', ['get', 'department_name'],
-              'Recreation And Parks', 'park-15',
-              'Public Health', 'hospital-15',
-              'School District (Sfusd)', 'school-15',
-              'Public Library', 'library-15',
-              'Fire Department', 'fire-station-15',
-              'Police Department', 'police-15',
-              'Airport (Sfo)', 'airport-15',
-              'Municipal Transportation Agency', 'bus',
-              'Port', 'ferry',
+              'match',
+              ['get', 'department_name'],
+              'Recreation And Parks',
+              'park-15',
+              'Public Health',
+              'hospital-15',
+              'School District (Sfusd)',
+              'school-15',
+              'Public Library',
+              'library-15',
+              'Fire Department',
+              'fire-station-15',
+              'Police Department',
+              'police-15',
+              'Airport (Sfo)',
+              'airport-15',
+              'Municipal Transportation Agency',
+              'bus',
+              'Port',
+              'ferry',
               'marker-11',
             ],
           },
@@ -203,17 +251,28 @@
           source: 'muni-routes',
           paint: {
             'line-color': [
-              'match', ['get', 'service_ca'],
-              'match', ['get', 'service_ca'],
-              'Frequent Local', '#3288bd',
-              'Rapid Bus', '#d53e4f',
-              'Grid', '#66c2a5',
-              'Specialized', '#f46d43',
-              'Connector', '#fdae61',
-              'Cable Car', '#fee08b',
-              'Historic', '#ffffbf',
-              'Muni Metro', '#e6f598',
-              'Owl', '#abdda4',
+              'match',
+              ['get', 'service_ca'],
+              'match',
+              ['get', 'service_ca'],
+              'Frequent Local',
+              '#3288bd',
+              'Rapid Bus',
+              '#d53e4f',
+              'Grid',
+              '#66c2a5',
+              'Specialized',
+              '#f46d43',
+              'Connector',
+              '#fdae61',
+              'Cable Car',
+              '#fee08b',
+              'Historic',
+              '#ffffbf',
+              'Muni Metro',
+              '#e6f598',
+              'Owl',
+              '#abdda4',
               '#aaa',
             ],
             'line-width': 2,
@@ -224,14 +283,17 @@
         map.loadImage('./assets/pattern.stripe.png', (error, image) => {
           if (error) throw error;
           map.addImage('stripes', image);
-          map.addLayer({
-            id: 'patterns',
-            type: 'fill',
-            source: 'neighborhoods',
-            paint: {
-              'fill-pattern': 'stripes'
+          map.addLayer(
+            {
+              id: 'patterns',
+              type: 'fill',
+              source: 'neighborhoods',
+              paint: {
+                'fill-pattern': 'stripes',
+              },
             },
-          }, 'ethnicity');
+            'ethnicity',
+          );
         });
       });
     </script>

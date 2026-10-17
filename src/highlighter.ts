@@ -21,7 +21,6 @@ export default (expression: ParsedExpression<unknown, unknown>, layer: Layer, ma
 
     // Restore original layer filter
     if (value === undefined) map.setFilter(layer.id, original);
-
     else if (Array.isArray(value)) {
       // Range filter: [min, max] — falsy bounds (e.g. 0 or missing) are treated as unbounded
       const [min, max] = value;
@@ -30,9 +29,10 @@ export default (expression: ParsedExpression<unknown, unknown>, layer: Layer, ma
       map.setFilter(layer.id, ['all', lower, higher]);
     } else {
       // Numeric values use a tolerance window (delta) to account for floating-point imprecision
-      const filter = typeof value === 'number'
-        ? ['all', ['>=', getter, value - delta], ['<=', getter, value + delta]]
-        : ['==', getter, value];
+      const filter =
+        typeof value === 'number'
+          ? ['all', ['>=', getter, value - delta], ['<=', getter, value + delta]]
+          : ['==', getter, value];
       // @ts-expect-error Filter should accept numbers
       map.setFilter(layer.id, filter);
     }
