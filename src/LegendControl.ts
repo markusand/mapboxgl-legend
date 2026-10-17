@@ -2,7 +2,8 @@ import './styles/main.css';
 import { IControl } from 'mapbox-gl';
 import renderers from './renderers';
 import Expression from './expression';
-import { createElement, resolveMeta } from './utils';
+import { resolveMeta } from './metadata';
+import { createElement } from './dom';
 import type { MapboxMap, Layer, LayerOptions, LegendControlOptions } from './types';
 
 export type { LayerOptions, LegendControlOptions };

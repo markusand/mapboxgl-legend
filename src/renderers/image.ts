@@ -1,4 +1,5 @@
-import { createElement, createImageCanvas, serializeLabel } from '/@/utils';
+import { createElement, createImageCanvas } from '/@/dom';
+import { serializeLabel } from '/@/metadata';
 import highlighter from '/@/highlighter';
 import type { Renderer } from '/@/types';
 

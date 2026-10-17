@@ -1,4 +1,6 @@
-import { createElement, serializeLabel, rescale, createCache } from '/@/utils';
+import { createElement } from '/@/dom';
+import { rescale, createCache } from '/@/utils';
+import { serializeLabel } from '/@/metadata';
 import highlighter from '/@/highlighter';
 import type { Renderer } from '/@/types';
 

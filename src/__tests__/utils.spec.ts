@@ -1,15 +1,7 @@
 import { describe, it, expect, vi } from 'vite-plus/test';
-import {
-  ensureArray,
-  rescale,
-  chunk,
-  zip,
-  toPair,
-  toBins,
-  createElement,
-  createImageCanvas,
-  serializeLabel,
-} from '/@/utils';
+import { ensureArray, rescale, chunk, zip, toPair, toBins } from '/@/utils';
+import { createElement, createImageCanvas } from '/@/dom';
+import { serializeLabel } from '/@/metadata';
 
 // Stub ImageData
 vi.stubGlobal('ImageData', class ImageData {});
