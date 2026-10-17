@@ -21,20 +21,25 @@
     list-style: none;
   }
 
-  .minimizer {
+  > .minimize {
     all: unset;
-    height: var(--map-legend-minimizer-size);
-    width: var(--map-legend-minimizer-size);
-    background: var(--map-legend-background) var(--map-legend-minimizer-icon) no-repeat center
-      center;
-    background-size: var(--map-legend-minimizer-icon-size);
+    list-style: none;
+    display: none;
+    height: var(--map-legend-minimize-size);
+    width: var(--map-legend-minimize-size);
+    background: var(--map-legend-background) var(--map-legend-minimize-icon) no-repeat center center;
+    background-size: var(--map-legend-minimize-icon-size);
     border-radius: var(--map-legend-radius);
     box-shadow: var(--map-legend-shadow);
     cursor: pointer;
 
     &:hover {
-      background-color: var(--map-legend-minimizer-hover-color) !important;
+      background-color: var(--map-legend-minimize-hover-color) !important;
     }
+  }
+
+  &.minimizable > .minimize {
+    display: block;
   }
 
   .panes {

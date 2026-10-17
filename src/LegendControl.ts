@@ -23,7 +23,6 @@ export default class LegendControl implements IControl {
 
   private _container: HTMLElement;
   private _panes: HTMLElement;
-  private _minimizer: HTMLElement | undefined;
   private _stash = new Map<LayerKey, LayerOptions>();
   private _map!: MapboxMap;
 
@@ -32,27 +31,13 @@ export default class LegendControl implements IControl {
     this._options = { ...defaults, layers: undefined, ...rest };
     if (layers) this.addLayers(layers);
 
-    this._panes = createElement('div', {
-      classes: 'panes',
-      styles: { display: (options?.minimized ?? false) ? 'none' : 'block' },
-    });
+    this._panes = createElement('div', { classes: 'panes' });
 
-    this._minimizer =
-      options?.minimized !== undefined
-        ? createElement('button', {
-            classes: 'minimizer',
-            events: {
-              click: () => {
-                const { display } = this._panes.style;
-                this._panes.style.display = display === 'none' ? 'block' : 'none';
-              },
-            },
-          })
-        : undefined;
-
-    this._container = createElement('div', {
-      classes: ['mapboxgl-ctrl', 'maplibregl-ctrl', 'mapboxgl-ctrl-legend'],
-      content: [this._minimizer, this._panes],
+    const minimizable = options?.minimized !== undefined;
+    this._container = createElement('details', {
+      classes: ['mapboxgl-ctrl', 'maplibregl-ctrl', 'mapboxgl-ctrl-legend', { minimizable }],
+      attributes: { open: !options?.minimized },
+      content: [createElement('summary', { classes: 'minimize' }), this._panes],
     });
   }
 
