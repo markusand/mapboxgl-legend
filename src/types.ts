@@ -6,12 +6,16 @@ import type {
 
 export type { MapboxMap, Expression };
 
-export type Metadata = {
-  name?: string;
+export type PropertyMetadata = {
   unit?: string;
   labels?: Record<string, string | boolean>;
-  classes?: string[];
 };
+
+export type Metadata = {
+  name?: string;
+  classes?: string[];
+  properties?: Record<string, PropertyMetadata>;
+} & PropertyMetadata;
 
 export type LayerMetadata = {
   legend?: Metadata;

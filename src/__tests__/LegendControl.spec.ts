@@ -13,6 +13,23 @@ const layers = [
     paint: { 'fill-color': 'green' },
     metadata: { legend: { classes: ['test-custom-class'] } },
   },
+  {
+    id: 'test_properties',
+    type: 'circle',
+    source: 'source',
+    paint: {
+      'circle-color': ['match', ['get', 'type'], 'a', '#f00', 'b', '#0f0', '#ccc'],
+      'circle-radius': ['match', ['get', 'type'], 'a', 5, 'b', 10, 1],
+    },
+    metadata: {
+      legend: {
+        unit: 'default',
+        properties: {
+          'circle-radius': { unit: 'px' },
+        },
+      },
+    },
+  },
 ];
 
 const createMap = () => {
@@ -47,11 +64,11 @@ describe('Legend Control', () => {
   it('should mount layers panes with defaults', () => {
     const { container } = createLegend();
     const panes = container.querySelectorAll('.mapboxgl-ctrl-legend-pane');
-    expect(panes.length).toBe(3);
-    expect(panes[1].getAttribute('open')).toBeTruthy();
-    expect(panes[1].querySelector('toggler')).toBeFalsy();
-    expect(panes[1].querySelector('summary')?.textContent).toBe('test_2');
-    expect(panes[2].querySelector('summary')?.textContent).toBe('test_1');
+    expect(panes.length).toBe(4);
+    expect(panes[2].getAttribute('open')).toBeTruthy();
+    expect(panes[2].querySelector('toggler')).toBeFalsy();
+    expect(panes[2].querySelector('summary')?.textContent).toBe('test_2');
+    expect(panes[3].querySelector('summary')?.textContent).toBe('test_1');
   });
 
   it('should not mount layers when empty array provided', () => {
@@ -127,9 +144,20 @@ describe('Legend Control', () => {
 
   it('should remove pane', () => {
     const { control, container } = createLegend();
-    expect(container.querySelectorAll('.mapboxgl-ctrl-legend-pane')).toHaveLength(3);
+    expect(container.querySelectorAll('.mapboxgl-ctrl-legend-pane')).toHaveLength(4);
     control.removeLayers(['test_2']);
-    expect(container.querySelectorAll('.mapboxgl-ctrl-legend-pane')).toHaveLength(2);
+    expect(container.querySelectorAll('.mapboxgl-ctrl-legend-pane')).toHaveLength(3);
+  });
+
+  it('should apply per-property metadata', () => {
+    const { container } = createLegend({ layers: ['test_properties'] });
+    const pane = container.querySelector('.mapboxgl-ctrl-legend-pane--test_properties');
+    const colorList = pane?.querySelector('.list--color');
+    const radiusList = pane?.querySelector('.bubbles');
+    // Color list uses base unit
+    expect(colorList?.firstElementChild?.textContent).toBe('adefault');
+    // Radius list uses overridden unit
+    expect(radiusList?.querySelector('span')?.textContent).toContain('px');
   });
 
   it('should allow adding classes to specific layers', () => {

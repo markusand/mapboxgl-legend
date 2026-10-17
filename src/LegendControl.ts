@@ -106,8 +106,15 @@ export default class LegendControl implements IControl {
     if (!renderer) return;
     const expressions = Expression.parse(value);
     const options = this._options.layers?.get(key) || this._options;
+    const override = layer.metadata?.legend?.properties?.[attribute];
+    const resolved = override
+      ? {
+          ...layer,
+          metadata: { ...layer.metadata, legend: { ...layer.metadata?.legend, ...override } },
+        }
+      : layer;
     return expressions
-      .map(expression => renderer(expression, layer, this._map, options))
+      .map(expression => renderer(expression, resolved, this._map, options))
       .filter(Boolean) as HTMLElement[];
   }
 

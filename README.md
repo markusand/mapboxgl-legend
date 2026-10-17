@@ -120,12 +120,13 @@ const legend = new LegendControl({
 
 There are also a few options that be defined as a per-layer basis using the style `metadata` object, namespaced under a `legend` key to avoid collisions with other metadata consumers.
 
-| option  | type     | description                                       |
-| ------- | -------- | ------------------------------------------------- |
-| name    | String   | Set the panel title name                          |
-| unit    | String   | Add a unit to all labels                          |
-| labels  | Object   | Map a value to a text that replaces it as a label |
-| classes | String[] | Classes to add to the layer's legend pane         |
+| option     | type     | description                                       |
+| ---------- | -------- | ------------------------------------------------- |
+| name       | String   | Set the panel title name                          |
+| unit       | String   | Add a unit to all labels                          |
+| labels     | Object   | Map a value to a text that replaces it as a label |
+| classes    | String[] | Classes to add to the layer's legend pane         |
+| properties | Object   | Per-property `unit` and `labels` (see below)      |
 
 Metadata provides an extra layer of control by hiding items that have a label set to `false`, except on step expressions.
 
@@ -157,6 +158,19 @@ metadata: {
     labels: {
       '0,10': 'Group A',
       '10,20': 'Group B',
+    },
+  },
+}
+```
+
+When a layer renders multiple properties (e.g. `circle-color` and `circle-radius`), `properties` lets you set a different `unit` or `labels` for a specific property
+
+```javascript
+metadata: {
+  legend: {
+    unit: ' ppl',
+    properties: {
+      'circle-color': { unit: ' alarms' },
     },
   },
 }

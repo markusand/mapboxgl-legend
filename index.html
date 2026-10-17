@@ -124,13 +124,13 @@
           paint: {
             'circle-color': [
               'step',
-              ['to-number', ['get', 'suppression_personnel']],
+              ['to-number', ['get', 'number_of_alarms']],
               '#ccc',
-              5,
+              1,
               '#d3f2a3',
-              10,
+              2,
               '#4c9b82',
-              20,
+              3,
               '#074050',
             ],
             'circle-opacity': 0.5,
@@ -151,7 +151,10 @@
           metadata: {
             legend: {
               name: 'Fire events',
-              unit: 'k',
+              unit: ' ppl',
+              properties: {
+                'circle-color': { unit: ' alarms' },
+              },
             },
           },
         });
