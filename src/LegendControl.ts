@@ -24,6 +24,8 @@ export default class LegendControl implements IControl {
 
   private _minimizer: HTMLElement | undefined;
 
+  private _stash = new Map<string | RegExp, LayerOptions>();
+
   private _map!: MapboxMap;
 
   constructor(options?: LegendControlOptions) {
@@ -70,15 +72,17 @@ export default class LegendControl implements IControl {
 
   addLayers(layers: NonNullable<LegendControlOptions['layers']>) {
     const saveLayerOptions = (name: string | RegExp, options?: LayerOptions) => {
+      const stashed = this._stash.get(name);
+      if (stashed) this._stash.delete(name);
       const {
-        collapsed = this._options.collapsed,
-        toggler = this._options.toggler,
-        highlight = this._options.highlight,
-        onToggle = this._options.onToggle,
-        attributes,
-        unit,
-        labels,
-        properties,
+        collapsed = stashed?.collapsed ?? this._options.collapsed,
+        toggler = stashed?.toggler ?? this._options.toggler,
+        highlight = stashed?.highlight ?? this._options.highlight,
+        onToggle = stashed?.onToggle ?? this._options.onToggle,
+        attributes = stashed?.attributes,
+        unit = stashed?.unit,
+        labels = stashed?.labels,
+        properties = stashed?.properties,
       } = options || {};
       this._options.layers?.set(name, {
         collapsed,
@@ -106,6 +110,8 @@ export default class LegendControl implements IControl {
 
   removeLayers(layerIds: (string | RegExp)[]) {
     layerIds.forEach(id => {
+      const opts = this._options.layers?.get(id);
+      if (opts) this._stash.set(id, opts);
       this._options.layers?.delete(id);
       const pane = this._panes.querySelector(`.mapboxgl-ctrl-legend-pane--${id}`);
       if (pane) this._panes.removeChild(pane);
