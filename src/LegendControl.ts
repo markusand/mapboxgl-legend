@@ -8,6 +8,8 @@ import type { MapboxMap, Layer, LayerOptions, OnToggle, LegendControlOptions } f
 
 export type { LayerOptions, LegendControlOptions };
 
+type LayerKey = string | RegExp;
+
 const defaults: LayerOptions = {
   collapsed: false,
   toggler: false,
@@ -16,13 +18,13 @@ const defaults: LayerOptions = {
 
 export default class LegendControl implements IControl {
   private _options: {
-    layers: Map<string | RegExp, LayerOptions> | undefined;
+    layers: Map<LayerKey, LayerOptions> | undefined;
   } & Omit<LegendControlOptions, 'layers'>;
 
   private _container: HTMLElement;
   private _panes: HTMLElement;
   private _minimizer: HTMLElement | undefined;
-  private _stash = new Map<string | RegExp, LayerOptions>();
+  private _stash = new Map<LayerKey, LayerOptions>();
   private _map!: MapboxMap;
 
   constructor(options?: LegendControlOptions) {
@@ -66,10 +68,10 @@ export default class LegendControl implements IControl {
   }
 
   addLayers(layers: NonNullable<LegendControlOptions['layers']>): void {
-    const saveLayerOptions = (name: string | RegExp, options?: LayerOptions) => {
-      const stashed = this._stash.get(name);
-      if (stashed) this._stash.delete(name);
-      this._options.layers?.set(name, { ...defaults, ...this._options, ...stashed, ...options });
+    const saveLayerOptions = (key: LayerKey, options?: LayerOptions) => {
+      const stashed = this._stash.get(key);
+      if (stashed) this._stash.delete(key);
+      this._options.layers?.set(key, { ...defaults, ...this._options, ...stashed, ...options });
     };
 
     this._options.layers ??= new Map();
@@ -84,18 +86,18 @@ export default class LegendControl implements IControl {
     if (this._map?.isStyleLoaded()) this.refresh();
   }
 
-  removeLayers(layerIds: (string | RegExp)[]): void {
-    layerIds.forEach(id => {
-      const opts = this._options.layers?.get(id);
-      if (opts) this._stash.set(id, opts);
-      this._options.layers?.delete(id);
-      const pane = this._panes.querySelector(`.mapboxgl-ctrl-legend-pane--${id}`);
+  removeLayers(keys: LayerKey[]): void {
+    keys.forEach(key => {
+      const opts = this._options.layers?.get(key);
+      if (opts) this._stash.set(key, opts);
+      this._options.layers?.delete(key);
+      const pane = this._panes.querySelector(`.mapboxgl-ctrl-legend-pane--${key}`);
       if (pane) this._panes.removeChild(pane);
     });
   }
 
   private _getBlocks(
-    key: string | RegExp,
+    key: LayerKey,
     layer: Layer,
     attribute: string,
     value: unknown,
@@ -128,18 +130,18 @@ export default class LegendControl implements IControl {
 
   private _isActiveLayer = (layer: LayerSpecification): boolean => {
     if (!('source' in layer) || layer.source === 'composite') return false;
-    const match = (key: string | RegExp) =>
+    const match = (key: LayerKey) =>
       typeof key === 'string' ? layer.id === key : layer.id.match(key);
     const keys = this._options.layers?.keys();
     return !keys || [...keys].some(match);
   };
 
-  private _resolveKey = (id: string): string | RegExp => {
+  private _resolveKey = (id: string): LayerKey => {
     const ids = Array.from(this._options.layers?.keys() ?? []);
     return ids.find(_id => id.match(_id)) ?? id;
   };
 
-  private _getOptions = (key: string | RegExp): LayerOptions => {
+  private _getOptions = (key: LayerKey): LayerOptions => {
     return this._options.layers?.get(key) ?? this._options;
   };
 
