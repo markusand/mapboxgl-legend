@@ -29,12 +29,14 @@ export type Layer = {
   metadata?: LayerMetadata;
 } & MapboxLayer;
 
+export type OnToggle = (layer: string, visibility: boolean) => void;
+
 export type LayerOptions = {
   collapsed?: boolean;
   toggler?: boolean | string[];
   attributes?: string[];
   highlight?: boolean;
-  onToggle?: (layer: string, visibility: boolean) => void;
+  onToggle?: OnToggle;
 } & PropertyMetadata & {
     properties?: Record<string, PropertyMetadata>;
   };
@@ -58,6 +60,6 @@ export type ParsedExpression<In, Out> = {
 export type Renderer<In = any, Out = any> = (
   expression: ParsedExpression<In, Out>,
   layer: Layer,
-  map: MapboxMap,
   options: LayerOptions,
+  map: MapboxMap,
 ) => HTMLElement | undefined;

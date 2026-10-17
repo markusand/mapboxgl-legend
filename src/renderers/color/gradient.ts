@@ -1,4 +1,6 @@
-import { createElement, serializeLabel, rescale, createCache } from '/@/utils';
+import { createElement } from '/@/dom';
+import { rescale, createCache } from '/@/utils';
+import { serializeLabel } from '/@/metadata';
 import highlighter from '/@/highlighter';
 import type { Renderer } from '/@/types';
 
@@ -7,7 +9,7 @@ type GradientRenderer = Renderer<number, string>;
 // Cache the last mouse x position per layer so the indicator doesn't jump on re-render
 const cache = createCache<{ x: number }>();
 
-const renderer: GradientRenderer = (expression, layer, map, options) => {
+const renderer: GradientRenderer = (expression, layer, options, map) => {
   const { inputs, stops, min, max } = expression;
 
   // Save previous mouse position to avoid flickering
@@ -35,7 +37,7 @@ const renderer: GradientRenderer = (expression, layer, map, options) => {
       createElement('p', {
         classes: 'labels',
         content: inputs.map(input => {
-          const content = serializeLabel(input, layer.metadata?.legend);
+          const content = serializeLabel(input, options);
           return (
             content &&
             createElement('span', {

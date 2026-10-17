@@ -1,11 +1,14 @@
 import './styles/main.css';
-import { IControl } from 'mapbox-gl';
+import { IControl, LayerSpecification } from 'mapbox-gl';
 import renderers from './renderers';
 import Expression from './expression';
-import { createElement } from './utils';
-import type { MapboxMap, Layer, LayerOptions, LegendControlOptions } from './types';
+import { resolveMeta } from './metadata';
+import { createElement } from './dom';
+import type { MapboxMap, Layer, LayerOptions, OnToggle, LegendControlOptions } from './types';
 
 export type { LayerOptions, LegendControlOptions };
+
+type LayerKey = string | RegExp;
 
 const defaults: LayerOptions = {
   collapsed: false,
@@ -15,17 +18,12 @@ const defaults: LayerOptions = {
 
 export default class LegendControl implements IControl {
   private _options: {
-    layers: Map<string | RegExp, LayerOptions> | undefined;
+    layers: Map<LayerKey, LayerOptions> | undefined;
   } & Omit<LegendControlOptions, 'layers'>;
 
   private _container: HTMLElement;
-
   private _panes: HTMLElement;
-
-  private _minimizer: HTMLElement | undefined;
-
-  private _stash = new Map<string | RegExp, LayerOptions>();
-
+  private _stash = new Map<LayerKey, LayerOptions>();
   private _map!: MapboxMap;
 
   constructor(options?: LegendControlOptions) {
@@ -33,65 +31,32 @@ export default class LegendControl implements IControl {
     this._options = { ...defaults, layers: undefined, ...rest };
     if (layers) this.addLayers(layers);
 
-    this._panes = createElement('div', {
-      classes: 'panes',
-      styles: { display: (options?.minimized ?? false) ? 'none' : 'block' },
-    });
+    this._panes = createElement('div', { classes: 'panes' });
 
-    this._minimizer =
-      options?.minimized !== undefined
-        ? createElement('button', {
-            classes: 'minimizer',
-            events: {
-              click: () => {
-                const { display } = this._panes.style;
-                this._panes.style.display = display === 'none' ? 'block' : 'none';
-              },
-            },
-          })
-        : undefined;
-
-    this._container = createElement('div', {
-      classes: ['mapboxgl-ctrl', 'maplibregl-ctrl', 'mapboxgl-ctrl-legend'],
-      content: [this._minimizer, this._panes],
+    const minimizable = options?.minimized !== undefined;
+    this._container = createElement('details', {
+      classes: ['mapboxgl-ctrl', 'maplibregl-ctrl', 'mapboxgl-ctrl-legend', { minimizable }],
+      attributes: { open: !options?.minimized },
+      content: [createElement('summary', { classes: 'minimize' }), this._panes],
     });
   }
 
-  onAdd(map: MapboxMap) {
+  onAdd(map: MapboxMap): HTMLElement {
     this._map = map;
     this._map.on('styledata', this.refresh);
     return this._container;
   }
 
-  onRemove() {
+  onRemove(): void {
     this._container.parentNode?.removeChild(this._container);
     this._map?.off('styledata', this.refresh);
   }
 
-  addLayers(layers: NonNullable<LegendControlOptions['layers']>) {
-    const saveLayerOptions = (name: string | RegExp, options?: LayerOptions) => {
-      const stashed = this._stash.get(name);
-      if (stashed) this._stash.delete(name);
-      const {
-        collapsed = stashed?.collapsed ?? this._options.collapsed,
-        toggler = stashed?.toggler ?? this._options.toggler,
-        highlight = stashed?.highlight ?? this._options.highlight,
-        onToggle = stashed?.onToggle ?? this._options.onToggle,
-        attributes = stashed?.attributes,
-        unit = stashed?.unit,
-        labels = stashed?.labels,
-        properties = stashed?.properties,
-      } = options || {};
-      this._options.layers?.set(name, {
-        collapsed,
-        toggler,
-        highlight,
-        onToggle,
-        attributes,
-        unit,
-        labels,
-        properties,
-      });
+  addLayers(layers: NonNullable<LegendControlOptions['layers']>): void {
+    const saveLayerOptions = (key: LayerKey, options?: LayerOptions) => {
+      const stashed = this._stash.get(key);
+      if (stashed) this._stash.delete(key);
+      this._options.layers?.set(key, { ...defaults, ...this._options, ...stashed, ...options });
     };
 
     this._options.layers ??= new Map();
@@ -106,108 +71,102 @@ export default class LegendControl implements IControl {
     if (this._map?.isStyleLoaded()) this.refresh();
   }
 
-  removeLayers(layerIds: (string | RegExp)[]) {
-    layerIds.forEach(id => {
-      const opts = this._options.layers?.get(id);
-      if (opts) this._stash.set(id, opts);
-      this._options.layers?.delete(id);
+  removeLayers(ids: string[]): void {
+    ids.forEach(id => {
+      const key = this._resolveKey(id);
+      const options = this._options.layers?.get(key);
+      if (options) this._stash.set(key, options);
+      this._options.layers?.delete(key);
       const pane = this._panes.querySelector(`.mapboxgl-ctrl-legend-pane--${id}`);
       if (pane) this._panes.removeChild(pane);
     });
   }
 
-  private _getBlocks(key: string | RegExp, layer: Layer, attribute: string, value: unknown) {
+  private _getBlocks(
+    key: LayerKey,
+    layer: Layer,
+    attribute: string,
+    value: unknown,
+  ): HTMLElement[] | undefined {
     const [property] = attribute.split('-').slice(-1);
     const renderer = renderers[property];
     if (!renderer) return;
-    const expressions = Expression.parse(value);
-    const options = this._options.layers?.get(key) || this._options;
-    // Merge legend metadata: layer metadata (serializable) < control options < per-property override
-    const { unit, labels, properties } = options;
-    const controlMeta =
-      unit || labels || properties
-        ? { ...layer.metadata?.legend, unit, labels, ...properties?.[attribute] }
-        : layer.metadata?.legend;
-    const layerOverride = layer.metadata?.legend?.properties?.[attribute];
-    const mergedMeta = layerOverride ? { ...controlMeta, ...layerOverride } : controlMeta;
-    const resolved =
-      mergedMeta !== layer.metadata?.legend
-        ? { ...layer, metadata: { ...layer.metadata, legend: { ...mergedMeta } } }
-        : layer;
-    return expressions
-      .map(expression => renderer(expression, resolved, this._map, options))
+    const options = this._getOptions(key);
+    const resolved = { ...options, ...resolveMeta(layer, options, attribute) };
+    return Expression.parse(value)
+      .map(expression => renderer(expression, layer, resolved, this._map))
       .filter(Boolean) as HTMLElement[];
   }
 
-  private _toggleButton(layerIds: string[], key: string | RegExp) {
-    const { onToggle = this._options.onToggle } = this._options.layers?.get(key) || {};
-    const visibility = this._map?.getLayoutProperty(layerIds[0], 'visibility') || 'visible';
-    const button = createElement('div', {
+  private _toggler(layers: string[], onToggle?: OnToggle): HTMLElement {
+    const visibility = this._map?.getLayoutProperty(layers[0], 'visibility') || 'visible';
+    return createElement('button', {
       classes: ['toggler', `toggler--${visibility as string}`],
+      events: {
+        click: () => {
+          const visible = visibility === 'none' ? 'visible' : 'none';
+          layers.forEach(layer => {
+            this._map?.setLayoutProperty(layer, 'visibility', visible);
+            onToggle?.(layer, visible === 'visible');
+          });
+        },
+      },
     });
-    button.addEventListener('click', event => {
-      event.preventDefault();
-      const visible = visibility === 'none' ? 'visible' : 'none';
-      layerIds.forEach(layerId => {
-        this._map?.setLayoutProperty(layerId, 'visibility', visible);
-        onToggle?.(layerId, visible === 'visible');
-      });
-    });
-    return button;
   }
 
-  refresh = () => {
-    const layersIds = this._options.layers ? [...this._options.layers.keys()] : undefined;
-    this._map
-      .getStyle()
-      ?.layers.filter(layer => {
-        const isValidLayer = 'source' in layer && layer.source !== 'composite';
-        const isActiveLayer =
-          !layersIds ||
-          [...layersIds].some(name =>
-            typeof name === 'string' ? layer.id === name : layer.id.match(name),
-          );
-        return isValidLayer && isActiveLayer;
-      })
-      .reverse() // Show in order that are drawn on map (first layers at the bottom, last on top)
-      .forEach(layer => {
-        const { id, layout, paint, metadata } = layer as Layer;
-        const key = layersIds?.find(name => id.match(name)) || id;
-        const { collapsed, toggler, attributes } = this._options.layers?.get(key) || this._options;
+  private _isActiveLayer = (layer: LayerSpecification): boolean => {
+    if (!('source' in layer) || layer.source === 'composite') return false;
+    const match = (key: LayerKey) =>
+      typeof key === 'string' ? layer.id === key : layer.id.match(key);
+    const keys = this._options.layers?.keys();
+    return !keys || [...keys].some(match);
+  };
 
-        // Construct all required blocks, break if none
-        const paneBlocks = Object.entries({ ...layout, ...paint }).reduce(
-          (acc, [attribute, value]) => {
-            const visible = attributes?.includes(attribute) ?? true;
-            if (!visible) return acc;
-            const blocks = this._getBlocks(key, layer as Layer, attribute, value);
-            blocks?.forEach(block => acc.push(block));
-            return acc;
-          },
-          [] as HTMLElement[],
-        );
-        if (!paneBlocks.length) return;
+  private _resolveKey = (id: string): LayerKey => {
+    const ids = Array.from(this._options.layers?.keys() ?? []);
+    return ids.find(_id => id.match(_id)) ?? id;
+  };
 
-        // (re)Construct pane and replace (if already exist)
-        const selector = `mapboxgl-ctrl-legend-pane--${id}`;
-        const prevPane = this._panes.querySelector(`.${selector}`);
-        const layerIds = toggler ? (typeof toggler === 'boolean' ? [id] : toggler) : undefined;
-        const extraClasses = metadata?.legend?.classes ?? [];
-        const pane = createElement('details', {
-          classes: ['mapboxgl-ctrl-legend-pane', selector, ...extraClasses],
-          attributes: { open: prevPane ? prevPane.getAttribute('open') !== null : !collapsed },
-          content: [
-            createElement('summary', {
-              content: [
-                metadata?.legend?.name || id,
-                layerIds && this._toggleButton(layerIds, key),
-              ],
-            }),
-            ...paneBlocks,
-          ],
-        });
-        if (prevPane) this._panes.replaceChild(pane, prevPane);
-        else this._panes.appendChild(pane);
-      });
+  private _getOptions = (key: LayerKey): LayerOptions => {
+    return this._options.layers?.get(key) ?? this._options;
+  };
+
+  private _render = (layer: LayerSpecification): void => {
+    const { id, layout, paint, metadata } = layer as Layer;
+    const key = this._resolveKey(id);
+    const { collapsed, attributes, toggler, onToggle } = this._getOptions(key);
+
+    const blocks = Object.entries({ ...layout, ...paint })
+      .filter(([attr]) => attributes?.includes(attr) ?? true)
+      .flatMap(([attr, value]) => this._getBlocks(key, layer as Layer, attr, value) ?? []);
+
+    if (!blocks.length) return;
+
+    // (re)Construct pane and replace (if already exist)
+    const selector = `mapboxgl-ctrl-legend-pane--${id}`;
+    const prevPane = this._panes.querySelector(`.${selector}`);
+    const open = prevPane ? prevPane.getAttribute('open') !== null : !collapsed;
+
+    const toggle = toggler
+      ? this._toggler(typeof toggler === 'boolean' ? [id] : toggler, onToggle)
+      : false;
+
+    const { classes = [], name = id } = metadata?.legend || {};
+    const pane = createElement('details', {
+      classes: ['mapboxgl-ctrl-legend-pane', selector, ...classes],
+      attributes: { open },
+      content: [createElement('summary', { content: [name, toggle] }), ...blocks],
+    });
+
+    if (prevPane) this._panes.replaceChild(pane, prevPane);
+    else this._panes.appendChild(pane);
+  };
+
+  refresh = (): void => {
+    // oxfmt-ignore
+    this._map.getStyle().layers
+      .filter(this._isActiveLayer)
+      .reverse()
+      .forEach(this._render);
   };
 }

@@ -181,18 +181,14 @@ describe('Legend Control', () => {
 
   it('should load minimized', () => {
     const { container } = createLegend({ minimized: true });
-    expect(container.querySelector('.minimizer')).toBeTruthy();
-    const panes = container.querySelector('.panes') as HTMLElement;
-    expect(panes).toBeTruthy();
-    expect(panes.style.display).toBe('none');
+    expect(container.querySelector('.minimize')).toBeTruthy();
+    expect(container.hasAttribute('open')).toBe(false);
   });
 
   it('should load expanded', () => {
     const { container } = createLegend({ minimized: false });
-    expect(container.querySelector('.minimizer')).toBeTruthy();
-    const panes = container.querySelector('.panes') as HTMLElement;
-    expect(panes).toBeTruthy();
-    expect(panes.style.display).toBe('block');
+    expect(container.querySelector('.minimize')).toBeTruthy();
+    expect(container.hasAttribute('open')).toBe(true);
   });
 
   it('toggle should toggle specified layers', () => {
