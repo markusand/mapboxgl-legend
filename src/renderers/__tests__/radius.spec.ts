@@ -19,8 +19,12 @@ describe('Radius panel', () => {
       min: 1,
       max: 3,
     };
-    const metadata = { legend: { labels: { 1: 'one', 3: 'three' } } };
-    const el = bubbles(expression, { id: '_', type: 'circle', metadata }, map, {});
+    const el = bubbles(
+      expression,
+      { id: '_', type: 'circle' },
+      { labels: { 1: 'one', 3: 'three' } },
+      map,
+    );
 
     expect(el?.tagName).toBe('UL');
     expect(el?.classList.contains('bubbles')).toBeTruthy();
@@ -48,8 +52,12 @@ describe('Radius panel', () => {
       min: 1,
       max: 3,
     };
-    const metadata = { legend: { labels: { 1: 'one', 3: false } } };
-    const el = bubbles(expression, { id: '_', type: 'circle', metadata }, map, {});
+    const el = bubbles(
+      expression,
+      { id: '_', type: 'circle' },
+      { labels: { 1: 'one', 3: false } },
+      map,
+    );
 
     expect(el?.childElementCount).toBe(2);
   });
@@ -68,8 +76,12 @@ describe('Radius panel', () => {
       min: 1,
       max: 3,
     };
-    const metadata = { legend: { labels: { 1: 'one', 3: false } } };
-    const el = bubbles(expression, { id: '_', type: 'circle', metadata }, map, { highlight: true });
+    const el = bubbles(
+      expression,
+      { id: '_', type: 'circle' },
+      { highlight: true, labels: { 1: 'one', 3: false } },
+      map,
+    );
     expect(el?.className).contain('--highlight');
 
     const setFilter = vi.spyOn(map, 'setFilter');

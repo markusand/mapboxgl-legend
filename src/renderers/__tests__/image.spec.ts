@@ -39,8 +39,7 @@ describe('Image panel', () => {
       min: NaN,
       max: NaN,
     };
-    const metadata = { legend: { labels: { a: 'Image A' } } };
-    const el = image(expression, { id: '_', type: 'circle', metadata }, map, {});
+    const el = image(expression, { id: '_', type: 'circle' }, { labels: { a: 'Image A' } }, map);
 
     expect(el?.tagName).toBe('UL');
     expect(el?.classList.contains('list')).toBeTruthy();
@@ -72,8 +71,7 @@ describe('Image panel', () => {
       min: NaN,
       max: NaN,
     };
-    const metadata = { legend: { labels: { a: 'Image A' } } };
-    const el = image(expression, { id: '_', type: 'circle', metadata }, map, {});
+    const el = image(expression, { id: '_', type: 'circle' }, { labels: { a: 'Image A' } }, map);
 
     expect(el?.childElementCount).toBe(1);
   });
@@ -91,8 +89,12 @@ describe('Image panel', () => {
       min: NaN,
       max: NaN,
     };
-    const metadata = { legend: { labels: { a: 'Image A', b: false } } };
-    const el = image(expression, { id: '_', type: 'circle', metadata }, map, {});
+    const el = image(
+      expression,
+      { id: '_', type: 'circle' },
+      { labels: { a: 'Image A', b: false } },
+      map,
+    );
 
     expect(el?.childElementCount).toBe(1);
   });
@@ -110,8 +112,12 @@ describe('Image panel', () => {
       min: NaN,
       max: NaN,
     };
-    const metadata = { legend: { labels: { a: 'Image A', b: false } } };
-    const el = image(expression, { id: '_', type: 'circle', metadata }, map, { highlight: true });
+    const el = image(
+      expression,
+      { id: '_', type: 'circle' },
+      { highlight: true, labels: { a: 'Image A', b: false } },
+      map,
+    );
     expect(el?.className).contain('--highlight');
 
     const setFilter = vi.spyOn(map, 'setFilter');

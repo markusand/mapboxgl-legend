@@ -19,7 +19,7 @@ describe('Color gradient panel', () => {
       min: 1,
       max: 3,
     };
-    const el = gradient(expression, { id: '_', type: 'circle' }, map, {});
+    const el = gradient(expression, { id: '_', type: 'circle' }, {}, map);
 
     expect(el?.tagName).toBe('DIV');
     expect(el?.classList.contains('gradient')).toBeTruthy();
@@ -48,8 +48,7 @@ describe('Color gradient panel', () => {
       min: 1,
       max: 3,
     };
-    const metadata = { legend: { labels: { 2: false } } };
-    const el = gradient(expression, { id: '_', type: 'circle', metadata }, map, {});
+    const el = gradient(expression, { id: '_', type: 'circle' }, { labels: { 2: false } }, map);
     expect(el?.firstElementChild?.childElementCount).toBe(2);
   });
 
@@ -67,10 +66,15 @@ describe('Color gradient panel', () => {
       min: 1,
       max: 3,
     };
-    const metadata = { legend: { labels: { 2: false } } };
-    const el = gradient(expression, { id: '_', type: 'circle', metadata }, map, {
-      highlight: true,
-    });
+    const el = gradient(
+      expression,
+      { id: '_', type: 'circle' },
+      {
+        highlight: true,
+        labels: { 2: false },
+      },
+      map,
+    );
 
     const setFilter = vi.spyOn(map, 'setFilter');
     const bar = el?.querySelector('.bar');

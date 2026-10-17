@@ -2,7 +2,7 @@ import './styles/main.css';
 import { IControl } from 'mapbox-gl';
 import renderers from './renderers';
 import Expression from './expression';
-import { createElement } from './utils';
+import { createElement, resolveMeta } from './utils';
 import type { MapboxMap, Layer, LayerOptions, LegendControlOptions } from './types';
 
 export type { LayerOptions, LegendControlOptions };
@@ -101,22 +101,10 @@ export default class LegendControl implements IControl {
     const [property] = attribute.split('-').slice(-1);
     const renderer = renderers[property];
     if (!renderer) return;
-    const expressions = Expression.parse(value);
     const options = this._options.layers?.get(key) || this._options;
-    // Merge legend metadata: layer metadata (serializable) < control options < per-property override
-    const { unit, labels, properties } = options;
-    const controlMeta =
-      unit || labels || properties
-        ? { ...layer.metadata?.legend, unit, labels, ...properties?.[attribute] }
-        : layer.metadata?.legend;
-    const layerOverride = layer.metadata?.legend?.properties?.[attribute];
-    const mergedMeta = layerOverride ? { ...controlMeta, ...layerOverride } : controlMeta;
-    const resolved =
-      mergedMeta !== layer.metadata?.legend
-        ? { ...layer, metadata: { ...layer.metadata, legend: { ...mergedMeta } } }
-        : layer;
-    return expressions
-      .map(expression => renderer(expression, resolved, this._map, options))
+    const resolved = { ...options, ...resolveMeta(layer, options, attribute) };
+    return Expression.parse(value)
+      .map(expression => renderer(expression, layer, resolved, this._map))
       .filter(Boolean) as HTMLElement[];
   }
 

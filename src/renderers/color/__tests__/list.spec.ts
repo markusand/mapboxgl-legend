@@ -19,8 +19,12 @@ describe('Color list panel', () => {
       min: 1,
       max: 3,
     };
-    const metadata = { legend: { labels: { 1: 'one', 3: 'three' } } };
-    const el = list(expression, { id: '_', type: 'circle', metadata }, map, {});
+    const el = list(
+      expression,
+      { id: '_', type: 'circle' },
+      { labels: { 1: 'one', 3: 'three' } },
+      map,
+    );
 
     expect(el?.tagName).toBe('UL');
     expect(el?.classList.contains('list')).toBeTruthy();
@@ -53,8 +57,7 @@ describe('Color list panel', () => {
       min: 1,
       max: 15,
     };
-    const metadata = { legend: { unit: 'k' } };
-    const el = list(expression, { id: '_', type: 'circle', metadata }, map, {});
+    const el = list(expression, { id: '_', type: 'circle' }, { unit: 'k' }, map);
 
     expect(el?.tagName).toBe('UL');
     expect(el?.classList.contains('list')).toBeTruthy();
@@ -83,8 +86,12 @@ describe('Color list panel', () => {
       min: NaN,
       max: NaN,
     };
-    const metadata = { legend: { labels: { low: 'baix', medium: 'mig', high: 'alt' } } };
-    const el = list(expression, { id: '_', type: 'circle', metadata }, map, {});
+    const el = list(
+      expression,
+      { id: '_', type: 'circle' },
+      { labels: { low: 'baix', medium: 'mig', high: 'alt' } },
+      map,
+    );
 
     expect(el?.tagName).toBe('UL');
     expect(el?.classList.contains('list')).toBeTruthy();
@@ -113,8 +120,7 @@ describe('Color list panel', () => {
       min: 1,
       max: 3,
     };
-    const metadata = { legend: { labels: { 2: false } } };
-    const el = list(expression, { id: '_', type: 'circle', metadata }, map, {});
+    const el = list(expression, { id: '_', type: 'circle' }, { labels: { 2: false } }, map);
 
     expect(el?.childElementCount).toBe(2);
   });
@@ -133,8 +139,12 @@ describe('Color list panel', () => {
       min: 1,
       max: 3,
     };
-    const metadata = { legend: { labels: { 2: false } } };
-    const el = list(expression, { id: '_', type: 'circle', metadata }, map, { highlight: true });
+    const el = list(
+      expression,
+      { id: '_', type: 'circle' },
+      { highlight: true, labels: { 2: false } },
+      map,
+    );
 
     const setFilter = vi.spyOn(map, 'setFilter');
     el?.firstElementChild?.dispatchEvent(new Event('mouseenter'));

@@ -1,6 +1,10 @@
-import type { MapboxMap, Metadata, LabelValue } from '/@/types';
+import type { MapboxMap, Metadata, LabelValue, Layer, LayerOptions } from '/@/types';
 
 export const ensureArray = <T>(thing: T | T[]): T[] => (Array.isArray(thing) ? thing : [thing]);
+
+// Pick non-null values from obj for the given keys
+const pick = <T extends Record<string, unknown>>(obj: T, keys: readonly (keyof T)[]) =>
+  Object.fromEntries(keys.filter(k => obj[k] != null).map(k => [k, obj[k]]));
 
 // Linear interpolation: maps val from [x1,y1] range into [x2,y2] range
 export const rescale = (val: number, x1: number, y1: number, x2 = 0, y2 = 100) =>
@@ -69,6 +73,21 @@ export const createImageCanvas = (data: Iterable<number>, width: number, height:
   return canvas;
 };
 
+// Merge legend metadata from multiple sources. Metadata options like `unit` and `labels`
+// can be set in the control options (not just in layer metadata) because Mapbox serializes
+// layer metadata to Web Workers, which cannot handle function values.
+// Priority: layer metadata < control options < per-property overrides
+export const resolveMeta = (layer: Layer, options: LayerOptions, attribute: string): Metadata => {
+  const META_KEYS = ['unit', 'labels'] as const;
+  const { properties, ...rest } = layer.metadata?.legend || {};
+  return {
+    ...rest,
+    ...pick(options, META_KEYS),
+    ...options.properties?.[attribute],
+    ...properties?.[attribute],
+  };
+};
+
 // Resolve a label entry that may be a static value or a function of the raw value
 const resolveLabel = (
   labels: Metadata['labels'],
@@ -86,7 +105,7 @@ const resolveUnit = (unit: Metadata['unit'], raw: unknown): string =>
 
 // Formats a stop value (or [low, high] bin) into a human-readable label.
 // Null bounds indicate unbounded ranges: [null, x] → "< x", [x, null] → "> x"
-export const serializeLabel = <T>(value: T | T[], metadata?: Metadata) => {
+export const serializeLabel = <T>(value: T | T[], metadata?: Pick<Metadata, 'labels' | 'unit'>) => {
   const { labels, unit } = metadata || {};
   if (Array.isArray(value)) {
     const binLabel = resolveLabel(labels, `${value}`, value);

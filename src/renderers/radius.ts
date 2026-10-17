@@ -4,7 +4,7 @@ import type { Renderer } from '/@/types';
 
 type RadiusRenderer = Renderer<string | number, number>;
 
-const renderer: RadiusRenderer = (expression, layer, map, options) => {
+const renderer: RadiusRenderer = (expression, layer, options, map) => {
   const { stops } = expression;
   const { events } = highlighter(expression, layer, map);
   return createElement('ul', {
@@ -12,7 +12,7 @@ const renderer: RadiusRenderer = (expression, layer, map, options) => {
     content: stops
       .sort((a, b) => b[1] - a[1]) // order from bigger to smaller
       .map(([value, radius]) => {
-        const content = serializeLabel(value, layer.metadata?.legend);
+        const content = serializeLabel(value, options);
         return (
           content &&
           createElement('li', {

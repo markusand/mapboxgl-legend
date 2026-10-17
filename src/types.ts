@@ -58,6 +58,6 @@ export type ParsedExpression<In, Out> = {
 export type Renderer<In = any, Out = any> = (
   expression: ParsedExpression<In, Out>,
   layer: Layer,
-  map: MapboxMap,
   options: LayerOptions,
+  map: MapboxMap,
 ) => HTMLElement | undefined;
