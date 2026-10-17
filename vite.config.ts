@@ -15,7 +15,7 @@ export default defineConfig({
       include: ['src'],
       exclude: ['src/**/__tests__'],
       compilerOptions: { rootDir: 'src' },
-      rollupTypes: true,
+      bundleTypes: true,
     }),
   ],
   css: {
