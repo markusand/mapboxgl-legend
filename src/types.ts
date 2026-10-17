@@ -6,9 +6,11 @@ import type {
 
 export type { MapboxMap, Expression };
 
+export type LabelValue = string | boolean;
+
 export type PropertyMetadata = {
-  unit?: string;
-  labels?: Record<string, string | boolean>;
+  unit?: string | ((value: unknown) => string);
+  labels?: Record<string, LabelValue | ((value: unknown) => LabelValue)>;
 };
 
 export type Metadata = {
@@ -31,7 +33,9 @@ export type LayerOptions = {
   attributes?: string[];
   highlight?: boolean;
   onToggle?: (layer: string, visibility: boolean) => void;
-};
+} & PropertyMetadata & {
+    properties?: Record<string, PropertyMetadata>;
+  };
 
 export type LegendControlOptions = {
   minimized?: boolean;

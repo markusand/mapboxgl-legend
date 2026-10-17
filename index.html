@@ -57,6 +57,10 @@
           'fire-events': {
             collapsed: true,
             onToggle: () => console.log('This is special'),
+            unit: v => (v === 1 ? ' person' : ' people'),
+            properties: {
+              'circle-color': { unit: v => (v === 1 ? ' alarm' : ' alarms') },
+            },
           },
         },
         onToggle: layer => console.log(`${layer} toggled`),
@@ -151,10 +155,6 @@
           metadata: {
             legend: {
               name: 'Fire events',
-              unit: ' ppl',
-              properties: {
-                'circle-color': { unit: ' alarms' },
-              },
             },
           },
         });

@@ -76,8 +76,20 @@ export default class LegendControl implements IControl {
         highlight = this._options.highlight,
         onToggle = this._options.onToggle,
         attributes,
+        unit,
+        labels,
+        properties,
       } = options || {};
-      this._options.layers?.set(name, { collapsed, toggler, highlight, onToggle, attributes });
+      this._options.layers?.set(name, {
+        collapsed,
+        toggler,
+        highlight,
+        onToggle,
+        attributes,
+        unit,
+        labels,
+        properties,
+      });
     };
 
     this._options.layers ??= new Map();
@@ -106,13 +118,18 @@ export default class LegendControl implements IControl {
     if (!renderer) return;
     const expressions = Expression.parse(value);
     const options = this._options.layers?.get(key) || this._options;
-    const override = layer.metadata?.legend?.properties?.[attribute];
-    const resolved = override
-      ? {
-          ...layer,
-          metadata: { ...layer.metadata, legend: { ...layer.metadata?.legend, ...override } },
-        }
-      : layer;
+    // Merge legend metadata: layer metadata (serializable) < control options < per-property override
+    const { unit, labels, properties } = options;
+    const controlMeta =
+      unit || labels || properties
+        ? { ...layer.metadata?.legend, unit, labels, ...properties?.[attribute] }
+        : layer.metadata?.legend;
+    const layerOverride = layer.metadata?.legend?.properties?.[attribute];
+    const mergedMeta = layerOverride ? { ...controlMeta, ...layerOverride } : controlMeta;
+    const resolved =
+      mergedMeta !== layer.metadata?.legend
+        ? { ...layer, metadata: { ...layer.metadata, legend: { ...mergedMeta } } }
+        : layer;
     return expressions
       .map(expression => renderer(expression, resolved, this._map, options))
       .filter(Boolean) as HTMLElement[];

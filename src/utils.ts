@@ -1,4 +1,4 @@
-import type { MapboxMap, Metadata } from '/@/types';
+import type { MapboxMap, Metadata, LabelValue } from '/@/types';
 
 export const ensureArray = <T>(thing: T | T[]): T[] => (Array.isArray(thing) ? thing : [thing]);
 
@@ -69,20 +69,38 @@ export const createImageCanvas = (data: Iterable<number>, width: number, height:
   return canvas;
 };
 
+// Resolve a label entry that may be a static value or a function of the raw value
+const resolveLabel = (
+  labels: Metadata['labels'],
+  key: string,
+  raw: unknown,
+): LabelValue | undefined => {
+  const entry = labels?.[key];
+  return typeof entry === 'function' ? entry(raw) : entry;
+};
+
+// Resolve a unit that may be a static string or a function of the raw value
+const resolveUnit = (unit: Metadata['unit'], raw: unknown): string =>
+  typeof unit === 'function' ? unit(raw) : (unit ?? '');
+
 // Formats a stop value (or [low, high] bin) into a human-readable label.
 // Null bounds indicate unbounded ranges: [null, x] → "< x", [x, null] → "> x"
 export const serializeLabel = <T>(value: T | T[], metadata?: Metadata) => {
-  const { labels = {}, unit = '' } = metadata || {};
-  return Array.isArray(value)
-    ? (labels[`${value}`] ??
-        (value[0] === null
-          ? `< ${labels[`${value[1]}`] || `${value[1]}${unit}`}`
-          : value[1] === null
-            ? `> ${labels[`${value[0]}`] || `${value[0]}${unit}`}`
-            : value.map(v => labels[`${v}`] || `${v}${unit}`).join(' - ')))
-    : value !== null
-      ? (labels[`${value}`] ?? `${value}${unit}`)
-      : (labels.other ?? 'other');
+  const { labels, unit } = metadata || {};
+  if (Array.isArray(value)) {
+    const binLabel = resolveLabel(labels, `${value}`, value);
+    if (binLabel !== undefined) return binLabel;
+    if (value[0] === null)
+      return `< ${resolveLabel(labels, `${value[1]}`, value[1]) || `${value[1]}${resolveUnit(unit, value[1])}`}`;
+    if (value[1] === null)
+      return `> ${resolveLabel(labels, `${value[0]}`, value[0]) || `${value[0]}${resolveUnit(unit, value[0])}`}`;
+    return value
+      .map(v => resolveLabel(labels, `${v}`, v) || `${v}${resolveUnit(unit, v)}`)
+      .join(' - ');
+  }
+  return value !== null
+    ? (resolveLabel(labels, `${value}`, value) ?? `${value}${resolveUnit(unit, value)}`)
+    : (resolveLabel(labels, 'other', value) ?? 'other');
 };
 
 // WeakMap-backed per-map store so entries are released when a map instance is destroyed

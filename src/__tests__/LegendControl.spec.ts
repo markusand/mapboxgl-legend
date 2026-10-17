@@ -160,6 +160,20 @@ describe('Legend Control', () => {
     expect(radiusList?.querySelector('span')?.textContent).toContain('px');
   });
 
+  it('should apply function metadata from control options', () => {
+    const { container } = createLegend({
+      layers: {
+        test_properties: {
+          unit: (v: unknown) => (v === 'a' ? ' (type A)' : ' (type B)'),
+        },
+      },
+    });
+    const pane = container.querySelector('.mapboxgl-ctrl-legend-pane--test_properties');
+    const colorList = pane?.querySelector('.list--color');
+    // Function unit from control options overrides static unit from layer metadata
+    expect(colorList?.firstElementChild?.textContent).toBe('a (type A)');
+  });
+
   it('should allow adding classes to specific layers', () => {
     const { container } = createLegend();
     expect(container.querySelector('.test-custom-class')).toBeTruthy();

@@ -98,6 +98,10 @@ A few options can be passed on legend initialization.
 
 The layers option is an array of the layers' ids, or strings casted as regex that match the layers' ids. It can also be an object with keys being the layers' ids and values being an array of visible attributes, or `true` if all visible. For a fine grained control over layers, this object can also contain the same options `collapsed`, `toggler`, `attributes` and `onToggle`.
 
+Per-layer options also accept `unit`, `labels`, and `properties` for legend formatting. These are merged with the layer's `metadata.legend` values, with control options taking precedence.
+
+> **Note:** Mapbox GL serializes layer metadata to Web Workers, so **functions cannot be used in `metadata.legend`** — they will cause a `DOMException: Function object could not be cloned` error. Use string values in metadata and pass functions through the control's `layers` option instead.
+
 ```javascript
 const legend = new LegendControl({
   // Show all properties in selected layers
@@ -114,6 +118,13 @@ const legend = new LegendControl({
       highlight: true,
       attributes: ['circle-radius'],
     },
+    // Dynamic formatting with functions
+    density: {
+      unit: v => (v === 1 ? ' person' : ' people'),
+      properties: {
+        'circle-color': { unit: ' alarms' },
+      },
+    },
   },
 });
 ```
@@ -127,6 +138,8 @@ There are also a few options that be defined as a per-layer basis using the styl
 | labels     | Object   | Map a value to a text that replaces it as a label |
 | classes    | String[] | Classes to add to the layer's legend pane         |
 | properties | Object   | Per-property `unit` and `labels` (see below)      |
+
+Both `unit` and `labels` also accept functions for dynamic formatting (e.g. pluralization). The function receives the raw value and returns a string (or `false` to hide the item). Since metadata is serialized by Mapbox GL, **functions must be passed via the control's `layers` option** (see above), not in `metadata.legend`.
 
 Metadata provides an extra layer of control by hiding items that have a label set to `false`, except on step expressions.
 
@@ -163,14 +176,25 @@ metadata: {
 }
 ```
 
-When a layer renders multiple properties (e.g. `circle-color` and `circle-radius`), `properties` lets you set a different `unit` or `labels` for a specific property
+When a layer renders multiple properties (e.g. `circle-color` and `circle-radius`), `properties` lets you set a different `unit` or `labels` for a specific property. This works both in `metadata.legend` (strings only) and in the control's `layers` option (strings or functions).
 
 ```javascript
+// In metadata (serializable values only)
 metadata: {
   legend: {
     unit: ' ppl',
     properties: {
       'circle-color': { unit: ' alarms' },
+    },
+  },
+}
+
+// In control options (functions allowed)
+layers: {
+  'fire-events': {
+    unit: (v) => v === 1 ? ' person' : ' people',
+    properties: {
+      'circle-color': { unit: (v) => v === 1 ? ' alarm' : ' alarms' },
     },
   },
 }

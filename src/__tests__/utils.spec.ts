@@ -149,6 +149,18 @@ describe('Labels', () => {
     expect(serializeLabel([1, 2], { labels: { '1,2': false } })).toBe(false);
   });
 
+  it('should support function labels and unit', () => {
+    const unit = (v: unknown) => (v === 1 ? ' person' : ' people');
+    expect(serializeLabel(1, { unit })).toBe('1 person');
+    expect(serializeLabel(5, { unit })).toBe('5 people');
+
+    const labels = { 1: (v: unknown) => `value is ${v}` };
+    expect(serializeLabel(1, { labels })).toBe('value is 1');
+
+    // Function returning false hides the item
+    expect(serializeLabel(1, { labels: { 1: () => false } })).toBe(false);
+  });
+
   it('should serialize the OTHER label', () => {
     expect(serializeLabel(null)).toBe('other');
     expect(serializeLabel(null, { unit: 'm' })).toBe('other');
