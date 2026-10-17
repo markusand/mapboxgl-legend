@@ -52,23 +52,33 @@ map.addLayer({
   source: 'demographic',
   paint: {
     'circle-radius': [
-      'interpolate', ['linear'],
+      'interpolate',
+      ['linear'],
       ['to-number', ['get', 'density']],
-      100, 10,
-      200, 17,
-      500, 30,
-      1000, 50,
-      2000, 75
+      100,
+      10,
+      200,
+      17,
+      500,
+      30,
+      1000,
+      50,
+      2000,
+      75,
     ],
     'circle-color': [
       'match',
       ['get', 'ethnicity'],
-      'White', '#f1e8c8',
-      'Black', '#443722',
-      'Hispanic', '#aa9761',
-      'Asian', '#e8e59d',
-      /* other */ '#ccc'
-    ]
+      'White',
+      '#f1e8c8',
+      'Black',
+      '#443722',
+      'Hispanic',
+      '#aa9761',
+      'Asian',
+      '#e8e59d',
+      /* other */ '#ccc',
+    ],
   },
 });
 ```
@@ -77,14 +87,14 @@ map.addLayer({
 
 A few options can be passed on legend initialization.
 
-| option | type | default | description |
-| --- | --- | --- | --- |
-| minimized | Boolean, undefined | `undefined` | If set, a button toggles layer visibility. Initial value is set as this attribute |
-| collapsed | Boolean | `false` | Set legend panels collapsed on load |
-| toggler | Boolean, string[] | `false` | Add button to show and hide layers. Provide an array of layer ids to toggle them with this button |
-| highlight | Boolean | `false` | Add interactivity to legend items |
-| layers | Array[string, RegExp], Object | `undefined` | List of layers to be added. If undefined all layers will be added |
-| onToggle | Function | `undefined` | Set a callback function to a layer visibility change. Function receives as parameters the `layerId` that changed and its visibility (boolean) |
+| option    | type                          | default     | description                                                                                                                                   |
+| --------- | ----------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| minimized | Boolean, undefined            | `undefined` | If set, a button toggles layer visibility. Initial value is set as this attribute                                                             |
+| collapsed | Boolean                       | `false`     | Set legend panels collapsed on load                                                                                                           |
+| toggler   | Boolean, string[]             | `false`     | Add button to show and hide layers. Provide an array of layer ids to toggle them with this button                                             |
+| highlight | Boolean                       | `false`     | Add interactivity to legend items                                                                                                             |
+| layers    | Array[string, RegExp], Object | `undefined` | List of layers to be added. If undefined all layers will be added                                                                             |
+| onToggle  | Function                      | `undefined` | Set a callback function to a layer visibility change. Function receives as parameters the `layerId` that changed and its visibility (boolean) |
 
 The layers option is an array of the layers' ids, or strings casted as regex that match the layers' ids. It can also be an object with keys being the layers' ids and values being an array of visible attributes, or `true` if all visible. For a fine grained control over layers, this object can also contain the same options `collapsed`, `toggler`, `attributes` and `onToggle`.
 
@@ -96,26 +106,26 @@ const legend = new LegendControl({
     // Show all properties in this layer
     areas: true,
     // Show only selected properties in this layer
-    population: ['circle-radius'], 
+    population: ['circle-radius'],
     // Fine grained options per layer
     pois: {
       collapsed: true,
       toggler: false,
       highlight: true,
       attributes: ['circle-radius'],
-    }
+    },
   },
-})
+});
 ```
 
 There are also a few options that be defined as a per-layer basis using the style `metadata` object.
 
-| option | type | description |
-| --- | --- | --- |
-| name | String | Set the panel title name |
-| unit | String | Add a unit to all labels |
-| labels | Object | Map a value to a text that replaces it as a label |
-| extraLegendClasses | String[] | Classes to add to the layer's legend pane |
+| option             | type     | description                                       |
+| ------------------ | -------- | ------------------------------------------------- |
+| name               | String   | Set the panel title name                          |
+| unit               | String   | Add a unit to all labels                          |
+| labels             | Object   | Map a value to a text that replaces it as a label |
+| extraLegendClasses | String[] | Classes to add to the layer's legend pane         |
 
 Metadata provides an extra layer of control by hiding items that have a label set to `false`, except on step expressions.
 
@@ -124,7 +134,7 @@ map.addLayer({
   id: 'density',
   type: 'circle',
   source: 'demographic',
-  paint: { /* ... */ },
+  paint: {/* ... */},
   metadata: {
     name: 'Population Density',
     unit: 'k/km²',
@@ -132,8 +142,8 @@ map.addLayer({
       10: 'Custom label for value 10',
       other: '< 1k/km²',
       an_item_to_hide: false,
-    }
-  }
+    },
+  },
 });
 ```
 
@@ -154,7 +164,7 @@ Layers can be added or removed from legend at any moment by using `legend.addLay
 
 ## Styles
 
-Legend defaults to a simple design inspired by standard mapbox-gl controls, but can be tunned by changing CSS variables. Check default values in `/src/styles/_variables.scss`
+Legend defaults to a simple design inspired by standard mapbox-gl controls, but can be tunned by changing CSS variables. Check default values in `/src/styles/variables.css`
 
 ## Development
 
