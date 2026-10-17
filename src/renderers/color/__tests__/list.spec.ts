@@ -19,7 +19,7 @@ describe('Color list panel', () => {
       min: 1,
       max: 3,
     };
-    const metadata = { labels: { 1: 'one', 3: 'three' } };
+    const metadata = { legend: { labels: { 1: 'one', 3: 'three' } } };
     const el = list(expression, { id: '_', type: 'circle', metadata }, map, {});
 
     expect(el?.tagName).toBe('UL');
@@ -53,7 +53,7 @@ describe('Color list panel', () => {
       min: 1,
       max: 15,
     };
-    const metadata = { unit: 'k' };
+    const metadata = { legend: { unit: 'k' } };
     const el = list(expression, { id: '_', type: 'circle', metadata }, map, {});
 
     expect(el?.tagName).toBe('UL');
@@ -83,7 +83,7 @@ describe('Color list panel', () => {
       min: NaN,
       max: NaN,
     };
-    const metadata = { labels: { low: 'baix', medium: 'mig', high: 'alt' } };
+    const metadata = { legend: { labels: { low: 'baix', medium: 'mig', high: 'alt' } } };
     const el = list(expression, { id: '_', type: 'circle', metadata }, map, {});
 
     expect(el?.tagName).toBe('UL');
@@ -113,7 +113,7 @@ describe('Color list panel', () => {
       min: 1,
       max: 3,
     };
-    const metadata = { labels: { 2: false } };
+    const metadata = { legend: { labels: { 2: false } } };
     const el = list(expression, { id: '_', type: 'circle', metadata }, map, {});
 
     expect(el?.childElementCount).toBe(2);
@@ -133,7 +133,7 @@ describe('Color list panel', () => {
       min: 1,
       max: 3,
     };
-    const metadata = { labels: { 2: false } };
+    const metadata = { legend: { labels: { 2: false } } };
     const el = list(expression, { id: '_', type: 'circle', metadata }, map, { highlight: true });
 
     const setFilter = vi.spyOn(map, 'setFilter');

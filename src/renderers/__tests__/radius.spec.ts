@@ -19,7 +19,7 @@ describe('Radius panel', () => {
       min: 1,
       max: 3,
     };
-    const metadata = { labels: { 1: 'one', 3: 'three' } };
+    const metadata = { legend: { labels: { 1: 'one', 3: 'three' } } };
     const el = bubbles(expression, { id: '_', type: 'circle', metadata }, map, {});
 
     expect(el?.tagName).toBe('UL');
@@ -48,7 +48,7 @@ describe('Radius panel', () => {
       min: 1,
       max: 3,
     };
-    const metadata = { labels: { 1: 'one', 3: false } };
+    const metadata = { legend: { labels: { 1: 'one', 3: false } } };
     const el = bubbles(expression, { id: '_', type: 'circle', metadata }, map, {});
 
     expect(el?.childElementCount).toBe(2);
@@ -68,7 +68,7 @@ describe('Radius panel', () => {
       min: 1,
       max: 3,
     };
-    const metadata = { labels: { 1: 'one', 3: false } };
+    const metadata = { legend: { labels: { 1: 'one', 3: false } } };
     const el = bubbles(expression, { id: '_', type: 'circle', metadata }, map, { highlight: true });
     expect(el?.className).contain('--highlight');
 

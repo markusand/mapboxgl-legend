@@ -118,7 +118,7 @@ const legend = new LegendControl({
 });
 ```
 
-There are also a few options that be defined as a per-layer basis using the style `metadata` object.
+There are also a few options that be defined as a per-layer basis using the style `metadata` object, namespaced under a `legend` key to avoid collisions with other metadata consumers.
 
 | option             | type     | description                                       |
 | ------------------ | -------- | ------------------------------------------------- |
@@ -136,12 +136,14 @@ map.addLayer({
   source: 'demographic',
   paint: {/* ... */},
   metadata: {
-    name: 'Population Density',
-    unit: 'k/km²',
-    labels: {
-      10: 'Custom label for value 10',
-      other: '< 1k/km²',
-      an_item_to_hide: false,
+    legend: {
+      name: 'Population Density',
+      unit: 'k/km²',
+      labels: {
+        10: 'Custom label for value 10',
+        other: '< 1k/km²',
+        an_item_to_hide: false,
+      },
     },
   },
 });
@@ -150,10 +152,12 @@ map.addLayer({
 For pairs labels, such as in `step` expressions, it is possible to labelize by using the serialized array of steps as a key
 
 ```javascript
-matadata: {
-  labels: {
-    '0,10': 'Group A',
-    '10,20': 'Group B',
+metadata: {
+  legend: {
+    labels: {
+      '0,10': 'Group A',
+      '10,20': 'Group B',
+    },
   },
 }
 ```

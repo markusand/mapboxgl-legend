@@ -136,8 +136,10 @@
             ],
           },
           metadata: {
-            name: 'Fire events',
-            unit: 'k',
+            legend: {
+              name: 'Fire events',
+              unit: 'k',
+            },
           },
         });
 
@@ -191,10 +193,12 @@
             'fill-opacity': 0.4,
           },
           metadata: {
-            name: 'Life expectancy',
-            unit: 'y',
-            labels: {
-              '#cc3322': 'Excluded',
+            legend: {
+              name: 'Life expectancy',
+              unit: 'y',
+              labels: {
+                '#cc3322': 'Excluded',
+              },
             },
           },
         });
@@ -229,13 +233,15 @@
             ],
           },
           metadata: {
-            name: 'Facilities',
-            labels: {
-              'Recreation And Parks': 'Park & Recreation',
-              'School District (Sfusd)': 'School',
-              'Police Department': 'Police Station',
-              'Airport (Sfo)': 'Airport',
-              'Municipal Transportation Agency': 'Transportation',
+            legend: {
+              name: 'Facilities',
+              labels: {
+                'Recreation And Parks': 'Park & Recreation',
+                'School District (Sfusd)': 'School',
+                'Police Department': 'Police Station',
+                'Airport (Sfo)': 'Airport',
+                'Municipal Transportation Agency': 'Transportation',
+              },
             },
           },
         });

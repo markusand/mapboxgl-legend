@@ -12,7 +12,7 @@ const renderer: RadiusRenderer = (expression, layer, map, options) => {
     content: stops
       .sort((a, b) => b[1] - a[1]) // order from bigger to smaller
       .map(([value, radius]) => {
-        const content = serializeLabel(value, layer.metadata);
+        const content = serializeLabel(value, layer.metadata?.legend);
         return (
           content &&
           createElement('li', {

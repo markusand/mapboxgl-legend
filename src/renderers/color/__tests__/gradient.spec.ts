@@ -48,7 +48,7 @@ describe('Color gradient panel', () => {
       min: 1,
       max: 3,
     };
-    const metadata = { labels: { 2: false } };
+    const metadata = { legend: { labels: { 2: false } } };
     const el = gradient(expression, { id: '_', type: 'circle', metadata }, map, {});
     expect(el?.firstElementChild?.childElementCount).toBe(2);
   });
@@ -67,7 +67,7 @@ describe('Color gradient panel', () => {
       min: 1,
       max: 3,
     };
-    const metadata = { labels: { 2: false } };
+    const metadata = { legend: { labels: { 2: false } } };
     const el = gradient(expression, { id: '_', type: 'circle', metadata }, map, {
       highlight: true,
     });

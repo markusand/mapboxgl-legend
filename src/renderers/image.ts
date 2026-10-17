@@ -10,7 +10,7 @@ const renderer: ImageRenderer = (expression, layer, map, options) => {
   return createElement('ul', {
     classes: ['list', 'list--icons', `list--${options.highlight ? 'highlight' : ''}`],
     content: stops.map(([value, image]) => {
-      const label = serializeLabel(value, layer.metadata);
+      const label = serializeLabel(value, layer.metadata?.legend);
       if (!label) return undefined;
       // @ts-expect-error image string not matching ImageId
       // Extract raw pixel data from the map's internal sprite atlas

@@ -8,7 +8,7 @@ const renderer: Renderer = (expression, layer, map, options) => {
   return createElement('ul', {
     classes: ['list', 'list--color', `list--${options.highlight ? 'highlight' : ''}`],
     content: stops.map(([value, color]) => {
-      const content = serializeLabel(value, layer.metadata);
+      const content = serializeLabel(value, layer.metadata?.legend);
       return (
         content &&
         createElement('li', {

@@ -13,8 +13,12 @@ export type Metadata = {
   extraLegendClasses?: string[];
 };
 
+export type LayerMetadata = {
+  legend?: Metadata;
+} & Record<string, unknown>;
+
 export type Layer = {
-  metadata?: Metadata;
+  metadata?: LayerMetadata;
 } & MapboxLayer;
 
 export type LayerOptions = {

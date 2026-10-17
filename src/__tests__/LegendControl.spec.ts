@@ -11,7 +11,7 @@ const layers = [
     type: 'fill',
     source: 'source',
     paint: { 'fill-color': 'green' },
-    metadata: { extraLegendClasses: ['test-custom-class'] },
+    metadata: { legend: { extraLegendClasses: ['test-custom-class'] } },
   },
 ];
 

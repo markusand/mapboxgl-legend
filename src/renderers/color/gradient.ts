@@ -35,7 +35,7 @@ const renderer: GradientRenderer = (expression, layer, map, options) => {
       createElement('p', {
         classes: 'labels',
         content: inputs.map(input => {
-          const content = serializeLabel(input, layer.metadata);
+          const content = serializeLabel(input, layer.metadata?.legend);
           return (
             content &&
             createElement('span', {

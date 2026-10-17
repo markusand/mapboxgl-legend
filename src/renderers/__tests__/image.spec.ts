@@ -39,7 +39,7 @@ describe('Image panel', () => {
       min: NaN,
       max: NaN,
     };
-    const metadata = { labels: { a: 'Image A' } };
+    const metadata = { legend: { labels: { a: 'Image A' } } };
     const el = image(expression, { id: '_', type: 'circle', metadata }, map, {});
 
     expect(el?.tagName).toBe('UL');
@@ -72,7 +72,7 @@ describe('Image panel', () => {
       min: NaN,
       max: NaN,
     };
-    const metadata = { labels: { a: 'Image A' } };
+    const metadata = { legend: { labels: { a: 'Image A' } } };
     const el = image(expression, { id: '_', type: 'circle', metadata }, map, {});
 
     expect(el?.childElementCount).toBe(1);
@@ -91,7 +91,7 @@ describe('Image panel', () => {
       min: NaN,
       max: NaN,
     };
-    const metadata = { labels: { a: 'Image A', b: false } };
+    const metadata = { legend: { labels: { a: 'Image A', b: false } } };
     const el = image(expression, { id: '_', type: 'circle', metadata }, map, {});
 
     expect(el?.childElementCount).toBe(1);
@@ -110,7 +110,7 @@ describe('Image panel', () => {
       min: NaN,
       max: NaN,
     };
-    const metadata = { labels: { a: 'Image A', b: false } };
+    const metadata = { legend: { labels: { a: 'Image A', b: false } } };
     const el = image(expression, { id: '_', type: 'circle', metadata }, map, { highlight: true });
     expect(el?.className).contain('--highlight');
 
