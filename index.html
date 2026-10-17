@@ -83,17 +83,17 @@
 
         map.addSource('neighborhoods', {
           type: 'geojson',
-          data: 'https://gist.githubusercontent.com/cdolek/d08cac2fa3f6338d84ea/raw/ebe3d2a4eda405775a860d251974e1f08cbe4f48/SanFrancisco.Neighborhoods.json',
+          data: './assets/neighborhoods.geojson',
         });
 
         map.addSource('fireevents', {
           type: 'geojson',
-          data: 'https://data.sfgov.org/resource/wr8u-xric.geojson',
+          data: './assets/fire-events.geojson',
         });
 
         map.addSource('facilities', {
           type: 'geojson',
-          data: 'https://data.sfgov.org/resource/nc68-ngbr.geojson',
+          data: './assets/facilities.geojson',
         });
 
         map.addLayer({
@@ -266,7 +266,7 @@
 
         map.addSource('muni-routes', {
           type: 'geojson',
-          data: 'https://data.sfgov.org/api/geospatial/9exe-acju?method=export&format=GeoJSON',
+          data: './assets/muni-routes.geojson',
         });
 
         map.addLayer({
