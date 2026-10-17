@@ -14,6 +14,9 @@
   },
   "oxc.disableNestedConfig": true,
   "oxc.fmt.disableNestedConfig": true,
+  "[html]": {
+    "editor.formatOnSave": false
+  },
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
   "editor.codeActionsOnSave": {
