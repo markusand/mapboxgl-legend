@@ -1,9 +1,16 @@
 import { ensureArray } from '/@/utils';
 
+type ClassValue = string | Record<string, boolean>;
+
+const resolveClasses = (classes: ClassValue | ClassValue[]): string[] =>
+  ensureArray(classes).flatMap(cls =>
+    typeof cls === 'string' ? [cls] : Object.keys(cls).filter(k => cls[k]),
+  );
+
 export const createElement = (
   tag: string,
   options: {
-    classes?: string | string[];
+    classes?: ClassValue | ClassValue[];
     styles?: Record<string, string>;
     attributes?: Record<string, string | number | boolean | null>;
     events?: Partial<Record<keyof HTMLElementEventMap, (event: Event) => void>>;
@@ -13,7 +20,7 @@ export const createElement = (
 ) => {
   const { classes, styles, attributes, events, content, appendTo } = options;
   const el = document.createElement(tag);
-  if (classes) ensureArray(classes).forEach(cls => el.classList.add(cls));
+  if (classes) resolveClasses(classes).forEach(cls => el.classList.add(cls));
   if (styles) Object.entries(styles).forEach(prop => el.style.setProperty(...prop));
   if (attributes)
     Object.entries(attributes).forEach(([name, value]) => {
