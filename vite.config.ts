@@ -7,7 +7,7 @@ import autoprefixer from 'autoprefixer';
 export default defineConfig({
   resolve: {
     alias: [
-      { find: '/@', replacement: path.resolve(__dirname, './src') },
+      { find: '/@', replacement: path.resolve(import.meta.dirname, './src') },
     ],
   },
   plugins: [
@@ -30,7 +30,7 @@ export default defineConfig({
   },
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/index.ts'),
+      entry: path.resolve(import.meta.dirname, 'src/index.ts'),
       name: 'LegendControl',
       cssFileName: 'style',
       fileName: format => (format === 'umd' ? 'index.umd.cjs' : `index.${format}.js`),
