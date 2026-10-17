@@ -41,12 +41,11 @@
   "scripts": {
     "lint": "vp lint src && stylelint 'src/**/*.css'",
     "test": "vp test --coverage",
-    "build": "vp test run && vp build",
+    "build": "vp test run && vp pack",
     "prepare": "vp config && npm run build",
     "dev": "vp dev"
   },
   "devDependencies": {
-    "@microsoft/api-extractor": "^7.59.4",
     "@types/node": "^22.10.2",
     "@vitest/coverage-v8": "5.0.5",
     "autoprefixer": "^10.4.27",
@@ -56,7 +55,6 @@
     "stylelint-config-standard": "^40.0.0",
     "typescript": "^6.0.2",
     "vite": "npm:@voidzero-dev/vite-plus-core@1.3.0",
-    "vite-plugin-dts": "^5.1.2",
     "vite-plus": "1.3.0",
     "vitest": "5.0.5"
   },

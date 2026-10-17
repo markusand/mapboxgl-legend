@@ -1,6 +1,5 @@
 import path from 'path';
-import { defineConfig, lazyPlugins } from 'vite-plus';
-import dts from 'vite-plugin-dts';
+import { defineConfig } from 'vite-plus';
 import autoprefixer from 'autoprefixer';
 
 // https://vitejs.dev/config/
@@ -165,14 +164,16 @@ export default defineConfig({
   resolve: {
     alias: [{ find: '/@', replacement: path.resolve(import.meta.dirname, './src') }],
   },
-  plugins: lazyPlugins(() => [
-    dts({
-      include: ['src'],
-      exclude: ['src/**/__tests__'],
-      compilerOptions: { rootDir: 'src' },
-      bundleTypes: true,
-    }),
-  ]),
+  pack: {
+    entry: ['src/index.ts'],
+    format: ['esm', 'umd'],
+    globalName: 'LegendControl',
+    dts: true,
+    minify: true,
+    deps: { neverBundle: ['mapbox-gl'] },
+    outExtensions: ({ format }) =>
+      format === 'umd' ? { js: '.cjs' } : { js: '.es.js', dts: '.d.ts' },
+  },
   css: {
     postcss: {
       plugins: [autoprefixer()],
@@ -187,13 +188,5 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     restoreMocks: true,
-  },
-  build: {
-    lib: {
-      entry: path.resolve(import.meta.dirname, 'src/index.ts'),
-      name: 'LegendControl',
-      cssFileName: 'style',
-      fileName: format => (format === 'umd' ? 'index.umd.cjs' : `index.${format}.js`),
-    },
   },
 });
