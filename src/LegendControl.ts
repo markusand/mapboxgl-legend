@@ -1,5 +1,5 @@
 import './styles/main.css';
-import { IControl } from 'mapbox-gl';
+import { IControl, LayerSpecification } from 'mapbox-gl';
 import renderers from './renderers';
 import Expression from './expression';
 import { resolveMeta } from './metadata';
@@ -126,20 +126,20 @@ export default class LegendControl implements IControl {
     return button;
   }
 
+  private _isActiveLayer = (layer: LayerSpecification) => {
+    if (!('source' in layer) || layer.source === 'composite') return false;
+    const match = (key: string | RegExp) =>
+      typeof key === 'string' ? layer.id === key : layer.id.match(key);
+    const keys = this._options.layers?.keys();
+    return !keys || [...keys].some(match);
+  };
+
   refresh = () => {
     const layersIds = this._options.layers ? [...this._options.layers.keys()] : undefined;
-    this._map
-      .getStyle()
-      ?.layers.filter(layer => {
-        const isValidLayer = 'source' in layer && layer.source !== 'composite';
-        const isActiveLayer =
-          !layersIds ||
-          [...layersIds].some(name =>
-            typeof name === 'string' ? layer.id === name : layer.id.match(name),
-          );
-        return isValidLayer && isActiveLayer;
-      })
-      .reverse() // Show in order that are drawn on map (first layers at the bottom, last on top)
+    const style = this._map.getStyle();
+    style.layers
+      .filter(this._isActiveLayer)
+      .reverse()
       .forEach(layer => {
         const { id, layout, paint, metadata } = layer as Layer;
         const key = layersIds?.find(name => id.match(name)) || id;
