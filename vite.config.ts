@@ -188,5 +188,6 @@ export default defineConfig({
     globals: true,
     environment: 'jsdom',
     restoreMocks: true,
+    isolate: false, // reuse workers across files; re-enable if tests leak state
   },
 });
