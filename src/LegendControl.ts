@@ -142,7 +142,9 @@ export default class LegendControl implements IControl {
   private _toggleButton(layerIds: string[], key: string | RegExp) {
     const { onToggle = this._options.onToggle } = this._options.layers?.get(key) || {};
     const visibility = this._map?.getLayoutProperty(layerIds[0], 'visibility') || 'visible';
-    const button = createElement('div', { classes: ['toggler', `toggler--${visibility}`] });
+    const button = createElement('div', {
+      classes: ['toggler', `toggler--${visibility as string}`],
+    });
     button.addEventListener('click', event => {
       event.preventDefault();
       const visible = visibility === 'none' ? 'visible' : 'none';
