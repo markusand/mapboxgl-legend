@@ -159,6 +159,12 @@ describe('Labels', () => {
 
     // Function returning false hides the item
     expect(serializeLabel(1, { labels: { 1: () => false } })).toBe(false);
+
+    // Catch-all function labels
+    const formatter = (v: unknown) => `Route ${v}`;
+    expect(serializeLabel('N', { labels: formatter })).toBe('Route N');
+    expect(serializeLabel([1, 2], { labels: formatter })).toBe('Route 1,2');
+    expect(serializeLabel(null, { labels: formatter })).toBe('Route null');
   });
 
   it('should serialize the OTHER label', () => {

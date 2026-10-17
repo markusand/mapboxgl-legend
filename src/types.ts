@@ -10,7 +10,9 @@ export type LabelValue = string | boolean;
 
 export type PropertyMetadata = {
   unit?: string | ((value: unknown) => string);
-  labels?: Record<string, LabelValue | ((value: unknown) => LabelValue)>;
+  labels?:
+    | Record<string, LabelValue | ((value: unknown) => LabelValue)>
+    | ((value: unknown) => LabelValue);
 };
 
 export type Metadata = {

@@ -53,7 +53,9 @@
           },
           ethnicity: { highlight: false },
           patterns: true,
-          'muni-routes': true,
+          'muni-routes': {
+            labels: v => `Route ${v}`,
+          },
           'fire-events': {
             collapsed: true,
             onToggle: () => console.log('This is special'),

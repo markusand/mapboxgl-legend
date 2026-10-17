@@ -139,7 +139,20 @@ There are also a few options that be defined as a per-layer basis using the styl
 | classes    | String[] | Classes to add to the layer's legend pane         |
 | properties | Object   | Per-property `unit` and `labels` (see below)      |
 
-Both `unit` and `labels` also accept functions for dynamic formatting (e.g. pluralization). The function receives the raw value and returns a string (or `false` to hide the item). Since metadata is serialized by Mapbox GL, **functions must be passed via the control's `layers` option** (see above), not in `metadata.legend`.
+Both `unit` and `labels` also accept functions for dynamic formatting (e.g. pluralization). The function receives the raw value and returns a string (or `false` to hide the item). `labels` can be either an object mapping specific values, or a single catch-all function that formats every label. Since metadata is serialized by Mapbox GL, **functions must be passed via the control's `layers` option** (see above), not in `metadata.legend`.
+
+```javascript
+layers: {
+  'muni-routes': {
+    // Catch-all function formats every label
+    labels: (v) => `Route ${v}`,
+  },
+  'fire-events': {
+    // Function unit for dynamic formatting
+    unit: (v) => v === 1 ? ' person' : ' people',
+  },
+}
+```
 
 Metadata provides an extra layer of control by hiding items that have a label set to `false`, except on step expressions.
 

@@ -75,6 +75,7 @@ const resolveLabel = (
   key: string,
   raw: unknown,
 ): LabelValue | undefined => {
+  if (typeof labels === 'function') return labels(raw);
   const entry = labels?.[key];
   return typeof entry === 'function' ? entry(raw) : entry;
 };
