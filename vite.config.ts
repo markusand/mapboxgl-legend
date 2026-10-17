@@ -11,7 +11,12 @@ export default defineConfig({
     ],
   },
   plugins: [
-    dts({ insertTypesEntry: true }),
+    dts({
+      include: ['src'],
+      exclude: ['src/**/__tests__'],
+      compilerOptions: { rootDir: 'src' },
+      rollupTypes: true,
+    }),
   ],
   css: {
     postcss: {
