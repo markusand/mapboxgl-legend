@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vite-plus/test';
 import highlighter from '/@/highlighter';
 import type { ParsedExpression, Layer, MapboxMap } from '/@/types';
 
@@ -27,13 +27,21 @@ describe('Highlighter', () => {
   it('should apply highlight filter with number', () => {
     const setFilter = vi.spyOn(map, 'setFilter');
     highlight(2);
-    expect(setFilter).toHaveBeenCalledWith('layer_id', ['all', ['>=', ['get', 'attribute'], 2], ['<=', ['get', 'attribute'], 2]]);
+    expect(setFilter).toHaveBeenCalledWith('layer_id', [
+      'all',
+      ['>=', ['get', 'attribute'], 2],
+      ['<=', ['get', 'attribute'], 2],
+    ]);
   });
 
   it('should apply highlight filter with number + delta', () => {
     const setFilter = vi.spyOn(map, 'setFilter');
     highlight(2, { delta: 1 });
-    expect(setFilter).toHaveBeenCalledWith('layer_id', ['all', ['>=', ['get', 'attribute'], 1], ['<=', ['get', 'attribute'], 3]]);
+    expect(setFilter).toHaveBeenCalledWith('layer_id', [
+      'all',
+      ['>=', ['get', 'attribute'], 1],
+      ['<=', ['get', 'attribute'], 3],
+    ]);
   });
 
   it('should apply highlight filter with string', () => {
@@ -45,19 +53,31 @@ describe('Highlighter', () => {
   it('should apply highlight filter with range array', () => {
     const setFilter = vi.spyOn(map, 'setFilter');
     highlight([2, 3]);
-    expect(setFilter).toHaveBeenCalledWith('layer_id', ['all', ['>=', ['get', 'attribute'], 2], ['<', ['get', 'attribute'], 3]]);
+    expect(setFilter).toHaveBeenCalledWith('layer_id', [
+      'all',
+      ['>=', ['get', 'attribute'], 2],
+      ['<', ['get', 'attribute'], 3],
+    ]);
   });
 
   it('should apply highlight filter with low unbounded range array', () => {
     const setFilter = vi.spyOn(map, 'setFilter');
     highlight([NaN, 3]);
-    expect(setFilter).toHaveBeenCalledWith('layer_id', ['all', true, ['<', ['get', 'attribute'], 3]]);
+    expect(setFilter).toHaveBeenCalledWith('layer_id', [
+      'all',
+      true,
+      ['<', ['get', 'attribute'], 3],
+    ]);
   });
 
   it('should apply highlight filter with high unbounded range array', () => {
     const setFilter = vi.spyOn(map, 'setFilter');
     highlight([2, NaN]);
-    expect(setFilter).toHaveBeenCalledWith('layer_id', ['all', ['>=', ['get', 'attribute'], 2], true]);
+    expect(setFilter).toHaveBeenCalledWith('layer_id', [
+      'all',
+      ['>=', ['get', 'attribute'], 2],
+      true,
+    ]);
   });
 
   it('should reset highlight filter', () => {

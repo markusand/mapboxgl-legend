@@ -36,11 +36,14 @@ const renderer: GradientRenderer = (expression, layer, map, options) => {
         classes: 'labels',
         content: inputs.map(input => {
           const content = serializeLabel(input, layer.metadata);
-          return content && createElement('span', {
-            // Position each label over its corresponding point on the gradient bar
-            styles: { left: `${rescale(input, min, max)}%` },
-            content,
-          });
+          return (
+            content &&
+            createElement('span', {
+              // Position each label over its corresponding point on the gradient bar
+              styles: { left: `${rescale(input, min, max)}%` },
+              content,
+            })
+          );
         }),
       }),
       createElement('div', {

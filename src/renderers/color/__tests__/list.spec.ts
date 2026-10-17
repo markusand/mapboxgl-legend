@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vite-plus/test';
 import list from '../list';
 import type { MapboxMap, ParsedExpression } from '/@/types';
 
@@ -9,7 +9,11 @@ describe('Color list panel', () => {
     const expression: ParsedExpression<number, string> = {
       name: 'match',
       getter: ['get', 'attribute'],
-      stops: [[1, '#f00'], [2, '#0f0'], [3, '#00f']],
+      stops: [
+        [1, '#f00'],
+        [2, '#0f0'],
+        [3, '#00f'],
+      ],
       inputs: [1, 2, 3],
       outputs: ['#f00', '#0f0', '#00f'],
       min: 1,
@@ -35,8 +39,16 @@ describe('Color list panel', () => {
     const expression: ParsedExpression<number[], string> = {
       name: 'step',
       getter: ['get', 'attribute'],
-      stops: [[[1, 5], '#f00'], [[5, 10], '#0f0'], [[10, 15], '#00f']],
-      inputs: [[1, 5], [5, 10], [10, 15]],
+      stops: [
+        [[1, 5], '#f00'],
+        [[5, 10], '#0f0'],
+        [[10, 15], '#00f'],
+      ],
+      inputs: [
+        [1, 5],
+        [5, 10],
+        [10, 15],
+      ],
       outputs: ['#f00', '#0f0', '#00f'],
       min: 1,
       max: 15,
@@ -61,7 +73,11 @@ describe('Color list panel', () => {
     const expression: ParsedExpression<string, string> = {
       name: 'match',
       getter: ['get', 'attribute'],
-      stops: [['low', '#f00'], ['medium', '#0f0'], ['high', '#00f']],
+      stops: [
+        ['low', '#f00'],
+        ['medium', '#0f0'],
+        ['high', '#00f'],
+      ],
       inputs: ['low', 'medium', 'high'],
       outputs: ['#f00', '#0f0', '#00f'],
       min: NaN,
@@ -87,7 +103,11 @@ describe('Color list panel', () => {
     const expression: ParsedExpression<number, string> = {
       name: 'match',
       getter: ['get', 'attribute'],
-      stops: [[1, '#f00'], [2, '#0f0'], [3, '#00f']],
+      stops: [
+        [1, '#f00'],
+        [2, '#0f0'],
+        [3, '#00f'],
+      ],
       inputs: [1, 2, 3],
       outputs: ['#f00', '#0f0', '#00f'],
       min: 1,
@@ -103,7 +123,11 @@ describe('Color list panel', () => {
     const expression: ParsedExpression<number, string> = {
       name: 'match',
       getter: ['get', 'attribute'],
-      stops: [[1, '#f00'], [2, '#0f0'], [3, '#00f']],
+      stops: [
+        [1, '#f00'],
+        [2, '#0f0'],
+        [3, '#00f'],
+      ],
       inputs: [1, 2, 3],
       outputs: ['#f00', '#0f0', '#00f'],
       min: 1,
@@ -111,7 +135,7 @@ describe('Color list panel', () => {
     };
     const metadata = { labels: { 2: false } };
     const el = list(expression, { id: '_', type: 'circle', metadata }, map, { highlight: true });
-  
+
     const setFilter = vi.spyOn(map, 'setFilter');
     el?.firstElementChild?.dispatchEvent(new Event('mouseenter'));
     el?.firstElementChild?.dispatchEvent(new Event('mouseleave'));

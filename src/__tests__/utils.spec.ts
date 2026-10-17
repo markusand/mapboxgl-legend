@@ -1,5 +1,15 @@
-import { describe, it, expect, vi } from 'vitest';
-import { ensureArray, rescale, chunk, zip, toPair, toBins, createElement, createImageCanvas, serializeLabel } from '/@/utils';
+import { describe, it, expect, vi } from 'vite-plus/test';
+import {
+  ensureArray,
+  rescale,
+  chunk,
+  zip,
+  toPair,
+  toBins,
+  createElement,
+  createImageCanvas,
+  serializeLabel,
+} from '/@/utils';
 
 // Stub ImageData
 vi.stubGlobal('ImageData', class ImageData {});
@@ -9,7 +19,6 @@ vi.stubGlobal('ImageData', class ImageData {});
 HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
   putImageData: vi.fn(),
 }));
-
 
 describe('Expression utilities', () => {
   it('should encapsulate variables in array if needed', () => {
@@ -23,14 +32,32 @@ describe('Expression utilities', () => {
 
   it('should create chunks of arrays from array', () => {
     const array = [1, 2, 3, 4, 5, 6];
-    expect(chunk(array, 2)).toEqual([[1, 2], [3, 4], [5, 6]]);
-    expect(chunk(array, 3)).toEqual([[1, 2, 3], [4, 5, 6]]);
-    expect(chunk(array, 4)).toEqual([[1, 2, 3, 4], [5, 6]]);
+    expect(chunk(array, 2)).toEqual([
+      [1, 2],
+      [3, 4],
+      [5, 6],
+    ]);
+    expect(chunk(array, 3)).toEqual([
+      [1, 2, 3],
+      [4, 5, 6],
+    ]);
+    expect(chunk(array, 4)).toEqual([
+      [1, 2, 3, 4],
+      [5, 6],
+    ]);
   });
 
   it('should zip multiple arrays', () => {
-    const arrays = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
-    expect(zip(...arrays)).toEqual([[1, 4, 7], [2, 5, 8], [3, 6, 9]]);
+    const arrays = [
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9],
+    ];
+    expect(zip(...arrays)).toEqual([
+      [1, 4, 7],
+      [2, 5, 8],
+      [3, 6, 9],
+    ]);
   });
 
   it('should return always an array of 2 elements', () => {
@@ -39,7 +66,11 @@ describe('Expression utilities', () => {
   });
 
   it('should create bins of range values', () => {
-    const stops = [[0, 'a'], [1, 'b'], [2, 'c']] as [number | null, string][];
+    const stops = [
+      [0, 'a'],
+      [1, 'b'],
+      [2, 'c'],
+    ] as [number | null, string][];
     expect(toBins(stops)).toEqual([
       [[0, 1], 'a'],
       [[1, 2], 'b'],

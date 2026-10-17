@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vite-plus/test';
 import bubbles from '../radius';
 import type { MapboxMap, ParsedExpression } from '/@/types';
 
@@ -9,7 +9,11 @@ describe('Radius panel', () => {
     const expression: ParsedExpression<number, number> = {
       name: 'step',
       getter: ['get', 'attribute'],
-      stops: [[1, 10], [2, 20], [3, 30]],
+      stops: [
+        [1, 10],
+        [2, 20],
+        [3, 30],
+      ],
       inputs: [1, 2, 3],
       outputs: [10, 20, 30],
       min: 1,
@@ -34,7 +38,11 @@ describe('Radius panel', () => {
     const expression: ParsedExpression<number, number> = {
       name: 'step',
       getter: ['get', 'attribute'],
-      stops: [[1, 10], [2, 20], [3, 30]],
+      stops: [
+        [1, 10],
+        [2, 20],
+        [3, 30],
+      ],
       inputs: [1, 2, 3],
       outputs: [10, 20, 30],
       min: 1,
@@ -50,7 +58,11 @@ describe('Radius panel', () => {
     const expression: ParsedExpression<number, number> = {
       name: 'step',
       getter: ['get', 'attribute'],
-      stops: [[1, 10], [2, 20], [3, 30]],
+      stops: [
+        [1, 10],
+        [2, 20],
+        [3, 30],
+      ],
       inputs: [1, 2, 3],
       outputs: [10, 20, 30],
       min: 1,
@@ -59,7 +71,7 @@ describe('Radius panel', () => {
     const metadata = { labels: { 1: 'one', 3: false } };
     const el = bubbles(expression, { id: '_', type: 'circle', metadata }, map, { highlight: true });
     expect(el?.className).contain('--highlight');
-  
+
     const setFilter = vi.spyOn(map, 'setFilter');
     el?.firstElementChild?.dispatchEvent(new Event('mouseenter'));
     el?.firstElementChild?.dispatchEvent(new Event('mouseleave'));

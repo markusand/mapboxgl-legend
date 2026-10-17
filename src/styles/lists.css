@@ -11,7 +11,9 @@
   }
 
   &.list--highlight {
-    &:hover li { opacity: 0.25; }
+    &:hover li {
+      opacity: 0.25;
+    }
 
     li:hover {
       cursor: default;

@@ -13,13 +13,16 @@ const renderer: RadiusRenderer = (expression, layer, map, options) => {
       .sort((a, b) => b[1] - a[1]) // order from bigger to smaller
       .map(([value, radius]) => {
         const content = serializeLabel(value, layer.metadata);
-        return content && createElement('li', {
-          styles: { '--radius': `${radius}px` },
-          events: options.highlight ? events(value) : {},
-          content: createElement('span', {
-            content,
-          }),
-        });
+        return (
+          content &&
+          createElement('li', {
+            styles: { '--radius': `${radius}px` },
+            events: options.highlight ? events(value) : {},
+            content: createElement('span', {
+              content,
+            }),
+          })
+        );
       }),
   });
 };

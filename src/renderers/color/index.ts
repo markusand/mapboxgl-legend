@@ -2,7 +2,7 @@ import gradient from './gradient';
 import list from './list';
 import type { Renderer } from '/@/types';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// oxlint-disable-next-line @typescript-eslint/no-explicit-any
 type ColorRenderer = Renderer<any, any>;
 
 // Continuous interpolations render as a gradient bar; discrete expressions render as a colour list

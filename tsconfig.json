@@ -17,12 +17,6 @@
     "strictNullChecks": true,
     "skipLibCheck": true
   },
-  "include": [
-    "./src/**/*.ts",
-    "./vite.config.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["./src/**/*.ts", "./vite.config.ts"],
+  "exclude": ["node_modules", "dist"]
 }

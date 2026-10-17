@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vite-plus/test';
 import LegendControl, { LegendControlOptions } from '/@/index';
 import type { MapboxMap } from '/@/types';
 
@@ -6,19 +6,21 @@ const layers = [
   { id: 'skip', type: 'fill', source: 'composite' },
   { id: 'test_1', type: 'fill', source: 'source', paint: { 'fill-color': 'red' } },
   { id: 'test_2', type: 'fill', source: 'source', paint: { 'fill-color': 'blue' } },
-  { 
-    id: 'test_classes', type: 'fill', source: 'source', 
-    paint: { 'fill-color': 'green' }, 
-    metadata: { extraLegendClasses: ['test-custom-class'] }, 
+  {
+    id: 'test_classes',
+    type: 'fill',
+    source: 'source',
+    paint: { 'fill-color': 'green' },
+    metadata: { extraLegendClasses: ['test-custom-class'] },
   },
 ];
 
 const createMap = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  // oxlint-disable-next-line @typescript-eslint/no-unsafe-function-type
   const handlers: Record<string, Function> = {};
   return {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-    on: (event: string, callback: Function) => handlers[event] = callback,
+    // oxlint-disable-next-line @typescript-eslint/no-unsafe-function-type
+    on: (event: string, callback: Function) => (handlers[event] = callback),
     off: (event: string) => delete handlers[event],
     dispatch: (event: string) => handlers[event]?.(),
     getStyle: () => ({ layers }),
