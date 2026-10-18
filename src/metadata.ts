@@ -16,7 +16,7 @@ const unwrap =
 // - Function: catch-all dynamic label
 // - Static value: returned as-is for every input
 const lookup = (labels: Labels) => (value: unknown, fallback?: LabelValue) => {
-  const key = value === null ? 'other' : String(value);
+  const key = value === null ? 'other' : String(value); // oxlint-disable-line
   const entry = typeof labels === 'object' ? labels?.[key] : labels;
   return unwrap(entry, fallback)(value);
 };

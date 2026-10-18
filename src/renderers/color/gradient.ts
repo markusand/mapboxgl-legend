@@ -51,7 +51,7 @@ const renderer: GradientRenderer = (expression, layer, options, map) => {
       createElement('div', {
         classes: 'bar',
         styles: {
-          'background-image': `linear-gradient(90deg, ${gradient})`,
+          'background-image': `linear-gradient(90deg, ${gradient.join(', ')})`,
           '--x': `${mousePos.x}px`,
         },
         events: options.highlight ? events : {},

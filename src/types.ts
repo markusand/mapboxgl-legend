@@ -37,9 +37,8 @@ export type LayerOptions = {
   attributes?: string[];
   highlight?: boolean;
   onToggle?: OnToggle;
-} & PropertyMetadata & {
-    properties?: Record<string, PropertyMetadata>;
-  };
+  properties?: Record<string, PropertyMetadata>;
+} & PropertyMetadata;
 
 export type LegendControlOptions = {
   minimized?: boolean;

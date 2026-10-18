@@ -16,22 +16,22 @@ const map = {} as unknown as MapboxMap;
 
 describe('Color components', () => {
   it('should load interpolate color component', () => {
-    expect(renderers({ name: 'interpolate', ...expression }, layer, map, {})).toBeTruthy();
+    expect(renderers({ name: 'interpolate', ...expression }, layer, {}, map)).toBeTruthy();
   });
 
   it('should load step color component', () => {
-    expect(renderers({ name: 'step', ...expression }, layer, map, {})).toBeTruthy();
+    expect(renderers({ name: 'step', ...expression }, layer, {}, map)).toBeTruthy();
   });
 
   it('should load match color component', () => {
-    expect(renderers({ name: 'match', ...expression }, layer, map, {})).toBeTruthy();
+    expect(renderers({ name: 'match', ...expression }, layer, {}, map)).toBeTruthy();
   });
 
   it('should load literal color component', () => {
-    expect(renderers({ name: 'literal', ...expression }, layer, map, {})).toBeTruthy();
+    expect(renderers({ name: 'literal', ...expression }, layer, {}, map)).toBeTruthy();
   });
 
   it('should load get color component', () => {
-    expect(renderers({ name: 'get', ...expression }, layer, map, {})).toBeFalsy();
+    expect(renderers({ name: 'get', ...expression }, layer, {}, map)).toBeFalsy();
   });
 });
