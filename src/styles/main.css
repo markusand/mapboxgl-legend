@@ -3,6 +3,7 @@
 @import url('./renderers/color.css');
 @import url('./renderers/image.css');
 @import url('./renderers/radius.css');
+@import url('./renderers/width.css');
 
 /* @import url("renderers"); */
 

@@ -53,9 +53,7 @@
           },
           ethnicity: { highlight: false },
           patterns: true,
-          'muni-routes': {
-            labels: v => `Route ${v}`,
-          },
+          'muni-routes': true,
           'fire-events': {
             collapsed: true,
             onToggle: () => console.log('This is special'),
@@ -250,6 +248,10 @@
           id: 'muni-routes',
           type: 'line',
           source: 'muni-routes',
+          layout: {
+            'line-cap': 'round',
+            'line-join': 'round',
+          },
           paint: {
             'line-color': [
               'match',
@@ -264,7 +266,22 @@
               'J', '#abdda4',
               '#aaa',
             ],
-            'line-width': 2,
+            'line-width': [
+              'interpolate',
+              ['linear'],
+              ['get', 'passengers_avg'],
+              1000, 1,
+              5000,3,
+              15000, 6,
+              30000, 10,
+            ],
+          },
+          metadata: {
+            legend: {
+              properties: {
+                'line-width': { unit: ' pax/h' },
+              },
+            },
           },
         });
 
