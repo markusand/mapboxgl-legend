@@ -7,12 +7,11 @@ import type {
 export type { MapboxMap, Expression };
 
 export type LabelValue = string | boolean;
+export type Resolvable<T> = T | ((value: unknown) => T);
 
 export type PropertyMetadata = {
-  unit?: string | ((value: unknown) => string);
-  labels?:
-    | Record<string, LabelValue | ((value: unknown) => LabelValue)>
-    | ((value: unknown) => LabelValue);
+  unit?: Resolvable<string>;
+  labels?: Record<string, Resolvable<LabelValue>> | Resolvable<LabelValue>;
 };
 
 export type Metadata = {

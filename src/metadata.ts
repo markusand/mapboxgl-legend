@@ -1,5 +1,25 @@
 import { pick } from '/@/utils';
-import type { Metadata, LabelValue, Layer, LayerOptions } from '/@/types';
+import type { Metadata, LabelValue, Resolvable, Layer, LayerOptions } from '/@/types';
+
+type Labels = Record<string, Resolvable<LabelValue>> | Resolvable<LabelValue> | undefined;
+
+// Resolve a Resolvable<T> to its value: call if function, return as-is otherwise.
+// Curried so it can be reused across multiple values.
+const unwrap =
+  <T>(resolver: Resolvable<T> | undefined, fallback?: T) =>
+  (value: unknown) =>
+    (typeof resolver === 'function' ? (resolver as (v: unknown) => T)(value) : resolver) ??
+    fallback;
+
+// Resolve a label from a labels config. Supports three shapes:
+// - Record: keyed lookup by stringified value (null → 'other')
+// - Function: catch-all dynamic label
+// - Static value: returned as-is for every input
+const lookup = (labels: Labels) => (value: unknown, fallback?: LabelValue) => {
+  const key = value === null ? 'other' : String(value);
+  const entry = typeof labels === 'object' ? labels?.[key] : labels;
+  return unwrap(entry, fallback)(value);
+};
 
 // Merge legend metadata from multiple sources. Metadata options like `unit` and `labels`
 // can be set in the control options (not just in layer metadata) because Mapbox serializes
@@ -16,37 +36,26 @@ export const resolveMeta = (layer: Layer, options: LayerOptions, attribute: stri
   };
 };
 
-// Resolve a label entry that may be a static value or a function of the raw value
-const resolveLabel = (
-  labels: Metadata['labels'],
-  key: string,
-  raw: unknown,
-): LabelValue | undefined => {
-  if (typeof labels === 'function') return labels(raw);
-  const entry = labels?.[key];
-  return typeof entry === 'function' ? entry(raw) : entry;
-};
+// Format a stop value (or range) into a display string. Applies labels, unit,
+// and handles ranges ([low, high]), open-ended bins ([null, x] / [x, null]),
+// and null values (→ 'other'). Returns false when a label explicitly hides the entry.
+export const serializeLabel = <T extends string | number | null>(
+  value: T | T[],
+  metadata?: Pick<Metadata, 'labels' | 'unit'>,
+) => {
+  const unit = unwrap(metadata?.unit, '');
+  const labels = lookup(metadata?.labels);
 
-// Resolve a unit that may be a static string or a function of the raw value
-const resolveUnit = (unit: Metadata['unit'], raw: unknown): string =>
-  typeof unit === 'function' ? unit(raw) : (unit ?? '');
+  const format = (v: string | number | null) => `${v}${unit(v)}`;
 
-// Formats a stop value (or [low, high] bin) into a human-readable label.
-// Null bounds indicate unbounded ranges: [null, x] → "< x", [x, null] → "> x"
-export const serializeLabel = <T>(value: T | T[], metadata?: Pick<Metadata, 'labels' | 'unit'>) => {
-  const { labels, unit } = metadata || {};
   if (Array.isArray(value)) {
-    const binLabel = resolveLabel(labels, `${value}`, value);
+    const [low, high] = value;
+    const binLabel = labels(value);
     if (binLabel !== undefined) return binLabel;
-    if (value[0] === null)
-      return `< ${resolveLabel(labels, `${value[1]}`, value[1]) || `${value[1]}${resolveUnit(unit, value[1])}`}`;
-    if (value[1] === null)
-      return `> ${resolveLabel(labels, `${value[0]}`, value[0]) || `${value[0]}${resolveUnit(unit, value[0])}`}`;
-    return value
-      .map(v => resolveLabel(labels, `${v}`, v) || `${v}${resolveUnit(unit, v)}`)
-      .join(' - ');
+    if (value[0] === null) return `< ${labels(high, format(high))}`;
+    if (value[1] === null) return `> ${labels(low, format(low))}`;
+    return value.map(v => labels(v, format(v))).join(' - ');
   }
-  return value !== null
-    ? (resolveLabel(labels, `${value}`, value) ?? `${value}${resolveUnit(unit, value)}`)
-    : (resolveLabel(labels, 'other', value) ?? 'other');
+
+  return value === null ? labels(value, 'other') : labels(value, format(value));
 };
