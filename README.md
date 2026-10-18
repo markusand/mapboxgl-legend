@@ -12,6 +12,7 @@ Properties currently supported:
 
 - `*-color`
 - `*-radius`
+- `*-width`
 - `*-image`
 - `*-pattern`
 
@@ -98,7 +99,7 @@ A few options can be passed on legend initialization.
 
 The layers option is an array of the layers' ids, or strings casted as regex that match the layers' ids. It can also be an object with keys being the layers' ids and values being an array of visible attributes, or `true` if all visible. For a fine grained control over layers, this object can also contain the same options `collapsed`, `toggler`, `attributes` and `onToggle`.
 
-Per-layer options also accept `unit`, `labels`, and `properties` for legend formatting. These are merged with the layer's `metadata.legend` values, with control options taking precedence.
+Per-layer options also accept `prefix`, `unit`, `labels`, and `properties` for legend formatting. These are merged with the layer's `metadata.legend` values, with control options taking precedence.
 
 > **Note:** Mapbox GL serializes layer metadata to Web Workers, so **functions cannot be used in `metadata.legend`** — they will cause a `DOMException: Function object could not be cloned` error. Use string values in metadata and pass functions through the control's `layers` option instead.
 
@@ -120,9 +121,9 @@ const legend = new LegendControl({
     },
     // Dynamic formatting with functions
     density: {
-      unit: v => (v === 1 ? ' person' : ' people'),
+      unit: v => (v === 1 ? 'person' : 'people'),
       properties: {
-        'circle-color': { unit: ' alarms' },
+        'circle-color': { unit: 'alarms' },
       },
     },
   },
@@ -131,25 +132,31 @@ const legend = new LegendControl({
 
 There are also a few options that be defined as a per-layer basis using the style `metadata` object, namespaced under a `legend` key to avoid collisions with other metadata consumers.
 
-| option     | type     | description                                       |
-| ---------- | -------- | ------------------------------------------------- |
-| name       | String   | Set the panel title name                          |
-| unit       | String   | Add a unit to all labels                          |
-| labels     | Object   | Map a value to a text that replaces it as a label |
-| classes    | String[] | Classes to add to the layer's legend pane         |
-| properties | Object   | Per-property `unit` and `labels` (see below)      |
+| option     | type     | description                                             |
+| ---------- | -------- | ------------------------------------------------------- |
+| name       | String   | Set the panel title name                                |
+| prefix     | String   | Prepend a prefix to all labels                          |
+| unit       | String   | Append a unit to all labels                             |
+| labels     | Object   | Map a value to a text that replaces it as a label       |
+| classes    | String[] | Classes to add to the layer's legend pane               |
+| properties | Object   | Per-property prefix, unit and labels (see below)        |
 
-Both `unit` and `labels` also accept functions for dynamic formatting (e.g. pluralization). The function receives the raw value and returns a string (or `false` to hide the item). `labels` can be either an object mapping specific values, or a single catch-all function that formats every label. Since metadata is serialized by Mapbox GL, **functions must be passed via the control's `layers` option** (see above), not in `metadata.legend`.
+`prefix`, `unit` and `labels` also accept functions for dynamic formatting (e.g. pluralization). The function receives the raw value and returns a string (or `false` to hide the item). `labels` can be either an object mapping specific values, or a single catch-all function that formats every label. Since metadata is serialized by Mapbox GL, **functions must be passed via the control's `layers` option** (see above), not in `metadata.legend`.
 
 ```javascript
 layers: {
   'muni-routes': {
     // Catch-all function formats every label
-    labels: (v) => `Route ${v}`,
+    labels: v => `Route ${v}`,
   },
   'fire-events': {
     // Function unit for dynamic formatting
-    unit: (v) => v === 1 ? ' person' : ' people',
+    unit: v => v === 1 ? 'person' : 'people',
+  },
+  'prices': {
+    // Function prefix
+    prefix: v => v >= 0 ? '+' : '',
+    unit: '€',
   },
 }
 ```
@@ -189,13 +196,13 @@ metadata: {
 }
 ```
 
-When a layer renders multiple properties (e.g. `circle-color` and `circle-radius`), `properties` lets you set a different `unit` or `labels` for a specific property. This works both in `metadata.legend` (strings only) and in the control's `layers` option (strings or functions).
+When a layer renders multiple properties (e.g. `circle-color` and `circle-radius`), `properties` lets you set a different `prefix`, `unit` or `labels` for a specific property. This works both in `metadata.legend` (strings only) and in the control's `layers` option (strings or functions).
 
 ```javascript
 // In metadata (serializable values only)
 metadata: {
   legend: {
-    unit: ' ppl',
+    unit: 'ppl',
     properties: {
       'circle-color': { unit: ' alarms' },
     },
@@ -205,13 +212,17 @@ metadata: {
 // In control options (functions allowed)
 layers: {
   'fire-events': {
-    unit: (v) => v === 1 ? ' person' : ' people',
+    unit: v => v === 1 ? 'person' : 'people',
     properties: {
-      'circle-color': { unit: (v) => v === 1 ? ' alarm' : ' alarms' },
+      'circle-color': { unit: v => v === 1 ? ' alarm' : ' alarms' },
     },
   },
 }
 ```
+
+## Zoom awareness
+
+Legend panes are automatically dimmed when the current map zoom is outside the layer's `minzoom`/`maxzoom` range. The `out-of-range` CSS class is toggled on each pane and can be styled to taste.
 
 ## Handle layers
 
