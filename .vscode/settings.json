@@ -17,6 +17,9 @@
   "[html]": {
     "editor.formatOnSave": false
   },
+  "[md]": {
+    "editor.formatOnSave": false
+  },
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
   "editor.codeActionsOnSave": {

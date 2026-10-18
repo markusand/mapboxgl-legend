@@ -15,7 +15,7 @@ export default defineConfig({
     arrowParens: 'avoid',
     printWidth: 100,
     sortPackageJson: false,
-    ignorePatterns: ['index.html'],
+    ignorePatterns: ['index.html', 'README.md'],
   },
 
   // Linting (oxlint via vite-plus): plugins, base rules, and TypeScript overrides
