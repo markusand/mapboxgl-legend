@@ -22,7 +22,15 @@
     }
   }
 
-  &.lines--round li::before {
+  &.lines--dashed li::before {
+    background: repeating-linear-gradient(
+      90deg,
+      currentcolor 0 var(--dash),
+      transparent var(--dash) calc(var(--dash) + var(--gap))
+    );
+  }
+
+  &.lines--round:not(.lines--dashed) li::before {
     border-radius: calc(var(--width) / 2);
   }
 

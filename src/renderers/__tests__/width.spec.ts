@@ -5,6 +5,7 @@ import type { MapboxMap, ParsedExpression } from '/@/types';
 const map = {
   setFilter: () => {},
   getLayoutProperty: () => undefined,
+  getPaintProperty: () => undefined,
 } as unknown as MapboxMap;
 
 const expression: ParsedExpression<number, number> = {
@@ -36,9 +37,9 @@ describe('Width panel', () => {
 
     const { firstElementChild: first, lastElementChild: last } = el ?? {};
     expect(first?.tagName).toBe('LI');
-    expect(first?.getAttribute('style')).toBe('--width: 1px;');
+    expect(first?.getAttribute('style')).toBe('--width: 1px; --dash: 0px; --gap: 0px;');
     expect(first?.firstElementChild?.textContent).toBe('Low');
-    expect(last?.getAttribute('style')).toBe('--width: 6px;');
+    expect(last?.getAttribute('style')).toBe('--width: 6px; --dash: 0px; --gap: 0px;');
     expect(last?.firstElementChild?.textContent).toBe('High');
   });
 
@@ -67,6 +68,7 @@ describe('Width panel', () => {
     const roundMap = {
       setFilter: () => {},
       getLayoutProperty: () => 'round',
+      getPaintProperty: () => undefined,
     } as unknown as MapboxMap;
 
     const el = width(expression, { id: '_', type: 'line' }, {}, roundMap);
@@ -78,5 +80,34 @@ describe('Width panel', () => {
     const el = width(expression, { id: '_', type: 'line' }, {}, map);
 
     expect(el?.classList.contains('lines--butt')).toBeTruthy();
+  });
+
+  it('should apply dashed class when dasharray is set', () => {
+    const dashedMap = {
+      setFilter: () => {},
+      getLayoutProperty: () => undefined,
+      getPaintProperty: () => [2, 1],
+    } as unknown as MapboxMap;
+
+    const el = width(expression, { id: '_', type: 'line' }, {}, dashedMap);
+
+    expect(el?.classList.contains('lines--dashed')).toBeTruthy();
+    const first = el?.firstElementChild;
+    expect(first?.getAttribute('style')).toBe('--width: 1px; --dash: 2px; --gap: 1px;');
+    const last = el?.lastElementChild;
+    expect(last?.getAttribute('style')).toBe('--width: 6px; --dash: 12px; --gap: 6px;');
+  });
+
+  it('should not apply line cap class when dasharray is set', () => {
+    const dashedRoundMap = {
+      setFilter: () => {},
+      getLayoutProperty: () => 'round',
+      getPaintProperty: () => [2, 1],
+    } as unknown as MapboxMap;
+
+    const el = width(expression, { id: '_', type: 'line' }, {}, dashedRoundMap);
+
+    expect(el?.classList.contains('lines--dashed')).toBeTruthy();
+    expect(el?.classList.contains('lines--round')).toBeFalsy();
   });
 });
