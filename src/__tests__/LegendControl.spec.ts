@@ -14,6 +14,14 @@ const layers = [
     metadata: { legend: { classes: ['test-custom-class'] } },
   },
   {
+    id: 'test_zoom',
+    type: 'fill',
+    source: 'source',
+    minzoom: 8,
+    maxzoom: 14,
+    paint: { 'fill-color': 'orange' },
+  },
+  {
     id: 'test_properties',
     type: 'circle',
     source: 'source',
@@ -32,7 +40,7 @@ const layers = [
   },
 ];
 
-const createMap = () => {
+const createMap = (zoom = 12) => {
   // oxlint-disable-next-line @typescript-eslint/no-unsafe-function-type
   const handlers: Record<string, Function> = {};
   return {
@@ -41,6 +49,7 @@ const createMap = () => {
     off: (event: string) => delete handlers[event],
     dispatch: (event: string) => handlers[event]?.(),
     getStyle: () => ({ layers }),
+    getZoom: () => zoom,
     getLayoutProperty: () => 'visible',
     setLayoutProperty: () => 'visible',
   };
@@ -64,11 +73,11 @@ describe('Legend Control', () => {
   it('should mount layers panes with defaults', () => {
     const { container } = createLegend();
     const panes = container.querySelectorAll('.mapboxgl-ctrl-legend-pane');
-    expect(panes.length).toBe(4);
-    expect(panes[2].getAttribute('open')).toBeTruthy();
-    expect(panes[2].querySelector('toggler')).toBeFalsy();
-    expect(panes[2].querySelector('summary')?.textContent).toBe('test_2');
-    expect(panes[3].querySelector('summary')?.textContent).toBe('test_1');
+    expect(panes.length).toBe(5);
+    expect(panes[3].getAttribute('open')).toBeTruthy();
+    expect(panes[3].querySelector('toggler')).toBeFalsy();
+    expect(panes[3].querySelector('summary')?.textContent).toBe('test_2');
+    expect(panes[4].querySelector('summary')?.textContent).toBe('test_1');
   });
 
   it('should not mount layers when empty array provided', () => {
@@ -144,9 +153,9 @@ describe('Legend Control', () => {
 
   it('should remove pane', () => {
     const { control, container } = createLegend();
-    expect(container.querySelectorAll('.mapboxgl-ctrl-legend-pane')).toHaveLength(4);
+    expect(container.querySelectorAll('.mapboxgl-ctrl-legend-pane')).toHaveLength(5);
     control.removeLayers(['test_2']);
-    expect(container.querySelectorAll('.mapboxgl-ctrl-legend-pane')).toHaveLength(3);
+    expect(container.querySelectorAll('.mapboxgl-ctrl-legend-pane')).toHaveLength(4);
   });
 
   it('should apply per-property metadata', () => {
@@ -206,5 +215,55 @@ describe('Legend Control', () => {
     const toggler = container.querySelector('.toggler') as HTMLButtonElement | null;
     toggler?.click();
     expect(onToggle.mock.calls).toHaveLength(2);
+  });
+
+  it('should mark pane out-of-range when zoom is below minzoom', () => {
+    const map = createMap(5);
+    const control = new LegendControl();
+    const container = control.onAdd(map as unknown as MapboxMap);
+    map.dispatch('styledata');
+
+    const pane = container.querySelector('.mapboxgl-ctrl-legend-pane--test_zoom');
+    expect(pane?.classList.contains('out-of-range')).toBeTruthy();
+  });
+
+  it('should mark pane out-of-range when zoom is at or above maxzoom', () => {
+    const map = createMap(14);
+    const control = new LegendControl();
+    const container = control.onAdd(map as unknown as MapboxMap);
+    map.dispatch('styledata');
+
+    const pane = container.querySelector('.mapboxgl-ctrl-legend-pane--test_zoom');
+    expect(pane?.classList.contains('out-of-range')).toBeTruthy();
+  });
+
+  it('should not mark pane out-of-range when zoom is within bounds', () => {
+    const map = createMap(10);
+    const control = new LegendControl();
+    const container = control.onAdd(map as unknown as MapboxMap);
+    map.dispatch('styledata');
+
+    const pane = container.querySelector('.mapboxgl-ctrl-legend-pane--test_zoom');
+    expect(pane?.classList.contains('out-of-range')).toBeFalsy();
+  });
+
+  it('should update out-of-range on zoomend', () => {
+    let zoom = 10;
+    const map = createMap();
+    (map as unknown as Record<string, unknown>).getZoom = () => zoom;
+    const control = new LegendControl();
+    const container = control.onAdd(map as unknown as MapboxMap);
+    map.dispatch('styledata');
+
+    const pane = container.querySelector('.mapboxgl-ctrl-legend-pane--test_zoom');
+    expect(pane?.classList.contains('out-of-range')).toBeFalsy();
+
+    zoom = 3;
+    map.dispatch('zoomend');
+    expect(pane?.classList.contains('out-of-range')).toBeTruthy();
+
+    zoom = 10;
+    map.dispatch('zoomend');
+    expect(pane?.classList.contains('out-of-range')).toBeFalsy();
   });
 });

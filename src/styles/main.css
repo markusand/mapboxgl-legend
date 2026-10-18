@@ -60,6 +60,10 @@
     border-top: var(--map-legend-border);
   }
 
+  .out-of-range > * {
+    opacity: 0.25;
+  }
+
   summary {
     color: var(--map-legend-title-color);
     font-size: var(--map-legend-title-size);

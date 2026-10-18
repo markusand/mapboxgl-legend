@@ -44,12 +44,14 @@ export default class LegendControl implements IControl {
   onAdd(map: MapboxMap): HTMLElement {
     this._map = map;
     this._map.on('styledata', this.refresh);
+    this._map.on('zoomend', this._updateZoom);
     return this._container;
   }
 
   onRemove(): void {
     this._container.parentNode?.removeChild(this._container);
     this._map?.off('styledata', this.refresh);
+    this._map?.off('zoomend', this._updateZoom);
   }
 
   addLayers(layers: NonNullable<LegendControlOptions['layers']>): void {
@@ -162,11 +164,21 @@ export default class LegendControl implements IControl {
     else this._panes.appendChild(pane);
   };
 
+  private _updateZoom = (): void => {
+    const zoom = this._map.getZoom();
+    this._map.getStyle().layers.forEach(layer => {
+      const { minzoom = 0, maxzoom = 24, id } = layer;
+      const pane = this._panes.querySelector(`.mapboxgl-ctrl-legend-pane--${id}`);
+      pane?.classList.toggle('out-of-range', zoom < minzoom || zoom >= maxzoom);
+    });
+  };
+
   refresh = (): void => {
     // oxfmt-ignore
     this._map.getStyle().layers
       .filter(this._isActiveLayer)
       .reverse()
       .forEach(this._render);
+    this._updateZoom();
   };
 }
