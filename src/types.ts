@@ -10,6 +10,7 @@ export type LabelValue = string | boolean;
 export type Resolvable<T> = T | ((value: unknown) => T);
 
 export type PropertyMetadata = {
+  prefix?: Resolvable<string>;
   unit?: Resolvable<string>;
   labels?: Record<string, Resolvable<LabelValue>> | Resolvable<LabelValue>;
 };

@@ -26,7 +26,7 @@ const lookup = (labels: Labels) => (value: unknown, fallback?: LabelValue) => {
 // layer metadata to Web Workers, which cannot handle function values.
 // Priority: layer metadata < control options < per-property overrides
 export const resolveMeta = (layer: Layer, options: LayerOptions, attribute: string): Metadata => {
-  const META_KEYS = ['unit', 'labels'] as const;
+  const META_KEYS = ['unit', 'labels', 'prefix'] as const;
   const { properties, ...rest } = layer.metadata?.legend || {};
   return {
     ...rest,
@@ -41,12 +41,13 @@ export const resolveMeta = (layer: Layer, options: LayerOptions, attribute: stri
 // and null values (→ 'other'). Returns false when a label explicitly hides the entry.
 export const serializeLabel = <T extends string | number | null>(
   value: T | T[],
-  metadata?: Pick<Metadata, 'labels' | 'unit'>,
+  metadata?: Pick<Metadata, 'labels' | 'unit' | 'prefix'>,
 ) => {
+  const prefix = unwrap(metadata?.prefix, '');
   const unit = unwrap(metadata?.unit, '');
   const labels = lookup(metadata?.labels);
 
-  const format = (v: string | number | null) => `${v}${unit(v)}`;
+  const format = (v: string | number | null) => `${prefix(v)}${v}${unit(v)}`;
 
   if (Array.isArray(value)) {
     const [low, high] = value;

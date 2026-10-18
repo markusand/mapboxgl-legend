@@ -159,6 +159,21 @@ describe('Labels', () => {
     expect(serializeLabel(null, { labels: formatter })).toBe('Route null');
   });
 
+  it('should support prefix', () => {
+    expect(serializeLabel(5, { prefix: '$' })).toBe('$5');
+    expect(serializeLabel(5, { prefix: '$', unit: 'USD' })).toBe('$5USD');
+
+    // Function prefix
+    const prefix = (v: unknown) => (Number(v) >= 0 ? '+' : '');
+    expect(serializeLabel(5, { prefix })).toBe('+5');
+    expect(serializeLabel(-3, { prefix })).toBe('-3');
+
+    // Prefix with range
+    expect(serializeLabel([1, 2], { prefix: '#' })).toBe('#1 - #2');
+    expect(serializeLabel([null, 10], { prefix: '~' })).toBe('< ~10');
+    expect(serializeLabel([10, null], { prefix: '~' })).toBe('> ~10');
+  });
+
   it('should serialize the OTHER label', () => {
     expect(serializeLabel(null)).toBe('other');
     expect(serializeLabel(null, { unit: 'm' })).toBe('other');

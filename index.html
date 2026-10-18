@@ -68,10 +68,10 @@
 
       map.addControl(legend, 'bottom-left');
 
-      setTimeout(() => {
-        legend.removeLayers(['muni-routes']);
-        setTimeout(() => legend.addLayers(['muni-routes']), 5000);
-      }, 5000);
+      // setTimeout(() => {
+      //   legend.removeLayers(['muni-routes']);
+      //   setTimeout(() => legend.addLayers(['muni-routes']), 5000);
+      // }, 5000);
 
       map.on('load', () => {
         map.addSource('ethnicity', {
@@ -282,6 +282,7 @@
           metadata: {
             legend: {
               properties: {
+                'line-color': { prefix: 'Route ' },
                 'line-width': { unit: ' pax/h' },
               },
             },
