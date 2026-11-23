@@ -223,6 +223,79 @@ Layers can be added or removed from legend at any moment by using `legend.addLay
 
 Legend defaults to a simple design inspired by standard mapbox-gl controls, but can be tunned by changing CSS variables. Check default values in `/src/styles/variables.css`
 
+## Migration from v1
+
+### Metadata is namespaced
+
+Layer metadata is now nested under a `legend` key to avoid collisions with other metadata consumers.
+
+```diff
+  metadata: {
+-   name: 'Population',
+-   unit: 'k/km²',
+-   labels: { other: 'Unknown' },
++   legend: {
++     name: 'Population',
++     unit: 'k/km²',
++     labels: { other: 'Unknown' },
++   },
+  }
+```
+
+### Renamed and restructured options
+
+| v1 | v2 | Notes |
+| -- | -- | ----- |
+| `metadata.extraLegendClasses` | `metadata.legend.classes` | Renamed |
+| `metadata.unit` (string only) | `metadata.legend.unit` | Now accepts a function via control options |
+| `metadata.labels` (object only) | `metadata.legend.labels` | Now also accepts a catch-all function via control options |
+| — | `metadata.legend.prefix` | New: prepend text to labels |
+| — | `metadata.legend.properties` | New: per-property `unit`/`labels`/`prefix` overrides |
+
+### Functions must go through control options
+
+Mapbox GL serializes layer metadata to Web Workers, so functions cause a `DOMException`. In v2, `unit`, `labels`, and `prefix` accept functions, but these **must** be passed via the control's `layers` option instead of `metadata.legend`.
+
+```javascript
+// v1: not possible to use functions
+// v2: functions via control options
+const legend = new LegendControl({
+  layers: {
+    density: {
+      unit: v => (v === 1 ? 'person' : 'people'),
+      labels: v => `Zone ${v}`,
+    },
+  },
+});
+```
+
+### `removeLayers()` signature changed
+
+`removeLayers()` now accepts plain layer id strings. RegExp keys are resolved internally.
+
+```diff
+- legend.removeLayers([/pattern/]);
++ legend.removeLayers(['layer-id']);
+```
+
+### CSS instead of SCSS
+
+Styles are now plain CSS. The import path is unchanged:
+
+```javascript
+import 'mapboxgl-legend/dist/style.css';
+```
+
+Custom theming via CSS variables still works — check `src/styles/variables.css` for defaults.
+
+### New features in v2
+
+- **`prefix` metadata** for prepending text to labels (supports functions via control options)
+- **Per-property overrides** via `properties` in metadata or control options
+- **Width renderer** for `line-width` expressions (with dashed line support)
+- **Zoom awareness** — panes are dimmed with an `out-of-range` CSS class when the map zoom is outside the layer's `minzoom`/`maxzoom` range
+- **`mapbox-gl >= 2.0.0`** is now a peer dependency
+
 ## Development
 
 Create a `.env` file and set your Mapbox token as `VITE_MAPBOX_TOKEN`.
