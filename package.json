@@ -45,6 +45,9 @@
     "prepare": "vp config && npm run build",
     "dev": "vp dev"
   },
+  "peerDependencies": {
+    "mapbox-gl": ">=2.0.0"
+  },
   "devDependencies": {
     "@types/node": "^22.10.2",
     "@vitest/coverage-v8": "5.0.5",
