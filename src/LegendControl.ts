@@ -79,7 +79,7 @@ export default class LegendControl implements IControl {
       const options = this._options.layers?.get(key);
       if (options) this._stash.set(id, options);
       this._options.layers?.delete(key);
-      const pane = this._panes.querySelector(`.mapboxgl-ctrl-legend-pane--${id}`);
+      const pane = this._findPane(id);
       if (pane) this._panes.removeChild(pane);
     });
   }
@@ -129,6 +129,11 @@ export default class LegendControl implements IControl {
     return keys.find(key => (typeof key === 'string' ? id === key : id.match(key))) ?? id;
   };
 
+  private _findPane = (id: string): Element | undefined => {
+    const cls = `mapboxgl-ctrl-legend-pane--${id}`;
+    return Array.from(this._panes.children).find(el => el.classList.contains(cls));
+  };
+
   private _getOptions = (key: LayerKey): LayerOptions => {
     return this._options.layers?.get(key) ?? this._options;
   };
@@ -146,7 +151,7 @@ export default class LegendControl implements IControl {
 
     // (re)Construct pane and replace (if already exist)
     const selector = `mapboxgl-ctrl-legend-pane--${id}`;
-    const prevPane = this._panes.querySelector(`.${selector}`);
+    const prevPane = this._findPane(id);
     const open = prevPane ? prevPane.getAttribute('open') !== null : !collapsed;
 
     const toggle = toggler
@@ -168,7 +173,7 @@ export default class LegendControl implements IControl {
     const zoom = this._map.getZoom();
     this._map.getStyle().layers.forEach(layer => {
       const { minzoom = 0, maxzoom = 24, id } = layer;
-      const pane = this._panes.querySelector(`.mapboxgl-ctrl-legend-pane--${id}`);
+      const pane = this._findPane(id);
       pane?.classList.toggle('out-of-range', zoom < minzoom || zoom >= maxzoom);
     });
   };
