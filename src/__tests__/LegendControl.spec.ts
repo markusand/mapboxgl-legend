@@ -158,6 +158,27 @@ describe('Legend Control', () => {
     expect(container.querySelectorAll('.mapboxgl-ctrl-legend-pane')).toHaveLength(4);
   });
 
+  it('should remove only the exact layer, not substring matches', () => {
+    const map = createMap();
+    (map as unknown as Record<string, unknown>).getStyle = () => ({
+      layers: [
+        { id: 'road', type: 'line', source: 'src', paint: { 'line-color': 'red' } },
+        { id: 'road-label', type: 'fill', source: 'src', paint: { 'fill-color': 'blue' } },
+      ],
+    });
+    const control = new LegendControl({
+      layers: ['road', 'road-label'],
+    });
+    const container = control.onAdd(map as unknown as MapboxMap);
+    map.dispatch('styledata');
+    expect(container.querySelector('.mapboxgl-ctrl-legend-pane--road')).toBeTruthy();
+    expect(container.querySelector('.mapboxgl-ctrl-legend-pane--road-label')).toBeTruthy();
+    control.removeLayers(['road-label']);
+    map.dispatch('styledata');
+    expect(container.querySelector('.mapboxgl-ctrl-legend-pane--road')).toBeTruthy();
+    expect(container.querySelector('.mapboxgl-ctrl-legend-pane--road-label')).toBeFalsy();
+  });
+
   it('should apply per-property metadata', () => {
     const { container } = createLegend({ layers: ['test_properties'] });
     const pane = container.querySelector('.mapboxgl-ctrl-legend-pane--test_properties');

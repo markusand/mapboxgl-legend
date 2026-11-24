@@ -125,8 +125,8 @@ export default class LegendControl implements IControl {
   };
 
   private _resolveKey = (id: string): LayerKey => {
-    const ids = Array.from(this._options.layers?.keys() ?? []);
-    return ids.find(_id => id.match(_id)) ?? id;
+    const keys = Array.from(this._options.layers?.keys() ?? []);
+    return keys.find(key => (typeof key === 'string' ? id === key : id.match(key))) ?? id;
   };
 
   private _getOptions = (key: LayerKey): LayerOptions => {
