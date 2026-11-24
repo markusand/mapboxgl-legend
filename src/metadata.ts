@@ -31,8 +31,8 @@ export const resolveMeta = (layer: Layer, options: LayerOptions, attribute: stri
   return {
     ...rest,
     ...pick(options, META_KEYS),
-    ...options.properties?.[attribute],
     ...properties?.[attribute],
+    ...options.properties?.[attribute],
   };
 };
 

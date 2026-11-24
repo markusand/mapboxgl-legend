@@ -204,6 +204,20 @@ describe('Legend Control', () => {
     expect(colorList?.firstElementChild?.textContent).toBe('a (type A)');
   });
 
+  it('should let control per-property options override metadata per-property', () => {
+    const { container } = createLegend({
+      layers: {
+        test_properties: {
+          properties: { 'circle-radius': { unit: ' meters' } },
+        },
+      },
+    });
+    const pane = container.querySelector('.mapboxgl-ctrl-legend-pane--test_properties');
+    const radiusList = pane?.querySelector('.bubbles');
+    // Control option ' meters' should win over metadata 'px'
+    expect(radiusList?.querySelector('span')?.textContent).toContain('meters');
+  });
+
   it('should allow adding classes to specific layers', () => {
     const { container } = createLegend();
     expect(container.querySelector('.test-custom-class')).toBeTruthy();
