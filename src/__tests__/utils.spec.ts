@@ -139,6 +139,10 @@ describe('Labels', () => {
     expect(serializeLabel([null, 1], { labels: { ',1': 'label' } })).toBe('label');
     expect(serializeLabel([2, null], { labels: { '2,': 'label' } })).toBe('label');
     expect(serializeLabel([1, 2], { labels: { '1,2': false } })).toBe(false);
+    // false endpoint labels should fall back to formatted value, not show 'false'
+    expect(serializeLabel([null, 10], { labels: { 10: false } })).toBe('< 10');
+    expect(serializeLabel([10, null], { labels: { 10: false } })).toBe('> 10');
+    expect(serializeLabel([5, 10], { labels: { 10: false } })).toBe('5 - 10');
   });
 
   it('should support function labels and unit', () => {

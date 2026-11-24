@@ -53,9 +53,10 @@ export const serializeLabel = <T extends string | number | null>(
     const [low, high] = value;
     const binLabel = labels(value);
     if (binLabel !== undefined) return binLabel;
-    if (value[0] === null) return `< ${labels(high, format(high))}`;
-    if (value[1] === null) return `> ${labels(low, format(low))}`;
-    return value.map(v => labels(v, format(v))).join(' - ');
+    const endpoint = (v: T) => labels(v) || format(v);
+    if (low === null) return `< ${endpoint(high)}`;
+    if (high === null) return `> ${endpoint(low)}`;
+    return value.map(endpoint).join(' - ');
   }
 
   return value === null ? labels(value, 'other') : labels(value, format(value));
