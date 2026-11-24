@@ -23,11 +23,7 @@
   }
 
   &.lines--dashed li::before {
-    background: repeating-linear-gradient(
-      90deg,
-      currentcolor 0 var(--dash),
-      transparent var(--dash) calc(var(--dash) + var(--gap))
-    );
+    background: var(--dash-pattern);
   }
 
   &.lines--round:not(.lines--dashed) li::before {

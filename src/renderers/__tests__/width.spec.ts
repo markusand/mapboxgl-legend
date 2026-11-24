@@ -37,9 +37,9 @@ describe('Width panel', () => {
 
     const { firstElementChild: first, lastElementChild: last } = el ?? {};
     expect(first?.tagName).toBe('LI');
-    expect(first?.getAttribute('style')).toBe('--width: 1px; --dash: 0px; --gap: 0px;');
+    expect(first?.getAttribute('style')).toBe('--width: 1px;');
     expect(first?.firstElementChild?.textContent).toBe('Low');
-    expect(last?.getAttribute('style')).toBe('--width: 6px; --dash: 0px; --gap: 0px;');
+    expect(last?.getAttribute('style')).toBe('--width: 6px;');
     expect(last?.firstElementChild?.textContent).toBe('High');
   });
 
@@ -93,9 +93,29 @@ describe('Width panel', () => {
 
     expect(el?.classList.contains('lines--dashed')).toBeTruthy();
     const first = el?.firstElementChild;
-    expect(first?.getAttribute('style')).toBe('--width: 1px; --dash: 2px; --gap: 1px;');
+    expect(first?.getAttribute('style')).toContain('--width: 1px');
+    expect(first?.getAttribute('style')).toContain('--dash-pattern: repeating-linear-gradient');
+    expect(first?.getAttribute('style')).toContain('2px');
     const last = el?.lastElementChild;
-    expect(last?.getAttribute('style')).toBe('--width: 6px; --dash: 12px; --gap: 6px;');
+    expect(last?.getAttribute('style')).toContain('--width: 6px');
+    expect(last?.getAttribute('style')).toContain('--dash-pattern');
+  });
+
+  it('should use all dash segments, not just the first two', () => {
+    const dashedMap = {
+      setFilter: () => {},
+      getLayoutProperty: () => undefined,
+      getPaintProperty: () => [3, 1, 1, 1],
+    } as unknown as MapboxMap;
+
+    const el = width(expression, { id: '_', type: 'line' }, {}, dashedMap);
+    const first = el?.firstElementChild;
+    const style = first?.getAttribute('style') ?? '';
+    // width=1: pattern should be 3*1=3, 1*1=1, 1*1=1, 1*1=1 → all 4 segments
+    expect(style).toContain('3px');
+    expect(style).toContain('1px');
+    // Should have 4 segment values (dash, gap, dash, gap), not just 2
+    expect((style.match(/\dpx/g) ?? []).length).toBeGreaterThan(3);
   });
 
   it('should not apply line cap class when dasharray is set', () => {

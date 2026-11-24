@@ -10,7 +10,6 @@ const renderer: WidthRenderer = (expression, layer, options, map) => {
   const { events } = highlighter(expression, layer, map);
   const lineCap = (map.getLayoutProperty(layer.id, 'line-cap') as string) ?? 'butt';
   const dasharray = map.getPaintProperty(layer.id, 'line-dasharray') as number[] | undefined;
-  const [dash, gap] = dasharray ?? [0, 0];
   return createElement('ul', {
     classes: [
       'lines',
@@ -22,14 +21,22 @@ const renderer: WidthRenderer = (expression, layer, options, map) => {
     ],
     content: stops.map(([value, width]) => {
       const content = serializeLabel(value, options);
+      const styles: Record<string, string> = { '--width': `${width}px` };
+      if (dasharray) {
+        let pos = 0;
+        const gradientStops = dasharray.flatMap((seg, i) => {
+          const start = pos * width;
+          pos += seg;
+          const end = pos * width;
+          const color = i % 2 === 0 ? 'currentcolor' : 'transparent';
+          return [`${color} ${start}px`, `${color} ${end}px`];
+        });
+        styles['--dash-pattern'] = `repeating-linear-gradient(90deg, ${gradientStops.join(', ')})`;
+      }
       return (
         content &&
         createElement('li', {
-          styles: {
-            '--width': `${width}px`,
-            '--dash': `${dash * width}px`,
-            '--gap': `${gap * width}px`,
-          },
+          styles,
           events: options.highlight ? events(value) : {},
           content: createElement('span', { content }),
         })
