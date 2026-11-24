@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <meta charset="utf-8" />
@@ -17,6 +17,11 @@
         top: 0;
         bottom: 0;
         width: 100%;
+      }
+
+      .ethnicity-legend {
+        border-left: 3px solid #aa9761;
+        padding: 0.1px !important;
       }
     </style>
   </head>
@@ -42,45 +47,51 @@
         // layers: ['facilities', 'life-expectancy'],
         layers: {
           'life-expectancy': true,
-          'facilities': {
+          facilities: {
             toggler: false,
             collapsed: true,
           },
-          'ethnicity': { highlight: false },
-          'patterns': true,
+          ethnicity: { highlight: false },
+          patterns: true,
           'muni-routes': true,
           'fire-events': {
             collapsed: true,
             onToggle: () => console.log('This is special'),
+            unit: v => (v === 1 ? ' person' : ' people'),
+            properties: {
+              'circle-color': { unit: v => (v === 1 ? ' alarm' : ' alarms') },
+            },
           },
         },
-        onToggle: (layer) => console.log(`${layer} toggled`),
+        onToggle: layer => console.log(`${layer} toggled`),
       });
 
       map.addControl(legend, 'bottom-left');
-      
-      setTimeout(() => {
-        legend.removeLayers(['muni-routes']);
-        setTimeout(() => legend.addLayers(['muni-routes']), 5000);
-      }, 5000);
+
+      // setTimeout(() => {
+      //   legend.removeLayers(['muni-routes']);
+      //   setTimeout(() => legend.addLayers(['muni-routes']), 5000);
+      // }, 5000);
 
       map.on('load', () => {
-
-        map.addSource('ethnicity', { type: 'vector', url: 'mapbox://examples.8fgz4egr' });
+        map.addSource('ethnicity', {
+          type: 'vector',
+          url: 'mapbox://examples.8fgz4egr',
+        });
 
         map.addSource('neighborhoods', {
           type: 'geojson',
-          data: 'https://gist.githubusercontent.com/cdolek/d08cac2fa3f6338d84ea/raw/ebe3d2a4eda405775a860d251974e1f08cbe4f48/SanFrancisco.Neighborhoods.json',
+          data: './assets/neighborhoods.geojson',
         });
 
         map.addSource('fireevents', {
           type: 'geojson',
-          data: 'https://data.sfgov.org/resource/wr8u-xric.geojson',
+          data: './assets/fire-events.geojson',
         });
 
         map.addSource('facilities', {
           type: 'geojson',
-          data: 'https://data.sfgov.org/resource/nc68-ngbr.geojson',
+          data: './assets/facilities.geojson',
         });
 
         map.addLayer({
@@ -88,6 +99,8 @@
           type: 'circle',
           source: 'ethnicity',
           'source-layer': 'sf2010',
+          minzoom: 10,
+          maxzoom: 16,
           paint: {
             'circle-color': [
               'match',
@@ -99,6 +112,11 @@
               '#ccc',
             ],
           },
+          metadata: {
+            legend: {
+              classes: ['ethnicity-legend'],
+            },
+          },
         });
 
         map.addLayer({
@@ -108,15 +126,16 @@
           paint: {
             'circle-color': [
               'step',
-              ['to-number', ['get', 'suppression_personnel']],
+              ['to-number', ['get', 'number_of_alarms']],
               '#ccc',
-              5, '#d3f2a3',
-              10, '#4c9b82',
-              20, '#074050',
+              1, '#d3f2a3',
+              2, '#4c9b82',
+              3, '#074050',
             ],
             'circle-opacity': 0.5,
             'circle-radius': [
-              'interpolate', ['linear'],
+              'interpolate',
+              ['linear'],
               ['to-number', ['get', 'suppression_personnel']],
               1, 5,
               10, 15,
@@ -125,13 +144,36 @@
             ],
           },
           metadata: {
-            name: 'Fire events',
-            unit: 'k',
+            legend: {
+              name: 'Fire events',
+            },
           },
         });
 
         const lifeExpectancy = [
-          ['Tenderloin', 72.2], ['SoMa', 73.5], ['Rincon Hill', 81.6], ['South Beach', 82.5], ['Chinatown', 83.2], ['Nob Hill', 81.1], ['Mission', 82.8], ['Ingleside', 81.8], ['Taraval', 82.8], ['Castro', 83.1], ['Lower Pacific Heights', 82.7], ['Panhandle', 82.8], ['Financial District', 86], ['Inner Richmond', 83.9], ['Outer Richmond', 84.1], ['Sunset', 83.9], ['Marina', 84.3], ['Bayview', 77.4], ['Portola', 84.7], ['Twin Peaks', 84.5], ['Lake Merced', 83.5], ['North Beach', 83.5], ['Bayshore', 81.9],
+          ['Tenderloin', 72.2],
+          ['SoMa', 73.5],
+          ['Rincon Hill', 81.6],
+          ['South Beach', 82.5],
+          ['Chinatown', 83.2],
+          ['Nob Hill', 81.1],
+          ['Mission', 82.8],
+          ['Ingleside', 81.8],
+          ['Taraval', 82.8],
+          ['Castro', 83.1],
+          ['Lower Pacific Heights', 82.7],
+          ['Panhandle', 82.8],
+          ['Financial District', 86],
+          ['Inner Richmond', 83.9],
+          ['Outer Richmond', 84.1],
+          ['Sunset', 83.9],
+          ['Marina', 84.3],
+          ['Bayview', 77.4],
+          ['Portola', 84.7],
+          ['Twin Peaks', 84.5],
+          ['Lake Merced', 83.5],
+          ['North Beach', 83.5],
+          ['Bayshore', 81.9],
         ].flatMap(([name, exp]) => [['==', ['get', 'neighborhood'], name], exp]);
 
         map.addLayer({
@@ -142,7 +184,9 @@
             'fill-color': [
               'case',
               ['!=', ['get', 'neighborhood'], 'Tenderloin'],
-              ['interpolate', ['linear'],
+              [
+                'interpolate',
+                ['linear'],
                 ['case', ...lifeExpectancy, 0],
                 70, '#a16928',
                 80, '#edeac2',
@@ -153,10 +197,12 @@
             'fill-opacity': 0.4,
           },
           metadata: {
-            name: 'Life expectancy',
-            unit: 'y',
-            labels: {
-              '#cc3322': 'Excluded',
+            legend: {
+              name: 'Life expectancy',
+              unit: 'y',
+              labels: {
+                '#cc3322': 'Excluded',
+              },
             },
           },
         });
@@ -167,7 +213,8 @@
           type: 'symbol',
           layout: {
             'icon-image': [
-              'match', ['get', 'department_name'],
+              'match',
+              ['get', 'department_name'],
               'Recreation And Parks', 'park-15',
               'Public Health', 'hospital-15',
               'School District (Sfusd)', 'school-15',
@@ -181,57 +228,81 @@
             ],
           },
           metadata: {
-            name: 'Facilities',
-            labels: {
-              'Recreation And Parks': 'Park & Recreation',
-              'School District (Sfusd)': 'School',
-              'Police Department': 'Police Station',
-              'Airport (Sfo)': 'Airport',
-              'Municipal Transportation Agency': 'Transportation',
+            legend: {
+              name: 'Facilities',
+              labels: {
+                'Recreation And Parks': 'Park & Recreation',
+                'School District (Sfusd)': 'School',
+                'Police Department': 'Police Station',
+                'Airport (Sfo)': 'Airport',
+                'Municipal Transportation Agency': 'Transportation',
+              },
             },
           },
         });
 
         map.addSource('muni-routes', {
           type: 'geojson',
-          data: 'https://data.sfgov.org/api/geospatial/9exe-acju?method=export&format=GeoJSON',
+          data: './assets/muni-routes.geojson',
         });
 
         map.addLayer({
           id: 'muni-routes',
           type: 'line',
           source: 'muni-routes',
+          // layout: {
+          //   'line-cap': 'round',
+          //   'line-join': 'round',
+          // },
           paint: {
             'line-color': [
-              'match', ['get', 'service_ca'],
-              'match', ['get', 'service_ca'],
-              'Frequent Local', '#3288bd',
-              'Rapid Bus', '#d53e4f',
-              'Grid', '#66c2a5',
-              'Specialized', '#f46d43',
-              'Connector', '#fdae61',
-              'Cable Car', '#fee08b',
-              'Historic', '#ffffbf',
-              'Muni Metro', '#e6f598',
-              'Owl', '#abdda4',
+              'match',
+              ['get', 'route_name'],
+              '1', '#3288bd',
+              '14', '#d53e4f',
+              'N', '#66c2a5',
+              'T', '#f46d43',
+              'M', '#fdae61',
+              'L', '#fee08b',
+              'K', '#e6f598',
+              'J', '#abdda4',
               '#aaa',
             ],
-            'line-width': 2,
+            'line-width': [
+              'interpolate',
+              ['linear'],
+              ['get', 'passengers_avg'],
+              1000, 1,
+              5000,3,
+              15000, 6,
+              30000, 10,
+            ],
+            'line-dasharray': [3, 1, 1, 1],
           },
-          filter: ['!=', ['get', 'service_ca'], 'Rapid Bus'],
+          metadata: {
+            legend: {
+              properties: {
+                'line-color': { prefix: 'Route ' },
+                'line-width': { unit: ' pax/h' },
+              },
+            },
+          },
         });
 
         map.loadImage('./assets/pattern.stripe.png', (error, image) => {
           if (error) throw error;
           map.addImage('stripes', image);
-          map.addLayer({
-            id: 'patterns',
-            type: 'fill',
-            source: 'neighborhoods',
-            paint: {
-              'fill-pattern': 'stripes'
+          map.addLayer(
+            {
+              id: 'patterns',
+              type: 'fill',
+              source: 'neighborhoods',
+              paint: {
+                'fill-pattern': 'stripes',
+              },
             },
-          }, 'ethnicity');
+            'ethnicity',
+          );
         });
       });
     </script>

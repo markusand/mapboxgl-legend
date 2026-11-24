@@ -10,8 +10,10 @@
     text-transform: uppercase;
   }
 
-  &--highlight {
-    &:hover li { opacity: 0.25; }
+  &.list--highlight {
+    &:hover li {
+      opacity: 0.25;
+    }
 
     li:hover {
       cursor: default;

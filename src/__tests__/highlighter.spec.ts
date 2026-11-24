@@ -1,21 +1,22 @@
-import { describe, it, expect, vi } from 'vitest';
-import highlighter from '../highlighter';
+import { describe, it, expect, vi } from 'vite-plus/test';
+import highlighter from '/@/highlighter';
+import type { ParsedExpression, Layer, MapboxMap } from '/@/types';
 
-const map = { setFilter: () => {} };
+const map = { setFilter: () => {} } as unknown as MapboxMap;
 
 const { events, highlight } = highlighter(
-  { getter: ['get', 'attribute'] } as any,
-  { id: 'layer_id' } as any,
-  map as any,
+  { getter: ['get', 'attribute'] } as unknown as ParsedExpression<unknown, unknown>,
+  { id: 'layer_id' } as Layer,
+  map,
 );
 
 describe('Highlighter', () => {
   it("should restore layer's default filter", () => {
     const setFilter = vi.spyOn(map, 'setFilter');
     const { highlight: filteredHighlight } = highlighter(
-      { getter: ['get', 'attribute'] } as any,
-      { id: 'backuped', filter: ['==', ['get', 'hello'], 'world'] } as any,
-      map as any,
+      { getter: ['get', 'attribute'] } as unknown as ParsedExpression<unknown, unknown>,
+      { id: 'backuped', filter: ['==', ['get', 'hello'], 'world'] } as unknown as Layer,
+      map,
     );
     filteredHighlight(2);
     filteredHighlight(undefined);
@@ -26,13 +27,21 @@ describe('Highlighter', () => {
   it('should apply highlight filter with number', () => {
     const setFilter = vi.spyOn(map, 'setFilter');
     highlight(2);
-    expect(setFilter).toHaveBeenCalledWith('layer_id', ['all', ['>=', ['get', 'attribute'], 2], ['<=', ['get', 'attribute'], 2]]);
+    expect(setFilter).toHaveBeenCalledWith('layer_id', [
+      'all',
+      ['>=', ['get', 'attribute'], 2],
+      ['<=', ['get', 'attribute'], 2],
+    ]);
   });
 
   it('should apply highlight filter with number + delta', () => {
     const setFilter = vi.spyOn(map, 'setFilter');
     highlight(2, { delta: 1 });
-    expect(setFilter).toHaveBeenCalledWith('layer_id', ['all', ['>=', ['get', 'attribute'], 1], ['<=', ['get', 'attribute'], 3]]);
+    expect(setFilter).toHaveBeenCalledWith('layer_id', [
+      'all',
+      ['>=', ['get', 'attribute'], 1],
+      ['<=', ['get', 'attribute'], 3],
+    ]);
   });
 
   it('should apply highlight filter with string', () => {
@@ -44,19 +53,31 @@ describe('Highlighter', () => {
   it('should apply highlight filter with range array', () => {
     const setFilter = vi.spyOn(map, 'setFilter');
     highlight([2, 3]);
-    expect(setFilter).toHaveBeenCalledWith('layer_id', ['all', ['>=', ['get', 'attribute'], 2], ['<', ['get', 'attribute'], 3]]);
+    expect(setFilter).toHaveBeenCalledWith('layer_id', [
+      'all',
+      ['>=', ['get', 'attribute'], 2],
+      ['<', ['get', 'attribute'], 3],
+    ]);
   });
 
   it('should apply highlight filter with low unbounded range array', () => {
     const setFilter = vi.spyOn(map, 'setFilter');
     highlight([NaN, 3]);
-    expect(setFilter).toHaveBeenCalledWith('layer_id', ['all', true, ['<', ['get', 'attribute'], 3]]);
+    expect(setFilter).toHaveBeenCalledWith('layer_id', [
+      'all',
+      true,
+      ['<', ['get', 'attribute'], 3],
+    ]);
   });
 
   it('should apply highlight filter with high unbounded range array', () => {
     const setFilter = vi.spyOn(map, 'setFilter');
     highlight([2, NaN]);
-    expect(setFilter).toHaveBeenCalledWith('layer_id', ['all', ['>=', ['get', 'attribute'], 2], true]);
+    expect(setFilter).toHaveBeenCalledWith('layer_id', [
+      'all',
+      ['>=', ['get', 'attribute'], 2],
+      true,
+    ]);
   });
 
   it('should reset highlight filter', () => {
@@ -68,9 +89,9 @@ describe('Highlighter', () => {
   it('should skip highlight if literal attribute (undefined getter)', () => {
     const setFilter = vi.spyOn(map, 'setFilter');
     const { highlight: skippableHighlight } = highlighter(
-      { getter: undefined } as any,
-      { id: 'layer_id' } as any,
-      map as any,
+      { getter: undefined } as unknown as ParsedExpression<unknown, unknown>,
+      { id: 'layer_id' } as Layer,
+      map,
     );
     skippableHighlight(2);
     expect(setFilter).not.toHaveBeenCalled();

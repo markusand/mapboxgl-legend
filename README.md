@@ -12,6 +12,7 @@ Properties currently supported:
 
 - `*-color`
 - `*-radius`
+- `*-width`
 - `*-image`
 - `*-pattern`
 
@@ -52,13 +53,14 @@ map.addLayer({
   source: 'demographic',
   paint: {
     'circle-radius': [
-      'interpolate', ['linear'],
+      'interpolate',
+      ['linear'],
       ['to-number', ['get', 'density']],
       100, 10,
       200, 17,
       500, 30,
       1000, 50,
-      2000, 75
+      2000, 75,
     ],
     'circle-color': [
       'match',
@@ -67,8 +69,8 @@ map.addLayer({
       'Black', '#443722',
       'Hispanic', '#aa9761',
       'Asian', '#e8e59d',
-      /* other */ '#ccc'
-    ]
+      /* other */ '#ccc',
+    ],
   },
 });
 ```
@@ -77,16 +79,20 @@ map.addLayer({
 
 A few options can be passed on legend initialization.
 
-| option | type | default | description |
-| --- | --- | --- | --- |
-| minimized | Boolean, undefined | `undefined` | If set, a button toggles layer visibility. Initial value is set as this attribute |
-| collapsed | Boolean | `false` | Set legend panels collapsed on load |
-| toggler | Boolean, string[] | `false` | Add button to show and hide layers. Provide an array of layer ids to toggle them with this button |
-| highlight | Boolean | `false` | Add interactivity to legend items |
-| layers | Array[string, RegExp], Object | `undefined` | List of layers to be added. If undefined all layers will be added |
-| onToggle | Function | `undefined` | Set a callback function to a layer visibility change. Function receives as parameters the `layerId` that changed and its visibility (boolean) |
+| option    | type                          | default     | description                                                                                                                                   |
+| --------- | ----------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| minimized | Boolean, undefined            | `undefined` | If set, a button toggles layer visibility. Initial value is set as this attribute                                                             |
+| collapsed | Boolean                       | `false`     | Set legend panels collapsed on load                                                                                                           |
+| toggler   | Boolean, string[]             | `false`     | Add button to show and hide layers. Provide an array of layer ids to toggle them with this button                                             |
+| highlight | Boolean                       | `false`     | Add interactivity to legend items                                                                                                             |
+| layers    | Array[string, RegExp], Object | `undefined` | List of layers to be added. If undefined all layers will be added                                                                             |
+| onToggle  | Function                      | `undefined` | Set a callback function to a layer visibility change. Function receives as parameters the `layerId` that changed and its visibility (boolean) |
 
 The layers option is an array of the layers' ids, or strings casted as regex that match the layers' ids. It can also be an object with keys being the layers' ids and values being an array of visible attributes, or `true` if all visible. For a fine grained control over layers, this object can also contain the same options `collapsed`, `toggler`, `attributes` and `onToggle`.
+
+Per-layer options also accept `prefix`, `unit`, `labels`, and `properties` for legend formatting. These are merged with the layer's `metadata.legend` values, with control options taking precedence.
+
+> **Note:** Mapbox GL serializes layer metadata to Web Workers, so **functions cannot be used in `metadata.legend`** — they will cause a `DOMException: Function object could not be cloned` error. Use string values in metadata and pass functions through the control's `layers` option instead.
 
 ```javascript
 const legend = new LegendControl({
@@ -96,26 +102,55 @@ const legend = new LegendControl({
     // Show all properties in this layer
     areas: true,
     // Show only selected properties in this layer
-    population: ['circle-radius'], 
+    population: ['circle-radius'],
     // Fine grained options per layer
     pois: {
       collapsed: true,
       toggler: false,
       highlight: true,
       attributes: ['circle-radius'],
-    }
+    },
+    // Dynamic formatting with functions
+    density: {
+      unit: v => (v === 1 ? 'person' : 'people'),
+      properties: {
+        'circle-color': { unit: 'alarms' },
+      },
+    },
   },
-})
+});
 ```
 
-There are also a few options that be defined as a per-layer basis using the style `metadata` object.
+There are also a few options that be defined as a per-layer basis using the style `metadata` object, namespaced under a `legend` key to avoid collisions with other metadata consumers.
 
-| option | type | description |
-| --- | --- | --- |
-| name | String | Set the panel title name |
-| unit | String | Add a unit to all labels |
-| labels | Object | Map a value to a text that replaces it as a label |
-| extraLegendClasses | String[] | Classes to add to the layer's legend pane |
+| option     | type     | description                                             |
+| ---------- | -------- | ------------------------------------------------------- |
+| name       | String   | Set the panel title name                                |
+| prefix     | String   | Prepend a prefix to all labels                          |
+| unit       | String   | Append a unit to all labels                             |
+| labels     | Object   | Map a value to a text that replaces it as a label       |
+| classes    | String[] | Classes to add to the layer's legend pane               |
+| properties | Object   | Per-property prefix, unit and labels (see below)        |
+
+`prefix`, `unit` and `labels` also accept functions for dynamic formatting (e.g. pluralization). Each function receives the raw value and returns a string. Only `labels` functions can also return `false` to hide the item. `labels` can be either an object mapping specific values, or a single catch-all function that formats every label. Since metadata is serialized by Mapbox GL, **functions must be passed via the control's `layers` option** (see above), not in `metadata.legend`.
+
+```javascript
+layers: {
+  'muni-routes': {
+    // Catch-all function formats every label
+    labels: v => `Route ${v}`,
+  },
+  'fire-events': {
+    // Function unit for dynamic formatting
+    unit: v => v === 1 ? 'person' : 'people',
+  },
+  'prices': {
+    // Function prefix
+    prefix: v => v >= 0 ? '+' : '',
+    unit: '€',
+  },
+}
+```
 
 Metadata provides an extra layer of control by hiding items that have a label set to `false`, except on step expressions.
 
@@ -124,29 +159,61 @@ map.addLayer({
   id: 'density',
   type: 'circle',
   source: 'demographic',
-  paint: { /* ... */ },
+  paint: {/* ... */},
   metadata: {
-    name: 'Population Density',
-    unit: 'k/km²',
-    labels: {
-      10: 'Custom label for value 10',
-      other: '< 1k/km²',
-      an_item_to_hide: false,
-    }
-  }
+    legend: {
+      name: 'Population Density',
+      unit: 'k/km²',
+      labels: {
+        10: 'Custom label for value 10',
+        other: '< 1k/km²',
+        an_item_to_hide: false,
+      },
+    },
+  },
 });
 ```
 
 For pairs labels, such as in `step` expressions, it is possible to labelize by using the serialized array of steps as a key
 
 ```javascript
-matadata: {
-  labels: {
-    '0,10': 'Group A',
-    '10,20': 'Group B',
+metadata: {
+  legend: {
+    labels: {
+      '0,10': 'Group A',
+      '10,20': 'Group B',
+    },
   },
 }
 ```
+
+When a layer renders multiple properties (e.g. `circle-color` and `circle-radius`), `properties` lets you set a different `prefix`, `unit` or `labels` for a specific property. This works both in `metadata.legend` (strings only) and in the control's `layers` option (strings or functions).
+
+```javascript
+// In metadata (serializable values only)
+metadata: {
+  legend: {
+    unit: 'ppl',
+    properties: {
+      'circle-color': { unit: ' alarms' },
+    },
+  },
+}
+
+// In control options (functions allowed)
+layers: {
+  'fire-events': {
+    unit: v => v === 1 ? 'person' : 'people',
+    properties: {
+      'circle-color': { unit: v => v === 1 ? ' alarm' : ' alarms' },
+    },
+  },
+}
+```
+
+## Zoom awareness
+
+Legend panes are automatically dimmed when the current map zoom is outside the layer's `minzoom`/`maxzoom` range. The `out-of-range` CSS class is toggled on each pane and can be styled to taste.
 
 ## Handle layers
 
@@ -154,7 +221,80 @@ Layers can be added or removed from legend at any moment by using `legend.addLay
 
 ## Styles
 
-Legend defaults to a simple design inspired by standard mapbox-gl controls, but can be tunned by changing CSS variables. Check default values in `/src/styles/_variables.scss`
+Legend defaults to a simple design inspired by standard mapbox-gl controls, but can be tunned by changing CSS variables. Check default values in `/src/styles/variables.css`
+
+## Migration from v1
+
+### Metadata is namespaced
+
+Layer metadata is now nested under a `legend` key to avoid collisions with other metadata consumers.
+
+```diff
+  metadata: {
+-   name: 'Population',
+-   unit: 'k/km²',
+-   labels: { other: 'Unknown' },
++   legend: {
++     name: 'Population',
++     unit: 'k/km²',
++     labels: { other: 'Unknown' },
++   },
+  }
+```
+
+### Renamed and restructured options
+
+| v1 | v2 | Notes |
+| -- | -- | ----- |
+| `metadata.extraLegendClasses` | `metadata.legend.classes` | Renamed |
+| `metadata.unit` (string only) | `metadata.legend.unit` | Now accepts a function via control options |
+| `metadata.labels` (object only) | `metadata.legend.labels` | Now also accepts a catch-all function via control options |
+| — | `metadata.legend.prefix` | New: prepend text to labels |
+| — | `metadata.legend.properties` | New: per-property `unit`/`labels`/`prefix` overrides |
+
+### Functions must go through control options
+
+Mapbox GL serializes layer metadata to Web Workers, so functions cause a `DOMException`. In v2, `unit`, `labels`, and `prefix` accept functions, but these **must** be passed via the control's `layers` option instead of `metadata.legend`.
+
+```javascript
+// v1: not possible to use functions
+// v2: functions via control options
+const legend = new LegendControl({
+  layers: {
+    density: {
+      unit: v => (v === 1 ? 'person' : 'people'),
+      labels: v => `Zone ${v}`,
+    },
+  },
+});
+```
+
+### `removeLayers()` signature changed
+
+`removeLayers()` now accepts plain layer id strings. RegExp keys are resolved internally.
+
+```diff
+- legend.removeLayers([/pattern/]);
++ legend.removeLayers(['layer-id']);
+```
+
+### CSS instead of SCSS
+
+Styles are now plain CSS. The import path is unchanged:
+
+```javascript
+import 'mapboxgl-legend/dist/style.css';
+```
+
+Custom theming via CSS variables still works — check `src/styles/variables.css` for defaults.
+
+### New features in v2
+
+- **`prefix` metadata** for prepending text to labels (supports functions via control options)
+- **Per-property overrides** via `properties` in metadata or control options
+- **Width renderer** for `line-width` expressions (with dashed line support)
+- **Zoom awareness** — panes are dimmed with an `out-of-range` CSS class when the map zoom is outside the layer's `minzoom`/`maxzoom` range
+- **`mapbox-gl >= 2.0.0`** is now a peer dependency
 
 ## Development
 

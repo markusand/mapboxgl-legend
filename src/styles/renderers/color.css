@@ -11,8 +11,13 @@
       color: var(--map-legend-label-color);
       transform: translateX(-50%);
 
-      &:first-child { transform: none; }
-      &:last-child { transform: translateX(-100%); }
+      &:first-child {
+        transform: none;
+      }
+
+      &:last-child {
+        transform: translateX(-100%);
+      }
     }
   }
 
@@ -23,7 +28,7 @@
     border-radius: var(--map-legend-thumb-radius);
   }
 
-  &--highlight {
+  &.gradient--highlight {
     .bar:hover::before {
       content: attr(data-label);
       display: block;
@@ -40,7 +45,7 @@
 }
 
 .mapboxgl-ctrl-legend .list--color li::before {
-  content: "";
+  content: '';
   display: block;
   height: var(--map-legend-thumb-height);
   width: var(--map-legend-thumb-height);

@@ -1,6 +1,7 @@
-/* eslint-disable import/no-unresolved */
-import { describe, it, expect, vi } from 'vitest';
-import { ensureArray, rescale, chunk, zip, toPair, toBins, createElement, createImageCanvas, serializeLabel } from '../utils';
+import { describe, it, expect, vi } from 'vite-plus/test';
+import { ensureArray, rescale, chunk, zip, toPair, toBins } from '/@/utils';
+import { createElement, createImageCanvas } from '/@/dom';
+import { serializeLabel } from '/@/metadata';
 
 // Stub ImageData
 vi.stubGlobal('ImageData', class ImageData {});
@@ -10,7 +11,6 @@ vi.stubGlobal('ImageData', class ImageData {});
 HTMLCanvasElement.prototype.getContext = vi.fn(() => ({
   putImageData: vi.fn(),
 }));
-
 
 describe('Expression utilities', () => {
   it('should encapsulate variables in array if needed', () => {
@@ -24,14 +24,32 @@ describe('Expression utilities', () => {
 
   it('should create chunks of arrays from array', () => {
     const array = [1, 2, 3, 4, 5, 6];
-    expect(chunk(array, 2)).toEqual([[1, 2], [3, 4], [5, 6]]);
-    expect(chunk(array, 3)).toEqual([[1, 2, 3], [4, 5, 6]]);
-    expect(chunk(array, 4)).toEqual([[1, 2, 3, 4], [5, 6]]);
+    expect(chunk(array, 2)).toEqual([
+      [1, 2],
+      [3, 4],
+      [5, 6],
+    ]);
+    expect(chunk(array, 3)).toEqual([
+      [1, 2, 3],
+      [4, 5, 6],
+    ]);
+    expect(chunk(array, 4)).toEqual([
+      [1, 2, 3, 4],
+      [5, 6],
+    ]);
   });
 
   it('should zip multiple arrays', () => {
-    const arrays = [[1, 2, 3], [4, 5, 6], [7, 8, 9]];
-    expect(zip(...arrays)).toEqual([[1, 4, 7], [2, 5, 8], [3, 6, 9]]);
+    const arrays = [
+      [1, 2, 3],
+      [4, 5, 6],
+      [7, 8, 9],
+    ];
+    expect(zip(...arrays)).toEqual([
+      [1, 4, 7],
+      [2, 5, 8],
+      [3, 6, 9],
+    ]);
   });
 
   it('should return always an array of 2 elements', () => {
@@ -40,7 +58,11 @@ describe('Expression utilities', () => {
   });
 
   it('should create bins of range values', () => {
-    const stops = [[0, 'a'], [1, 'b'], [2, 'c']] as [number | null, string][];
+    const stops = [
+      [0, 'a'],
+      [1, 'b'],
+      [2, 'c'],
+    ] as [number | null, string][];
     expect(toBins(stops)).toEqual([
       [[0, 1], 'a'],
       [[1, 2], 'b'],
@@ -117,6 +139,43 @@ describe('Labels', () => {
     expect(serializeLabel([null, 1], { labels: { ',1': 'label' } })).toBe('label');
     expect(serializeLabel([2, null], { labels: { '2,': 'label' } })).toBe('label');
     expect(serializeLabel([1, 2], { labels: { '1,2': false } })).toBe(false);
+    // false endpoint labels should fall back to formatted value, not show 'false'
+    expect(serializeLabel([null, 10], { labels: { 10: false } })).toBe('< 10');
+    expect(serializeLabel([10, null], { labels: { 10: false } })).toBe('> 10');
+    expect(serializeLabel([5, 10], { labels: { 10: false } })).toBe('5 - 10');
+  });
+
+  it('should support function labels and unit', () => {
+    const unit = (v: unknown) => (v === 1 ? ' person' : ' people');
+    expect(serializeLabel(1, { unit })).toBe('1 person');
+    expect(serializeLabel(5, { unit })).toBe('5 people');
+
+    const labels = { 1: (v: unknown) => `value is ${String(v)}` };
+    expect(serializeLabel(1, { labels })).toBe('value is 1');
+
+    // Function returning false hides the item
+    expect(serializeLabel(1, { labels: { 1: () => false } })).toBe(false);
+
+    // Catch-all function labels
+    const formatter = (v: unknown) => `Route ${String(v)}`;
+    expect(serializeLabel('N', { labels: formatter })).toBe('Route N');
+    expect(serializeLabel([1, 2], { labels: formatter })).toBe('Route 1,2');
+    expect(serializeLabel(null, { labels: formatter })).toBe('Route null');
+  });
+
+  it('should support prefix', () => {
+    expect(serializeLabel(5, { prefix: '$' })).toBe('$5');
+    expect(serializeLabel(5, { prefix: '$', unit: 'USD' })).toBe('$5USD');
+
+    // Function prefix
+    const prefix = (v: unknown) => (Number(v) >= 0 ? '+' : '');
+    expect(serializeLabel(5, { prefix })).toBe('+5');
+    expect(serializeLabel(-3, { prefix })).toBe('-3');
+
+    // Prefix with range
+    expect(serializeLabel([1, 2], { prefix: '#' })).toBe('#1 - #2');
+    expect(serializeLabel([null, 10], { prefix: '~' })).toBe('< ~10');
+    expect(serializeLabel([10, null], { prefix: '~' })).toBe('> ~10');
   });
 
   it('should serialize the OTHER label', () => {

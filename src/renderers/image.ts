@@ -1,19 +1,23 @@
-import { createElement, createImageCanvas, serializeLabel } from '../utils';
-import highlighter from '../highlighter';
-import type { MapboxMap, Layer, ParsedExpression, LayerOptions } from '../types';
+import { createElement, createImageCanvas } from '/@/dom';
+import { serializeLabel } from '/@/metadata';
+import highlighter from '/@/highlighter';
+import type { Renderer } from '/@/types';
 
-type Expression = ParsedExpression<string | number, string>;
+type ImageRenderer = Renderer<string | number, string>;
 
-export default (expression: Expression, layer: Layer, map: MapboxMap, options: LayerOptions) => {
+const renderer: ImageRenderer = (expression, layer, options, map) => {
   const { stops } = expression;
   const { events } = highlighter(expression, layer, map);
   return createElement('ul', {
     classes: ['list', 'list--icons', `list--${options.highlight ? 'highlight' : ''}`],
     content: stops.map(([value, image]) => {
-      const label = serializeLabel(value, layer.metadata);
+      const label = serializeLabel(value, options);
       if (!label) return undefined;
+      // @ts-expect-error image string not matching ImageId
+      // Extract raw pixel data from the map's internal sprite atlas
       const { height, width, data } = map.style.getImage(image)?.data || {};
       if (!height || !width || !data) return undefined;
+      // Rasterise the sprite image to a data URL for use in an <img> element
       const canvas = createImageCanvas(data, width, height);
       return createElement('li', {
         events: options.highlight ? events(value) : {},
@@ -28,3 +32,5 @@ export default (expression: Expression, layer: Layer, map: MapboxMap, options: L
     }),
   });
 };
+
+export default renderer;
